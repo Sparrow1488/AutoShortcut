@@ -35,8 +35,7 @@ namespace Sparrow.Video.Shortcuts.Services
         public Task<ICollection<IFile>> GetFilesAsync(
             string path, CancellationToken token = default)
         {
-            var stringPath = StringPath.Create(path);
-            throw new NotImplementedException();
+            return Task.FromResult(GetFiles(path));
         }
 
         private IFile CreateFileUsingPath(string path)

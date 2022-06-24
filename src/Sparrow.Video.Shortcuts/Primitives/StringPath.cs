@@ -11,6 +11,16 @@ namespace Sparrow.Video.Primitives
 
         public string Value { get; }
 
+        public static StringPath CreateExists(string path)
+        {
+            var validPath = Create(path);
+            if (File.Exists(validPath.Value) || Directory.Exists(validPath.Value))
+            {
+                return validPath;
+            }
+            throw new InvalidInputPathException($"File or directory not exists => {path ?? ""}");
+        }
+
         /// <summary>
         ///     Create required path or throw <see cref="InvalidInputPathException"/>
         /// </summary>
