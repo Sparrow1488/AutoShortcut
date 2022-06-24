@@ -18,9 +18,12 @@ namespace Sparrow.Video.Primitives
         /// <exception cref="InvalidInputPathException"></exception>
         public static StringPath Create(string path)
         {
-            if (Uri.IsWellFormedUriString(path, UriKind.RelativeOrAbsolute))
+            path = string.IsNullOrWhiteSpace(path) 
+                ? throw new ArgumentException($"Null or empty input {nameof(path)}")
+                : path;
+            var fullPath = Path.GetFullPath(path);
+            if (Path.IsPathFullyQualified(fullPath))
             {
-                var fullPath = Path.GetFullPath(path);
                 return new StringPath(fullPath);
             }
             throw new InvalidInputPathException($"Invalid path => {path ?? ""}");

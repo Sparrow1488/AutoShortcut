@@ -13,4 +13,8 @@ var services = Host.CreateDefaultBuilder()
 var typesProvider = services.GetRequiredService<IFileTypesProvider>();
 var fileType = typesProvider.GetFileTypeOrUndefined(".mp4");
 
+string filesDirectory = @"D:\Йога\SFM\отдельно sfm\30";
+var uploadService = services.GetRequiredService<IUploadFilesService>();
+var filesCollection = uploadService.GetFiles(filesDirectory);
+
 Console.ReadKey();
