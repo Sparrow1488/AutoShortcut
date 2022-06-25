@@ -18,6 +18,6 @@ var uploadService = services.GetRequiredService<IUploadFilesService>();
 var filesCollection = uploadService.GetFiles(filesDirectory);
 
 var analyseProcess = services.GetRequiredService<IAnalyseProcess>();
-var analyse = await analyseProcess.GetAnalyseAsync();
+var analyse = await analyseProcess.GetAnalyseAsync(filesCollection.First());
 
 Console.ReadKey();
