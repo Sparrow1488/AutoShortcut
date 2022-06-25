@@ -8,7 +8,7 @@ namespace Sparrow.Video.Shortcuts.Processes
 {
     public abstract class ExecutionProcessBase : IExecutionProcess
     {
-        protected IProcessResult TextProcessResult { get; private set; }
+        protected ITextProcessResult TextProcessResult { get; private set; }
 
         public async Task StartAsync()
         {
@@ -29,7 +29,7 @@ namespace Sparrow.Video.Shortcuts.Processes
                 }
                 await process.WaitForExitAsync();
             }
-            TextProcessResult = new ProcessResult(settings, result);
+            TextProcessResult = new TextProcessResult(settings, result);
         }
 
         protected abstract StringPath OnGetProcessPath();

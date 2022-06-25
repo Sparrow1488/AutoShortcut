@@ -10,6 +10,7 @@ var services = Host.CreateDefaultBuilder()
 {
     services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
     services.AddSingleton<IUploadFilesService, UploadFilesService>();
+    services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
     services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
 }).Build().Services;
 

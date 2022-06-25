@@ -1,4 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Services
+﻿using Sparrow.Video.Abstractions.Primitives;
+
+namespace Sparrow.Video.Abstractions.Services
 {
     public interface IFileTypesProvider
     {
