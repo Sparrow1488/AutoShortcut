@@ -2,6 +2,6 @@
 {
     public interface ISaveSettings
     {
-        public string SavePath { get; }
+        public string SaveFullPath { get; }
     }
 }

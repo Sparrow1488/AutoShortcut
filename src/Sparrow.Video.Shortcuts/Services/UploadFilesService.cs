@@ -16,6 +16,20 @@ namespace Sparrow.Video.Shortcuts.Services
 
         public IFileTypesProvider TypesProvider { get; }
 
+        public IFile GetFile(string filePath)
+        {
+            var stringPath = StringPath.Create(filePath);
+            var fileInfo = new FileInfo(stringPath.Value);
+            var file = new SFile()
+            {
+                Extension = fileInfo.Extension,
+                FileType = TypesProvider.GetFileType(fileInfo.Extension),
+                Name = Path.GetFileNameWithoutExtension(filePath),
+                Path = stringPath.Value
+            };
+            return file;
+        }
+
         /// <summary>
         ///     Get files from path on your computer
         /// </summary>
