@@ -1,5 +1,7 @@
-﻿using Sparrow.Video.Abstractions.Processes;
+﻿using Microsoft.Extensions.Configuration;
+using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Primitives;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Results;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using System.Diagnostics;
@@ -8,7 +10,13 @@ namespace Sparrow.Video.Shortcuts.Processes
 {
     public abstract class ExecutionProcessBase : IExecutionProcess
     {
+        public ExecutionProcessBase(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         protected ITextProcessResult TextProcessResult { get; private set; }
+        public IConfiguration Configuration { get; }
 
         public async Task StartAsync()
         {
@@ -33,8 +41,15 @@ namespace Sparrow.Video.Shortcuts.Processes
         }
 
         protected abstract StringPath OnGetProcessPath();
-        protected virtual ProcessSettings OnConfigureSettings() =>
-            new ProcessSettings();
+        protected virtual ProcessSettings OnConfigureSettings()
+        {
+            var settings = new ProcessSettings();
+            if (Configuration.IsDebug())
+            {
+                settings.IsShowConsole = true;
+            }
+            return settings;
+        }
 
         private ProcessStartInfo CreateStartInfo()
         {

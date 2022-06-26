@@ -1,12 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Primitives;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
@@ -15,15 +13,13 @@ namespace Sparrow.Video.Shortcuts.Processes
     {
         public AnalyseProcess(
             IConfiguration configuration,
-            IJsonFileAnalyseService analyseService)
+            IJsonFileAnalyseService analyseService) : base(configuration)
         {
-            Configuration = configuration;
             AnalyseService = analyseService;
         }
 
         private StringPath _analyseFilePath;
 
-        public IConfiguration Configuration { get; }
         public IJsonFileAnalyseService AnalyseService { get; }
 
         protected override StringPath OnGetProcessPath()
@@ -38,10 +34,6 @@ namespace Sparrow.Video.Shortcuts.Processes
             var settings = base.OnConfigureSettings();
             settings.Argument = $"-i \"{_analyseFilePath.Value}\" -v quiet -print_format json -show_format -show_streams";
             settings.IsReadOutputs = true;
-            if (Configuration.IsDebug())
-            {
-                settings.IsShowConsole = true;
-            }
             return settings;
         }
 

@@ -13,17 +13,14 @@ namespace Sparrow.Video.Shortcuts.Processes
     {
         public EncodingProcess(
             IUploadFilesService uploadFilesService,
-            IConfiguration configuration)
+            IConfiguration configuration) : base(configuration)
         {
             _uploadFilesService = uploadFilesService;
-            Configuration = configuration;
         }
 
         private StringPath _filePath;
         private IEncodingSettings? _settings;
         private readonly IUploadFilesService _uploadFilesService;
-
-        public IConfiguration Configuration { get; }
 
         protected override StringPath OnGetProcessPath()
         {
@@ -35,10 +32,6 @@ namespace Sparrow.Video.Shortcuts.Processes
         {
             var settings = base.OnConfigureSettings();
             settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} " + _settings.SaveSettings.SaveFullPath;
-            if (Configuration.IsDebug())
-            {
-                settings.IsShowConsole = true;
-            }
             return settings;
         }
 
