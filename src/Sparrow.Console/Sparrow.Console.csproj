@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Sparrow.Video.Shortcuts\Sparrow.Video.Shortcuts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Rules\" />
+  </ItemGroup>
+
 </Project>
