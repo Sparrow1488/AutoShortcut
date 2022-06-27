@@ -9,5 +9,6 @@ namespace Sparrow.Video.Shortcuts.Primitives
         public string FileFullPath { get; set; }
         public string Target { get; set; }
         public ReferenceType Type { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

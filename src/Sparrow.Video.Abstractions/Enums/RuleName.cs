@@ -13,6 +13,7 @@
         public static readonly RuleName Group = new RuleName(nameof(Group));
         public static readonly RuleName Formating = new RuleName(nameof(Formating));
         public static readonly RuleName Encoding = new RuleName(nameof(Encoding));
+        public static readonly RuleName Silent = new RuleName(nameof(Silent));
 
         public static RuleName New(string name)
         {

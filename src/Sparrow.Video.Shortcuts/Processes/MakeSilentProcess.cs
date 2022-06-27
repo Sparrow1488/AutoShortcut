@@ -24,6 +24,8 @@ namespace Sparrow.Video.Shortcuts.Processes
         {
             var settings = base.OnConfigureSettings();
             settings.Argument = $"-y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{_toProcessFile.Path}\" -c:v copy -c:a aac -shortest \"{_saveSettings.SaveFullPath}\"";
+            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
+            Directory.CreateDirectory(directoryPath);
             return settings;
         }
 

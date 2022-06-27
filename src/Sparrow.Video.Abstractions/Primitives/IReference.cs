@@ -8,5 +8,6 @@ namespace Sparrow.Video.Abstractions.Primitives
         string FileFullPath { get; }
         string Target { get; }
         ReferenceType Type { get; }
+        DateTime CreatedAt { get; }
     }
 }

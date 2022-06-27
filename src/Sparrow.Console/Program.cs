@@ -35,6 +35,7 @@ var services = Host.CreateDefaultBuilder()
     services.AddScoped<IShortcutEngine, ShortcutEngine>();
 
     services.AddScoped<IRuleProcessor<VideoFormatFileRule>, VideoFormatRuleProcessor>();
+    services.AddScoped<IRuleProcessor<SilentAudioRule>, SilentAudioRuleProcessor>();
 }).Build().Services;
 
 string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55";
@@ -46,10 +47,11 @@ var engine = services.GetRequiredService<IShortcutEngine>();
 var pipeline = await engine.CreatePipelineAsync(filesDirectory);
 var project = pipeline.Configure(options =>
 {
+
     options.Rules.Add(new VideoFormatFileRule(
         new VideoFormatSettings()
         {
-            DisplayResolution = Resolution.HighFHD,
+            DisplayResolution = Resolution.Small,
             FileFormat = ".mp4",
             SaveSettings = new SaveSettings()
             {
@@ -58,6 +60,17 @@ var project = pipeline.Configure(options =>
                                  Path.GetRandomFileName() + ".mp4")
             }
         }, file => true));
+
+    options.Rules.Add(new SilentAudioRule(file => true)
+    {
+        SaveSettings = new SaveSettings()
+        {
+            SaveFullPath =
+                    Path.Combine(pathsProvider.GetPathFromCurrent("SilentFiles"),
+                                 Path.GetRandomFileName() + ".mp4")
+        }
+    });
+
 }).CreateProject();
 
 var finalFile = await engine.StartRenderAsync(project);

@@ -71,8 +71,14 @@ namespace Sparrow.Video.Shortcuts.Enginies
                 var projectFile = new ProjectFile()
                 {
                     File = file,
-                    Analyse = fileAnalyse
+                    Analyse = fileAnalyse,
                 };
+                projectFile.References.Add(new Reference() 
+                {
+                    Name = "Original",
+                    FileFullPath = projectFile.File.Path,
+                    Type = ReferenceType.OriginalSource
+                });
                 projectFilesList.Add(projectFile);
                 _logger.LogInformation($"[Analyse({i + 1}/{files.Count})] Completed");
                 await SaveProjectFileAsync(projectFile);
@@ -114,8 +120,12 @@ namespace Sparrow.Video.Shortcuts.Enginies
             var scriptBuilder = new ScriptBuilder();
             foreach (var file in project.Files)
                 foreach (var rule in file.RulesCollection)
+                {
                     if (rule is VideoFormatFileRule formatRule)
                         await StartRuleProcessAsync(file, formatRule);
+                    if (rule is SilentAudioRule silentRule)
+                        await StartRuleProcessAsync(file, silentRule);
+                }
             return new File();
         }
 
