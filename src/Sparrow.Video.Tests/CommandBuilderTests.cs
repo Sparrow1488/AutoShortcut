@@ -8,7 +8,7 @@ namespace Sparrow.Video.Tests
         public void Test1()
         {
             var expired = "-i {projectPath} -some command -save-to {savePath}";
-            var buildResult = new CommandBuilder()
+            var buildResult = new ScriptBuilder()
                                        .Insert("-i {projectPath}")
                                        .Insert("-some command")
                                        .InsertLast("-save-to {savePath}")

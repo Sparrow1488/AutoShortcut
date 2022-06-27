@@ -25,7 +25,7 @@ namespace Sparrow.Video.Shortcuts.Services
             var fileType = GetFileTypeOrUndefined(extensions);
             return fileType == FileType.Undefined 
                 ? throw new FileTypeIdentifyException(
-                    $"Not identified type of file by {nameof(extensions)} {extensions}") 
+                    $"Not identified type of file by {nameof(extensions)} \"{extensions}\"") 
                 : fileType;
         }
 

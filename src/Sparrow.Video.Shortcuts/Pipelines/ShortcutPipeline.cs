@@ -14,7 +14,6 @@ namespace Sparrow.Video.Shortcuts.Pipelines
         }
 
         private readonly IPipelineOptions _options;
-        private ShortcutProject _project { get; } = new ShortcutProject();
         internal ICollection<IProjectFile> ProjectFiles { get; set; } = new List<IProjectFile>();
 
         public IPipeline Configure(Action<IPipelineOptions> options)
@@ -26,7 +25,10 @@ namespace Sparrow.Video.Shortcuts.Pipelines
         public IProject CreateProject()
         {
             ApplyRules();
-            return _project;
+            return new ShortcutProject()
+            {
+                Files = ProjectFiles
+            };
         }
 
         private void ApplyRules()

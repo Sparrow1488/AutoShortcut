@@ -30,6 +30,8 @@ namespace Sparrow.Video.Shortcuts.Processes
         {
             var settings = base.OnConfigureSettings();
             settings.Argument = CreateProcessArgument();
+            var directoryPath = Path.GetDirectoryName(_formatSettings.SaveSettings.SaveFullPath);
+            Directory.CreateDirectory(directoryPath);
             return settings;
         }
 
@@ -45,7 +47,7 @@ namespace Sparrow.Video.Shortcuts.Processes
 
         private string CreateProcessArgument()
         {
-            var builder = new CommandBuilder();
+            var builder = new ScriptBuilder();
             var videoStream = _fileAnalyse.StreamAnalyses.FirstOrDefault(x => x.CodecType.ToLower() == "video")
                                 as IVideoStreamAnalyse;
             ThrowIfNoVideoStream(videoStream);

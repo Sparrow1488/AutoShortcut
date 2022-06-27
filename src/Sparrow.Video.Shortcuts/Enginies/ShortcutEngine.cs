@@ -1,15 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Sparrow.Video.Abstractions.Builders;
 using Sparrow.Video.Abstractions.Enginies;
+using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Pipelines;
 using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
+using Sparrow.Video.Abstractions.Processors;
+using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Builders;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Primitives;
+using Sparrow.Video.Shortcuts.Rules;
 using Sparrow.Video.Shortcuts.Services.Options;
+using File = Sparrow.Video.Shortcuts.Primitives.File;
 
 namespace Sparrow.Video.Shortcuts.Enginies
 {
@@ -19,6 +27,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             ILogger<ShortcutEngine> logger,
             IUploadFilesService uploadFilesService,
             IAnalyseProcess analyseProcess,
+            IFormatorProcess formatorProcess,
             ISaveService saveService,
             IStoreService storeService,
             IServiceProvider services,
@@ -27,6 +36,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             _logger = logger;
             _uploadFilesService = uploadFilesService;
             _analyseProcess = analyseProcess;
+            _formatorProcess = formatorProcess;
             _saveService = saveService;
             _services = services;
             _pathsProvider = pathsProvider;
@@ -36,6 +46,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
         private readonly ILogger<ShortcutEngine> _logger;
         private readonly IUploadFilesService _uploadFilesService;
         private readonly IAnalyseProcess _analyseProcess;
+        private readonly IFormatorProcess _formatorProcess;
         private readonly ISaveService _saveService;
         private readonly IServiceProvider _services;
         private readonly IPathsProvider _pathsProvider;
@@ -93,6 +104,35 @@ namespace Sparrow.Video.Shortcuts.Enginies
 
             // TODO: не робит
             //var saved = await _storeService.GetObjectAsync<ProjectFile>(projectFile.File.Name);
+        }
+
+        public async Task<IFile> StartRenderAsync(
+            IProject project, CancellationToken cancellationToken = default)
+        {
+            _logger.LogInformation("Starting render project");
+            _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
+            var scriptBuilder = new ScriptBuilder();
+            foreach (var file in project.Files)
+                foreach (var rule in file.RulesCollection)
+                    if (rule is VideoFormatFileRule formatRule)
+                        await StartRuleProcessAsync(file, formatRule);
+            return new File();
+        }
+
+        private async Task StartRuleProcessAsync<TRule>(IProjectFile file, TRule rule)
+            where TRule : IFileRule
+        {
+            _logger.LogInformation($"Looking up processor for Rule - {rule.GetType().Name}");
+            var processor = _services.GetService<IRuleProcessor<TRule>>();
+            if (processor is not null)
+            {
+                _logger.LogInformation($"Starting {processor.GetType().Name} process");
+                await processor.ProcessAsync(file, rule);
+            }
+            else
+            {
+                _logger.LogWarning($"Processor not found");
+            }
         }
     }
 }
