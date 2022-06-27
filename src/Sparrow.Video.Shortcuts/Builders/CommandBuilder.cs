@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Sparrow.Video.Shortcuts.Builders
 {
-    public class CommandBuilder : ICommandBuilder
+    public class CommandBuilder : IScriptBuilder
     {
         public CommandBuilder()
         {
@@ -16,19 +16,19 @@ namespace Sparrow.Video.Shortcuts.Builders
         private readonly IList<string> _firstArgumentsList;
         private readonly IList<string> _lastArgumentsList;
 
-        public ICommandBuilder Insert(string argument)
+        public IScriptBuilder Insert(string argument)
         {
             _firstArgumentsList.Add(argument);
             return this;
         }
 
-        public ICommandBuilder InsertLast(string argument)
+        public IScriptBuilder InsertLast(string argument)
         {
             _lastArgumentsList.Add(argument);
             return this;
         }
 
-        public string Build()
+        public string BuildCommand()
         {
             var joined = _firstArgumentsList.Concat(_lastArgumentsList);
             _stringBuilder.AppendJoin(' ', joined);

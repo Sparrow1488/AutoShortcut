@@ -40,8 +40,8 @@ var engine = services.GetRequiredService<IShortcutEngine>();
 var pipeline = await engine.CreatePipelineAsync(filesDirectory);
 var project = pipeline.Configure(options =>
 {
-    options.Rules.Add(new LoopFileRule(2,
-                        file => file.Analyse.StreamAnalyses.Video().Duration < 13));
+    options.Rules.Add(LoopFileRule.Default);
+    options.Rules.Add(SilentAudioRule.Default); // БОЛЬШОЙ ПОТЕНЦИАЛ
     var groupName = "overwatch";
     options.Rules.Add(new GroupFileRule(groupName,
                         file => file.File.Name.Contains(groupName)));

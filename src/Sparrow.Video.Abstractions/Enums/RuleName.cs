@@ -11,5 +11,11 @@
 
         public static readonly RuleName Loop = new RuleName(nameof(Loop));
         public static readonly RuleName Group = new RuleName(nameof(Group));
+
+        public static RuleName New(string name)
+        {
+            // TODO: проверка входа
+            return new RuleName(name);
+        }
     }
 }

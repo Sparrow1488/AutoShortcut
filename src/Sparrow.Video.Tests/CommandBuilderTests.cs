@@ -12,7 +12,7 @@ namespace Sparrow.Video.Tests
                                        .Insert("-i {projectPath}")
                                        .Insert("-some command")
                                        .InsertLast("-save-to {savePath}")
-                                       .Build();
+                                       .BuildCommand();
             StringAssert.AreEqualIgnoringCase(expired, buildResult);
         }
     }
