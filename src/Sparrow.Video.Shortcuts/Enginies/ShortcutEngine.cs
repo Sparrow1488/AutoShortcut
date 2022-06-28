@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Sparrow.Video.Abstractions.Builders;
 using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Pipelines;
@@ -31,6 +30,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             ISaveService saveService,
             IStoreService storeService,
             IServiceProvider services,
+            IRuleProcessorsProvider ruleProcessorsProvider,
             IPathsProvider pathsProvider)
         {
             _logger = logger;
@@ -39,6 +39,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             _formatorProcess = formatorProcess;
             _saveService = saveService;
             _services = services;
+            _ruleProcessorsProvider = ruleProcessorsProvider;
             _pathsProvider = pathsProvider;
             _storeService = storeService;
         }
@@ -49,6 +50,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
         private readonly IFormatorProcess _formatorProcess;
         private readonly ISaveService _saveService;
         private readonly IServiceProvider _services;
+        private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
         private readonly IPathsProvider _pathsProvider;
         private readonly IStoreService _storeService;
 
@@ -121,10 +123,8 @@ namespace Sparrow.Video.Shortcuts.Enginies
             foreach (var file in project.Files)
                 foreach (var rule in file.RulesCollection)
                 {
-                    if (rule is VideoFormatFileRule formatRule)
-                        await StartRuleProcessAsync(file, formatRule);
-                    if (rule is SilentAudioRule silentRule)
-                        await StartRuleProcessAsync(file, silentRule);
+                    var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(rule.GetType());
+                    await processor.ProcessAsync(file, rule);
                 }
             return new File();
         }
@@ -133,7 +133,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             where TRule : IFileRule
         {
             _logger.LogInformation($"Looking up processor for Rule - {rule.GetType().Name}");
-            var processor = _services.GetService<IRuleProcessor<TRule>>();
+            var processor = (IRuleProcessor<TRule>)_services.GetService(typeof(IRuleProcessor<TRule>));
             if (processor is not null)
             {
                 _logger.LogInformation($"Starting {processor.GetType().Name} process");

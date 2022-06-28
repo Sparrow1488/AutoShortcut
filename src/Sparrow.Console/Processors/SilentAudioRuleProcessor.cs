@@ -5,11 +5,12 @@ using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives;
+using Sparrow.Video.Shortcuts.Processors;
 using Sparrow.Video.Shortcuts.Rules;
 
-namespace Sparrow.Video.Shortcuts.Processors
+namespace Sparrow.Console.Processors
 {
-    public class SilentAudioRuleProcessor : IRuleProcessor<SilentAudioRule>
+    public class SilentAudioRuleProcessor : RuleProcessorBase<SilentAudioRule>
     {
         public SilentAudioRuleProcessor(
             IUploadFilesService uploadFilesService,
@@ -22,7 +23,7 @@ namespace Sparrow.Video.Shortcuts.Processors
         private readonly IUploadFilesService _uploadFilesService;
         private readonly IMakeSilentProcess _makeSilentProcess;
 
-        public async Task ProcessAsync(IProjectFile file, SilentAudioRule rule)
+        public override async Task ProcessAsync(IProjectFile file, SilentAudioRule rule)
         {
             var makeSilentFilePath = file.References.GetActual().FileFullPath;
             var processFile = _uploadFilesService.GetFile(makeSilentFilePath);
