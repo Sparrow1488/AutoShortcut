@@ -37,6 +37,7 @@ namespace Sparrow.Video.Shortcuts.Factories
                     services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
                     services.AddSingleton<IPathsProvider, PathsProvider>();
                     services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();
+                    services.AddSingleton<IScriptFormatsProvider, ScriptFormatsProvider>();
 
                     services.AddSingleton<IUploadFilesService, UploadFilesService>();
                     services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
@@ -48,6 +49,7 @@ namespace Sparrow.Video.Shortcuts.Factories
                     services.AddSingleton<IEncodingProcess, EncodingProcess>();
                     services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
                     services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
+                    services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
 
                     services.AddScoped<IPipelineOptions, PipelineOptions>();
                     services.AddScoped<IShortcutEngine, ShortcutEngine>();

@@ -8,13 +8,11 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Projects;
-using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Builders;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Primitives;
-using Sparrow.Video.Shortcuts.Rules;
+using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Services.Options;
 using File = Sparrow.Video.Shortcuts.Primitives.File;
 
@@ -26,7 +24,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             ILogger<ShortcutEngine> logger,
             IUploadFilesService uploadFilesService,
             IAnalyseProcess analyseProcess,
-            IFormatorProcess formatorProcess,
+            IConcatinateProcess concatinateProcess,
             ISaveService saveService,
             IStoreService storeService,
             IServiceProvider services,
@@ -36,7 +34,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
             _logger = logger;
             _uploadFilesService = uploadFilesService;
             _analyseProcess = analyseProcess;
-            _formatorProcess = formatorProcess;
+            _concatinateProcess = concatinateProcess;
             _saveService = saveService;
             _services = services;
             _ruleProcessorsProvider = ruleProcessorsProvider;
@@ -47,7 +45,7 @@ namespace Sparrow.Video.Shortcuts.Enginies
         private readonly ILogger<ShortcutEngine> _logger;
         private readonly IUploadFilesService _uploadFilesService;
         private readonly IAnalyseProcess _analyseProcess;
-        private readonly IFormatorProcess _formatorProcess;
+        private readonly IConcatinateProcess _concatinateProcess;
         private readonly ISaveService _saveService;
         private readonly IServiceProvider _services;
         private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
@@ -125,21 +123,26 @@ namespace Sparrow.Video.Shortcuts.Enginies
                     var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(rule.GetType());
                     await processor.ProcessAsync(file, rule);
                 }
-            var script = CreateShortcutScript(project.Files);
-            return new File();
+            var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
+            var resultSaveSettings = new SaveSettings()
+            {
+                SaveFullPath = Path.Combine(_pathsProvider.GetPathFromCurrent("ResultFiles"), "Compilation.mp4")
+            };
+            var result = await _concatinateProcess.ConcatinateFilesAsync(concatinateFilesPaths, resultSaveSettings);
+            return result;
         }
 
-        private IScript CreateShortcutScript(IEnumerable<IProjectFile> files)
+        private IEnumerable<string> GetConcatinateFilesPaths(IEnumerable<IProjectFile> files)
         {
-            var builder = new ScriptBuilder();
+            var renderPathsList = new List<string>();
             foreach (var file in files)
             {
                 var renderPaths = file.References.Where(x => x.Type == ReferenceType.RenderReady)
                                                     .Select(x => x.FileFullPath)
                                                         .ToList();
-                renderPaths.ForEach(x => builder.Insert($"-i \"{x}\""));
+                renderPathsList.AddRange(renderPaths);
             }
-            return builder.BuildScript();
+            return renderPathsList;
         }
     }
 }

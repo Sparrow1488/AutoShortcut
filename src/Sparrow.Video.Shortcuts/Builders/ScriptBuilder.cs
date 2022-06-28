@@ -1,4 +1,5 @@
 ﻿using Sparrow.Video.Abstractions.Builders;
+using Sparrow.Video.Abstractions.Builders.Formats;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Shortcuts.Primitives;
 using System.Text;
@@ -15,8 +16,8 @@ namespace Sparrow.Video.Shortcuts.Builders
         }
 
         private readonly StringBuilder _stringBuilder;
-        private readonly IList<string> _firstArgumentsList;
-        private readonly IList<string> _lastArgumentsList;
+        private readonly List<string> _firstArgumentsList;
+        private readonly List<string> _lastArgumentsList;
 
         public IScriptBuilder Insert(string argument)
         {
@@ -44,6 +45,14 @@ namespace Sparrow.Video.Shortcuts.Builders
                 Command = BuildCommand()
             };
             return script;
+        }
+
+        public IScript BuildScript(IScriptBuilderFormat format)
+        {
+            var formattedInputCommands = format.UseFormat(_firstArgumentsList);
+            _firstArgumentsList.Clear();
+            _firstArgumentsList.AddRange(formattedInputCommands);
+            return BuildScript();
         }
     }
 }
