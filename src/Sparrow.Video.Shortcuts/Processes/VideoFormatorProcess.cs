@@ -23,6 +23,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         private IFileAnalyse _fileAnalyse;
         private IFile _toProcessFile;
         private IVideoFormatSettings _formatSettings;
+        private ISaveSettings _saveSettings;
         private readonly IUploadFilesService _uploadFilesService;
         private readonly IResourcesService _resourcesService;
 
@@ -30,19 +31,21 @@ namespace Sparrow.Video.Shortcuts.Processes
         {
             var settings = base.OnConfigureSettings();
             settings.Argument = CreateProcessArgument();
-            var directoryPath = Path.GetDirectoryName(_formatSettings.SaveSettings.SaveFullPath);
+            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
             Directory.CreateDirectory(directoryPath);
             return settings;
         }
 
         public async Task<IFile> CreateInFormatAsync(
-            IFile toFormat, IFileAnalyse analyse, IVideoFormatSettings settings)
+            IFile toFormat, IFileAnalyse analyse, 
+                IVideoFormatSettings settings, ISaveSettings saveSettings)
         {
             _fileAnalyse = analyse;
             _toProcessFile = toFormat;
             _formatSettings = settings;
+            _saveSettings = saveSettings;
             await StartAsync();
-            return _uploadFilesService.GetFile(settings.SaveSettings.SaveFullPath);
+            return _uploadFilesService.GetFile(_saveSettings.SaveFullPath);
         }
 
         private string CreateProcessArgument()
@@ -58,7 +61,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             var command = builder.Insert($"-y -i \"{resolutionBackgroundResource.Path}\"")
                                  .Insert($"-i \"{_toProcessFile.Path}\"")
                                  .Insert($"-filter_complex \"[1:v]scale={videoScaleArgument}[v2];[0:v][v2]overlay=(main_w - overlay_w)/2:(main_h - overlay_h)/2\"")
-                                 .InsertLast($"\"{_formatSettings.SaveSettings.SaveFullPath}\"")
+                                 .InsertLast($"\"{_saveSettings.SaveFullPath}\"")
                                  .BuildCommand();
             return command;
         }

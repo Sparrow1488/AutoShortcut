@@ -4,7 +4,6 @@ using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
-using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
@@ -20,6 +19,7 @@ namespace Sparrow.Video.Shortcuts.Processes
 
         private StringPath _filePath;
         private IEncodingSettings? _settings;
+        private ISaveSettings _saveSettings;
         private readonly IUploadFilesService _uploadFilesService;
 
         protected override StringPath OnGetProcessPath()
@@ -31,16 +31,18 @@ namespace Sparrow.Video.Shortcuts.Processes
         protected override ProcessSettings OnConfigureSettings()
         {
             var settings = base.OnConfigureSettings();
-            settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} " + _settings.SaveSettings.SaveFullPath;
+            settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} " + _saveSettings.SaveFullPath;
             return settings;
         }
 
-        public async Task<IFile> StartEncodingAsync(IFile encodable, IEncodingSettings settings)
+        public async Task<IFile> StartEncodingAsync(
+            IFile encodable, IEncodingSettings settings, ISaveSettings saveSettings)
         {
             _settings = settings;
+            _saveSettings = saveSettings;
             _filePath = StringPath.CreateExists(encodable.Path);
             await StartAsync();
-            return _uploadFilesService.GetFile(_settings.SaveSettings.SaveFullPath);
+            return _uploadFilesService.GetFile(saveSettings.SaveFullPath);
         }
     }
 }

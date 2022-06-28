@@ -6,9 +6,5 @@
         ///     One of <see cref="Enums.EncodingType"/>
         /// </summary>
         string EncodingType { get; }
-        /// <summary>
-        ///     Where need to save encoded file
-        /// </summary>
-        ISaveSettings SaveSettings { get; }
     }
 }

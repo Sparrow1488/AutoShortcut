@@ -6,6 +6,7 @@ namespace Sparrow.Video.Abstractions.Processes
     public interface IFormatorProcess
     {
         Task<IFile> CreateInFormatAsync(
-            IFile toFormat, IFileAnalyse analyse, IVideoFormatSettings settings);
+            IFile toFormat, IFileAnalyse analyse, 
+                IVideoFormatSettings settings, ISaveSettings saveSettings);
     }
 }

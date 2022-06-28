@@ -1,7 +1,4 @@
-﻿using Sparrow.Console.Processors;
-using Sparrow.Console.Rules;
-using Sparrow.Video.Abstractions.Processors;
-using Sparrow.Video.Abstractions.Rules;
+﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Factories;
 
@@ -27,6 +24,8 @@ namespace Sparrow.Console
             var project = pipeline.Configure(options =>
             {
                 options.IsSerialize = false;
+                options.Rules.Add(ApplicationFileRules.FormatFileRule);
+                options.Rules.Add(ApplicationFileRules.SilentFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopFileRule);
             }).CreateProject();
 

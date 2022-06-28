@@ -119,30 +119,27 @@ namespace Sparrow.Video.Shortcuts.Enginies
         {
             _logger.LogInformation("Starting render project");
             _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
-            var scriptBuilder = new ScriptBuilder();
             foreach (var file in project.Files)
                 foreach (var rule in file.RulesCollection)
                 {
                     var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(rule.GetType());
                     await processor.ProcessAsync(file, rule);
                 }
+            var script = CreateShortcutScript(project.Files);
             return new File();
         }
 
-        private async Task StartRuleProcessAsync<TRule>(IProjectFile file, TRule rule)
-            where TRule : IFileRule
+        private IScript CreateShortcutScript(IEnumerable<IProjectFile> files)
         {
-            _logger.LogInformation($"Looking up processor for Rule - {rule.GetType().Name}");
-            var processor = (IRuleProcessor<TRule>)_services.GetService(typeof(IRuleProcessor<TRule>));
-            if (processor is not null)
+            var builder = new ScriptBuilder();
+            foreach (var file in files)
             {
-                _logger.LogInformation($"Starting {processor.GetType().Name} process");
-                await processor.ProcessAsync(file, rule);
+                var renderPaths = file.References.Where(x => x.Type == ReferenceType.RenderReady)
+                                                    .Select(x => x.FileFullPath)
+                                                        .ToList();
+                renderPaths.ForEach(x => builder.Insert($"-i \"{x}\""));
             }
-            else
-            {
-                _logger.LogWarning($"Processor not found");
-            }
+            return builder.BuildScript();
         }
     }
 }

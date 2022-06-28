@@ -12,6 +12,7 @@ namespace Sparrow.Video.Abstractions.Processes
         /// <param name="encodable">Convertable file</param>
         /// <param name="settings">Configure process</param>
         /// <returns>Reencoded file</returns>
-        Task<IFile> StartEncodingAsync(IFile encodable, IEncodingSettings settings);
+        Task<IFile> StartEncodingAsync(
+            IFile encodable, IEncodingSettings settings, ISaveSettings saveSettings);
     }
 }

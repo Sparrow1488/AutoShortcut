@@ -8,5 +8,10 @@ namespace Sparrow.Video.Shortcuts.Extensions
         {
             return (IVideoStreamAnalyse)streamAnalyses.First(x => x.CodecType.ToLower() == "video");
         }
+
+        public static bool WithAudio(this IEnumerable<IStreamAnalyse> streamAnalyses)
+        {
+            return streamAnalyses.Any(x => x.CodecType.ToLower() == "audio");
+        }
     }
 }
