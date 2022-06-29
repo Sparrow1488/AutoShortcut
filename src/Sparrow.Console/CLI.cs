@@ -12,7 +12,7 @@ namespace Sparrow.Console
     {
         public CLI()
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55\TEST-DELETE";
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55"; // from app settings
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 

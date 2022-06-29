@@ -5,5 +5,6 @@ namespace Sparrow.Video.Abstractions.Processes.Settings
     public interface IVideoFormatSettings : IFormatSettings
     {
         Resolution DisplayResolution { get; }
+        FrameFrequency FrameFrequency { get; }
     }
 }

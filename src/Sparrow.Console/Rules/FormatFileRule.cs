@@ -8,18 +8,23 @@ namespace Sparrow.Console.Rules
 {
     public class FormatFileRule : FileRuleBase
     {
-        public FormatFileRule(Resolution resolution, Func<IProjectFile, bool> condition) : base(condition)
+        public FormatFileRule(
+            Resolution resolution,
+            FrameFrequency fps,
+            Func<IProjectFile, bool> condition) : base(condition)
         {
             Resolution = resolution;
-            FormatSettings = new VideoFormatSettings()
-            {
-                FileFormat = ".mp4",
-                DisplayResolution = Resolution
-            };
+            Fps = fps;
         }
 
         public Resolution Resolution { get; }
-        public IVideoFormatSettings FormatSettings { get; } 
+        public FrameFrequency Fps { get; }
+        public IVideoFormatSettings FormatSettings => new VideoFormatSettings()
+        {
+            FileFormat = ".mp4",
+            DisplayResolution = Resolution,
+            FrameFrequency = Fps
+        };
         public override RuleName RuleName => RuleName.New("Format");
     }
 }

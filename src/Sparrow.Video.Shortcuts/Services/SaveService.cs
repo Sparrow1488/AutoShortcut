@@ -23,10 +23,7 @@ namespace Sparrow.Video.Shortcuts.Services
         };
         private readonly IPathsProvider _pathsProvider;
 
-        // TODO: save options (Имя и id) - это мета,
-        // по которой можно найти файл, который может храниться отдельно.
-        // Нужно сделать возможность настройки пути, где хранится мета
-        public async Task SaveAsync<TObject>(
+        public async Task SaveJsonAsync<TObject>(
             TObject @object, 
             ISaveOptions saveOptions, 
             CancellationToken cancellationToken = default)

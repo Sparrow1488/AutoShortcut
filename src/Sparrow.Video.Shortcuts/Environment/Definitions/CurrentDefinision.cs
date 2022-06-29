@@ -27,6 +27,8 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IResourcesService, ResourcesService>();
             services.AddSingleton<ISaveService, SaveService>();
             services.AddSingleton<IStoreService, StoreService>();
+            services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
+            services.AddSingleton<ITextFormatter, TextFormatter>();
 
             services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
             services.AddSingleton<IEncodingProcess, EncodingProcess>();

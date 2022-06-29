@@ -5,7 +5,7 @@ namespace Sparrow.Video.Abstractions.Services
 {
     public interface ISaveService
     {
-        Task SaveAsync<TObject>(
+        Task SaveJsonAsync<TObject>(
             TObject @object, ISaveOptions saveOptions, CancellationToken cancellationToken = default);
         Task SaveTextAsync(
             string text, ISaveSettings saveSettings, CancellationToken cancellationToken = default);

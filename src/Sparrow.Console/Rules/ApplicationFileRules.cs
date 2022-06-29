@@ -17,7 +17,7 @@ namespace Sparrow.Console.Rules
             LoopCount = 3
         };
         public static readonly FormatFileRule FormatFileRule = new(
-            Resolution.HighFHD, file => true);
+            Resolution.FHD, FrameFrequency.Fps60, file => true);
         public static readonly SilentFileRule SilentFileRule = new(
             file => !file.Analyse.StreamAnalyses.WithAudio());
         public static readonly EncodingFileRule EncodingFileRule = new(file => true)

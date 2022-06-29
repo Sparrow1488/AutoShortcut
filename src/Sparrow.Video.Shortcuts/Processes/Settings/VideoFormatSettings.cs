@@ -9,7 +9,10 @@ namespace Sparrow.Video.Shortcuts.Processes.Settings
         public static readonly Resolution DefaultResolution = Resolution.Small;
 
         public Resolution DisplayResolution { get; set; } = DefaultResolution;
-        public ISaveSettings SaveSettings { get; set; } = new SaveSettings();
+        /// <summary>
+        ///     This is file extensions (.mp4, .avi and other)
+        /// </summary>
         public string FileFormat { get; set; } = DefaultFileFormat;
+        public FrameFrequency FrameFrequency { get; set; } = FrameFrequency.Fps25;
     }
 }

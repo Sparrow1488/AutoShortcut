@@ -31,6 +31,6 @@
         /// <summary>
         ///     Display resoulution in 2K (2048p)
         /// </summary>
-        public static readonly Resolution HighFHD = new Resolution("2048p", 1080, 2048);
+        public static readonly Resolution QFHD = new Resolution("2048p", 1080, 2048);
     }
 }

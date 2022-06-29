@@ -61,7 +61,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             var command = builder.Insert($"-y -i \"{resolutionBackgroundResource.Path}\"")
                                  .Insert($"-i \"{_toProcessFile.Path}\"")
                                  .Insert($"-filter_complex \"[1:v]scale={videoScaleArgument}[v2];[0:v][v2]overlay=(main_w - overlay_w)/2:(main_h - overlay_h)/2\"")
-                                 .InsertLast($"-r 60")
+                                 .InsertLast($"-r {_formatSettings.FrameFrequency.Value}")
                                  .InsertLast($"\"{_saveSettings.SaveFullPath}\"")
                                  .BuildCommand();
             return command;
