@@ -8,7 +8,7 @@ using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
 {
-    public class EncodingProcess : ExecutionProcessBase, IEncodingProcess
+    public class EncodingProcess : FFmpegProcess, IEncodingProcess
     {
         public EncodingProcess(
             IUploadFilesService uploadFilesService,
@@ -22,16 +22,12 @@ namespace Sparrow.Video.Shortcuts.Processes
         private ISaveSettings _saveSettings;
         private readonly IUploadFilesService _uploadFilesService;
 
-        protected override StringPath OnGetProcessPath()
-        {
-            var ffmpeg = Configuration.GetRequiredSection("Processes:Video:ffmpeg").Get<string>();
-            return StringPath.CreateExists(ffmpeg);
-        }
-
         protected override ProcessSettings OnConfigureSettings()
         {
             var settings = base.OnConfigureSettings();
-            settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} " + _saveSettings.SaveFullPath;
+            settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
+            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
+            Directory.CreateDirectory(directoryPath);
             return settings;
         }
 

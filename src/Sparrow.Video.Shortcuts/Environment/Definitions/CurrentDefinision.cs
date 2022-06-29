@@ -8,6 +8,7 @@ using Sparrow.Video.Shortcuts.Enginies;
 using Sparrow.Video.Shortcuts.Factories;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
+using Sparrow.Video.Shortcuts.Render;
 using Sparrow.Video.Shortcuts.Services;
 
 namespace Sparrow.Video.Shortcuts.Environment.Definitions
@@ -37,6 +38,8 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
 
             services.AddScoped<IPipelineOptions, PipelineOptions>();
             services.AddScoped<IShortcutEngine, ShortcutEngine>();
+
+            services.AddScoped<IRenderUtility, RenderUtility>();
 
             return services;
         }

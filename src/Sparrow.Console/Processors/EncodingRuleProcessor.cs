@@ -32,7 +32,7 @@ namespace Sparrow.Console.Processors
             var encodeFile = _uploadFilesService.GetFile(encodeActualFilePath); // TODO: вынести в абстрактный метод
 
             var processedFileDirPath = _pathsProvider.GetPathFromCurrent("EncodedFiles");
-            var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + file.File.Extension); // TODO: но я сохраняю для .ts
+            var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
             var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };
             var encodingSettings = new EncodingSettings() { EncodingType = rule.EncodingType };
             var encodedFile = await _encodingProcess.StartEncodingAsync(

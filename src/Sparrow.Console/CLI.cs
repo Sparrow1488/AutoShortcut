@@ -5,7 +5,6 @@ using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Factories;
 
 namespace Sparrow.Console
 {
@@ -34,7 +33,9 @@ namespace Sparrow.Console
                 options.IsSerialize = false;
                 options.Rules.Add(ApplicationFileRules.FormatFileRule);
                 options.Rules.Add(ApplicationFileRules.SilentFileRule);
-                options.Rules.Add(ApplicationFileRules.LoopFileRule);
+                options.Rules.Add(ApplicationFileRules.EncodingFileRule);
+                options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
+                options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
             }).CreateProject();
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);

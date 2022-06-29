@@ -39,7 +39,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             var builder = new ScriptBuilder();
             builder.Insert("-y -f concat -safe 0");
             _concatinateFilesPaths.ToList().ForEach(x => builder.Insert($"-i \"{x}\""));
-            builder.InsertLast($"-c:a copy -c:v copy -preset fast -vsync cfr -r 45 \"{_saveSettings.SaveFullPath}\"");
+            builder.InsertLast($"-c:a copy -c:v copy -preset fast -vsync cfr -r 60 \"{_saveSettings.SaveFullPath}\"");
             var concatSourcesFormat = _scriptFormatsProvider.CreateFormat<FileConcatSourcesFormat>();
             return builder.BuildScript(concatSourcesFormat).GetCommand();
         }
