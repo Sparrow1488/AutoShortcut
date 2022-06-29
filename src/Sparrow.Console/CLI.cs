@@ -1,5 +1,9 @@
-﻿using Sparrow.Console.Rules;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Sparrow.Console.Rules;
+using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Factories;
 
 namespace Sparrow.Console
@@ -8,15 +12,18 @@ namespace Sparrow.Console
     {
         public CLI()
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55";
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55\TEST-DELETE";
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 
         private StringPath FilesDirectoryPath { get; }
 
+        public IServiceProvider ServiceProvider { get; set; }
+
         public async Task OnStart(CancellationToken cancellationToken = default)
         {
-            var factory = new ShortcutEngineFactory();
+            OnConfigureHost();
+            var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
             var engine = factory.CreateEngine();
             var pipeline = await engine.CreatePipelineAsync(
                             FilesDirectoryPath.Value, cancellationToken);
@@ -30,6 +37,15 @@ namespace Sparrow.Console
             }).CreateProject();
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
+        }
+
+        private void OnConfigureHost()
+        {
+            ServiceProvider = Host.CreateDefaultBuilder().ConfigureServices(services =>
+            {
+                services.AddShortcutDefinision();
+            })
+            .Build().Services;
         }
     }
 }
