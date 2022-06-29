@@ -3,7 +3,6 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
 {
@@ -11,30 +10,22 @@ namespace Sparrow.Video.Shortcuts.Processes
     {
         public MakeSilentProcess(
             IUploadFilesService uploadFilesService,
-            IConfiguration configuration) : base(configuration)
+            IConfiguration configuration) : base(uploadFilesService, configuration)
         {
-            _uploadFilesService = uploadFilesService;
         }
 
-        private ISaveSettings? _saveSettings;
-        private IFile? _toProcessFile;
-        private readonly IUploadFilesService _uploadFilesService;
+        private IFile _toProcessFile;
+        private ISaveSettings _saveSettings;
 
-        protected override ProcessSettings OnConfigureSettings()
-        {
-            var settings = base.OnConfigureSettings();
-            settings.Argument = $"-y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{_toProcessFile.Path}\" -c:v copy -c:a aac -shortest \"{_saveSettings.SaveFullPath}\"";
-            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
-            Directory.CreateDirectory(directoryPath);
-            return settings;
-        }
+        protected override string OnConfigureFFmpegCommand() =>
+            $"-y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{_toProcessFile.Path}\" -c:v copy -c:a aac -shortest \"{_saveSettings.SaveFullPath}\"";
+        protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
 
         public async Task<IFile> MakeSilentAsync(IFile file, ISaveSettings saveSettings)
         {
             _saveSettings = saveSettings;
             _toProcessFile = file;
-            await StartAsync();
-            return _uploadFilesService.GetFile(_saveSettings.SaveFullPath);
+            return await StartFFmpegAsync();
         }
     }
 }

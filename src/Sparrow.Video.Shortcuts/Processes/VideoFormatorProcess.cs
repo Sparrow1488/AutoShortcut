@@ -5,36 +5,24 @@ using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Builders;
 using Sparrow.Video.Shortcuts.Exceptions;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
 {
     public class VideoFormatorProcess : FFmpegProcess, IFormatorProcess
     {
         public VideoFormatorProcess(
-            IUploadFilesService uploadFilesService,
             IResourcesService resourcesService,
-            IConfiguration configuration) : base(configuration)
+            IUploadFilesService uploadFilesService, 
+            IConfiguration configuration) : base(uploadFilesService, configuration)
         {
-            _uploadFilesService = uploadFilesService;
             _resourcesService = resourcesService;
         }
 
-        private IFileAnalyse _fileAnalyse;
         private IFile _toProcessFile;
-        private IVideoFormatSettings _formatSettings;
+        private IFileAnalyse _fileAnalyse;
         private ISaveSettings _saveSettings;
-        private readonly IUploadFilesService _uploadFilesService;
+        private IVideoFormatSettings _formatSettings;
         private readonly IResourcesService _resourcesService;
-
-        protected override ProcessSettings OnConfigureSettings()
-        {
-            var settings = base.OnConfigureSettings();
-            settings.Argument = CreateProcessArgument();
-            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
-            Directory.CreateDirectory(directoryPath);
-            return settings;
-        }
 
         public async Task<IFile> CreateInFormatAsync(
             IFile toFormat, IFileAnalyse analyse, 
@@ -44,18 +32,18 @@ namespace Sparrow.Video.Shortcuts.Processes
             _toProcessFile = toFormat;
             _formatSettings = settings;
             _saveSettings = saveSettings;
-            await StartAsync();
-            return _uploadFilesService.GetFile(_saveSettings.SaveFullPath);
+            return await StartFFmpegAsync();
         }
 
-        private string CreateProcessArgument()
+        protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
+        protected override string OnConfigureFFmpegCommand()
         {
             var builder = new ScriptBuilder();
             var videoStream = _fileAnalyse.StreamAnalyses.FirstOrDefault(x => x.CodecType.ToLower() == "video")
                                 as IVideoStreamAnalyse;
             ThrowIfNoVideoStream(videoStream);
             var videoScaleArgument = SelectResolutionCommandArgument(videoStream);
-            var resolutionBackgroundResource = 
+            var resolutionBackgroundResource =
                 _resourcesService.GetRequiredResource(
                     $"Resources:backgrounds:black:files:{_formatSettings.DisplayResolution.Value}");
             var command = builder.Insert($"-y -i \"{resolutionBackgroundResource.Path}\"")

@@ -4,32 +4,24 @@ using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
 {
     public class EncodingProcess : FFmpegProcess, IEncodingProcess
     {
         public EncodingProcess(
-            IUploadFilesService uploadFilesService,
-            IConfiguration configuration) : base(configuration)
+            IUploadFilesService uploadFilesService, 
+            IConfiguration configuration) : base(uploadFilesService, configuration)
         {
-            _uploadFilesService = uploadFilesService;
         }
 
         private StringPath _filePath;
-        private IEncodingSettings? _settings;
+        private IEncodingSettings _settings;
         private ISaveSettings _saveSettings;
-        private readonly IUploadFilesService _uploadFilesService;
 
-        protected override ProcessSettings OnConfigureSettings()
-        {
-            var settings = base.OnConfigureSettings();
-            settings.Argument = $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
-            var directoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
-            Directory.CreateDirectory(directoryPath);
-            return settings;
-        }
+        protected override string OnConfigureFFmpegCommand() =>
+            $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
+        protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
 
         public async Task<IFile> StartEncodingAsync(
             IFile encodable, IEncodingSettings settings, ISaveSettings saveSettings)
@@ -37,8 +29,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             _settings = settings;
             _saveSettings = saveSettings;
             _filePath = StringPath.CreateExists(encodable.Path);
-            await StartAsync();
-            return _uploadFilesService.GetFile(saveSettings.SaveFullPath);
+            return await StartFFmpegAsync();
         }
     }
 }

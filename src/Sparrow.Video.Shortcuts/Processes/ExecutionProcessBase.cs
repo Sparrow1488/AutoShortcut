@@ -18,7 +18,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         protected ITextProcessResult TextProcessResult { get; private set; }
         public IConfiguration Configuration { get; }
 
-        public async Task StartAsync()
+        public virtual async Task StartAsync()
         {
             string result = "";
             var settings = OnConfigureSettings();

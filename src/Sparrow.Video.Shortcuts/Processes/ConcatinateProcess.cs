@@ -5,36 +5,24 @@ using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Builders;
 using Sparrow.Video.Shortcuts.Builders.Formats;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes
 {
     public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
     {
         public ConcatinateProcess(
-            IScriptFormatsProvider scriptFormatsProvider,
-            IUploadFilesService uploadFilesService,
-            IConfiguration configuration) : base(configuration)
+            IScriptFormatsProvider scriptFormatsProvider, 
+            IUploadFilesService uploadFilesService, 
+            IConfiguration configuration) : base(uploadFilesService, configuration)
         {
             _scriptFormatsProvider = scriptFormatsProvider;
-            _uploadFilesService = uploadFilesService;
         }
 
         private ISaveSettings _saveSettings;
         private readonly IScriptFormatsProvider _scriptFormatsProvider;
-        private readonly IUploadFilesService _uploadFilesService;
         private IEnumerable<string> _concatinateFilesPaths;
 
-        protected override ProcessSettings OnConfigureSettings()
-        {
-            var settings = base.OnConfigureSettings();
-            settings.Argument = CreateConcationationCommand();
-            var saveFileDirectory = Path.GetDirectoryName(_saveSettings.SaveFullPath);
-            Directory.CreateDirectory(saveFileDirectory);
-            return settings;
-        }
-
-        private string CreateConcationationCommand()
+        protected override string OnConfigureFFmpegCommand()
         {
             var builder = new ScriptBuilder();
             builder.Insert("-y -f concat -safe 0");
@@ -44,14 +32,14 @@ namespace Sparrow.Video.Shortcuts.Processes
             return builder.BuildScript(concatSourcesFormat).GetCommand();
         }
 
+        protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
+
         public async Task<IFile> ConcatinateFilesAsync(
             IEnumerable<string> filesPaths, ISaveSettings saveSettings)
         {
             _saveSettings = saveSettings;
             _concatinateFilesPaths = filesPaths;
-            await StartAsync();
-            var resultFile = _uploadFilesService.GetFile(_saveSettings.SaveFullPath);
-            return resultFile;
+            return await StartFFmpegAsync();
         }
     }
 }
