@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
@@ -41,11 +42,15 @@ namespace Sparrow.Console
 
         private void OnConfigureHost()
         {
-            ServiceProvider = Host.CreateDefaultBuilder().ConfigureServices(services =>
-            {
-                services.AddShortcutDefinision();
-            })
-            .Build().Services;
+            ServiceProvider = Host.CreateDefaultBuilder()
+                .UseSerilog((context, services, configuration) => configuration
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console())
+                .ConfigureServices(services =>
+                {
+                    services.AddShortcutDefinision();
+                })
+                .Build().Services;
         }
     }
 }
