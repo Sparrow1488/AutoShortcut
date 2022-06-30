@@ -1,6 +1,7 @@
 ﻿using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Projects.Options;
 
 namespace Sparrow.Video.Abstractions.Pipelines
 {
@@ -11,6 +12,7 @@ namespace Sparrow.Video.Abstractions.Pipelines
     public interface IPipeline
     {
         IPipeline Configure(Action<IPipelineOptions> options);
+        IProject CreateProject(Action<IProjectOptions> options);
         IProject CreateProject();
     }
 }

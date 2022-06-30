@@ -2,19 +2,25 @@
 using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Projects.Options;
+using Sparrow.Video.Shortcuts.Primitives.Structures;
 using Sparrow.Video.Shortcuts.Projects;
 
 namespace Sparrow.Video.Shortcuts.Pipelines
 {
     public class ShortcutPipeline : IShortcutPipeline
     {
-        public ShortcutPipeline(IPipelineOptions options)
+        public ShortcutPipeline(
+            IProjectOptions projectOptions,
+            IPipelineOptions options)
         {
+            _projectOptions = projectOptions;
             _options = options;
         }
 
+        private readonly IProjectOptions _projectOptions;
         private readonly IPipelineOptions _options;
-        internal ICollection<IProjectFile> ProjectFiles { get; set; } = new List<IProjectFile>();
+        public ICollection<IProjectFile> ProjectFiles { get; set; } = new List<IProjectFile>();
 
         public IPipeline Configure(Action<IPipelineOptions> options)
         {
@@ -24,9 +30,15 @@ namespace Sparrow.Video.Shortcuts.Pipelines
 
         public IProject CreateProject()
         {
+            return CreateProject(opt => opt.StructureBy(new NameStructure()));
+        }
+
+        public IProject CreateProject(Action<IProjectOptions> options)
+        {
             ApplyRules();
-            return new ShortcutProject()
-            {
+            options.Invoke(_projectOptions);
+            ProjectFiles = _projectOptions.Structure.GetStructuredFiles(ProjectFiles).ToArray();
+            return new ShortcutProject() {
                 Files = ProjectFiles
             };
         }
@@ -37,6 +49,12 @@ namespace Sparrow.Video.Shortcuts.Pipelines
                 foreach (var rule in _options.Rules)
                     if (rule.IsInRule(file))
                         file.RulesCollection.Add(rule);
+        }
+
+        public IShortcutPipeline SetFiles(IEnumerable<IProjectFile> files)
+        {
+            ProjectFiles = files.ToArray();
+            return this;
         }
     }
 }

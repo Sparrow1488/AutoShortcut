@@ -5,6 +5,7 @@ using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
+using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console
 {
@@ -12,7 +13,7 @@ namespace Sparrow.Console
     {
         public CLI()
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55";
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55\STR";
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 
@@ -36,7 +37,7 @@ namespace Sparrow.Console
                 options.Rules.Add(ApplicationFileRules.EncodingFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-            }).CreateProject();
+            }).CreateProject(opt => opt.StructureBy(new DurationStructure().Descending()));
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
         }

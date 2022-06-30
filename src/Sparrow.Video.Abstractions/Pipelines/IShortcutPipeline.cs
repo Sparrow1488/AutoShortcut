@@ -1,4 +1,5 @@
-﻿using Sparrow.Video.Abstractions.Projects;
+﻿using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Projects;
 
 namespace Sparrow.Video.Abstractions.Pipelines
 {
@@ -8,5 +9,7 @@ namespace Sparrow.Video.Abstractions.Pipelines
     /// </summary>
     public interface IShortcutPipeline : IPipeline
     {
+        ICollection<IProjectFile> ProjectFiles { get; }
+        IShortcutPipeline SetFiles(IEnumerable<IProjectFile> files);
     }
 }

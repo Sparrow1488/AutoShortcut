@@ -2,11 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Pipelines;
-using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Render;
 
@@ -59,10 +57,9 @@ namespace Sparrow.Video.Shortcuts.Enginies
         private IShortcutPipeline CreateShortcutPipelineWithFiles(
             IEnumerable<IProjectFile> files)
         {
-            var pipelineOptions = _services.GetRequiredService<IPipelineOptions>();
-            return new ShortcutPipeline(pipelineOptions) { 
-                ProjectFiles = files.ToArray()
-            };
+            var pipeline = _services.GetRequiredService<IShortcutPipeline>();
+            pipeline.SetFiles(files);
+            return pipeline;
         }
 
         public async Task<IFile> StartRenderAsync(

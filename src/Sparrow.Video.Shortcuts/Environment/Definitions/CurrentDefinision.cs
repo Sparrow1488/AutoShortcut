@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Pipelines;
 using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Processes;
+using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enginies;
 using Sparrow.Video.Shortcuts.Factories;
+using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
+using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
 using Sparrow.Video.Shortcuts.Services;
 
@@ -40,7 +44,9 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
 
             services.AddScoped<IPipelineOptions, PipelineOptions>();
+            services.AddScoped<IProjectOptions, ProjectOptions>();
             services.AddScoped<IShortcutEngine, ShortcutEngine>();
+            services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
 
             services.AddScoped<IRenderUtility, RenderUtility>();
 
