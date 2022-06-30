@@ -20,7 +20,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         private ISaveSettings _saveSettings;
 
         protected override string OnConfigureFFmpegCommand() =>
-            $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
+            $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -crf 17 -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
         protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
 
         public async Task<IFile> StartEncodingAsync(

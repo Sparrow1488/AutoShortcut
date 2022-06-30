@@ -61,7 +61,7 @@ public class RenderUtility : IRenderUtility
                 _logger.LogDebug($"File \"{file.File.Name}\" not contains any reference to render file. Use actual");
                 renderPaths.Add(file.References.GetActual().FileFullPath);
             }
-            _logger.LogInformation($"Original file \"{file.File.Name}\" will concatinate {renderPaths.Count}");
+            _logger.LogInformation($"Original file \"{_textFormatter.GetPrintable(file.File.Name)}\" will concatinate {renderPaths.Count}");
             renderPathsList.AddRange(renderPaths);
         }
         return renderPathsList;

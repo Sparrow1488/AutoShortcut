@@ -35,6 +35,7 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
             services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
             services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
+            services.AddSingleton<IScaleProcess, ScaleProcess>();
 
             services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
 

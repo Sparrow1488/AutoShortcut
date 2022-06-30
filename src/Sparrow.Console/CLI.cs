@@ -12,7 +12,7 @@ namespace Sparrow.Console
     {
         public CLI()
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\41-49\(49)56\TEST\2"; // from app settings
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55";
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 
@@ -31,7 +31,7 @@ namespace Sparrow.Console
             var project = pipeline.Configure(options =>
             {
                 options.IsSerialize = false;
-                //options.Rules.Add(ApplicationFileRules.FormatFileRule);
+                options.Rules.Add(ApplicationFileRules.ScaleFileRule);
                 options.Rules.Add(ApplicationFileRules.SilentFileRule);
                 options.Rules.Add(ApplicationFileRules.EncodingFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
