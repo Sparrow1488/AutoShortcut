@@ -9,17 +9,17 @@ using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console
 {
-    internal class CLI
+    internal class Startup
     {
-        public CLI()
+        public Startup()
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\55\STR";
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\NEW";
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 
         private StringPath FilesDirectoryPath { get; }
 
-        public IServiceProvider ServiceProvider { get; set; }
+        public IServiceProvider ServiceProvider { get; set; } = default!;
 
         public async Task OnStart(CancellationToken cancellationToken = default)
         {
@@ -37,7 +37,8 @@ namespace Sparrow.Console
                 options.Rules.Add(ApplicationFileRules.EncodingFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-            }).CreateProject(opt => opt.StructureBy(new DurationStructure().Descending()));
+            }).CreateProject(opt => opt.StructureBy(
+                new GroupStructure().StructureFilesBy(new DurationStructure())));
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
         }

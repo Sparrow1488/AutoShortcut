@@ -38,11 +38,21 @@ namespace Sparrow.Video.Shortcuts.Services
         /// <exception cref="InvalidInputPathException">Invalid path</exception>
         public ICollection<IFile> GetFiles(string path)
         {
-            var stringPath = StringPath.Create(path);
-            var filesPaths = Directory.GetFiles(stringPath.Value);
+            var filesList = new List<IFile>();
+            filesList.AddRange(CreateDirectoryFiles(path));
+            var insideDirs = Directory.GetDirectories(path);
+            foreach (var dir in insideDirs)
+                filesList.AddRange(CreateDirectoryFiles(dir));
+            return filesList;
+        }
+
+        private IEnumerable<IFile> CreateDirectoryFiles(string dirPath)
+        {
             var filesCollection = new Collection<IFile>();
-            foreach (var file in filesPaths)
-                filesCollection.Add(CreateFileUsingPath(file));
+            var files = Directory.GetFiles(dirPath);
+            var directoryName = Path.GetFileName(dirPath);
+            foreach (var file in files)
+                filesCollection.Add(CreateFileUsingPath(file, fileGroup: directoryName));
             return filesCollection;
         }
 
@@ -52,7 +62,7 @@ namespace Sparrow.Video.Shortcuts.Services
             return Task.FromResult(GetFiles(path));
         }
 
-        private IFile CreateFileUsingPath(string path)
+        private IFile CreateFileUsingPath(string path, string fileGroup = "")
         {
             var fileExtension = Path.GetExtension(path);
             var file = new SFile()
@@ -60,7 +70,8 @@ namespace Sparrow.Video.Shortcuts.Services
                Name = Path.GetFileNameWithoutExtension(path),
                Extension = fileExtension,
                FileType = TypesProvider.GetFileTypeOrUndefined(fileExtension),
-               Path =  path
+               Path =  path,
+               Group = fileGroup
             };
             return file;
         }

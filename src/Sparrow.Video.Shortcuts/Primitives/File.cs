@@ -8,5 +8,6 @@ namespace Sparrow.Video.Shortcuts.Primitives
         public string Extension { get; set; } = string.Empty;
         public string FileType { get; set; } = Abstractions.Enums.FileType.Undefined;
         public string Path { get; set; } = string.Empty;
+        public string Group { get; set; } = string.Empty;
     }
 }

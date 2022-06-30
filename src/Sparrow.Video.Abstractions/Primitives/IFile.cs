@@ -6,5 +6,6 @@
         string Extension { get; }
         string FileType { get; }
         string Path { get; }
+        string Group { get; }
     }
 }

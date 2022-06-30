@@ -15,7 +15,7 @@ namespace Sparrow.Video.Shortcuts.Primitives.Structures
             return files.OrderBy(x => x.Analyse.StreamAnalyses.Video().Duration);
         }
 
-        public DurationStructure Descending()
+        public DurationStructure LongFirst()
         {
             _descending = true;
             return this;
