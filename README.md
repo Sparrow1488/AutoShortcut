@@ -1,1 +1,3 @@
-# Sparrow.Video.Shortcuts
+
+
+![AutoShortcut-icon](.\files\AutoShortcut-icon.png)
