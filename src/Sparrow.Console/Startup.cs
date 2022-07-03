@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Factories;
@@ -24,6 +25,7 @@ namespace Sparrow.Console
         public async Task OnStart(CancellationToken cancellationToken = default)
         {
             OnConfigureHost();
+            var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger>();
             var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
             var engine = factory.CreateEngine();
             var pipeline = await engine.CreatePipelineAsync(
@@ -38,9 +40,10 @@ namespace Sparrow.Console
                 options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
             }).CreateProject(opt => opt.StructureBy(
-                new GroupStructure().StructureFilesBy(new DurationStructure())));
+                new GroupStructure(logger).StructureFilesBy(new DurationStructure())));
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
+            System.Console.WriteLine("Finally video: " + compilation.Path);
         }
 
         private void OnConfigureHost()
