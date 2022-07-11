@@ -39,7 +39,8 @@ namespace Sparrow.Console
                 options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
                 options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
             }).CreateProject(opt => opt.StructureBy(
-                new GroupStructure().StructureFilesBy(new DurationStructure())));
+                new GroupStructure().StructureFilesBy(new DurationStructure())))
+            .Named("Ready-Compilation");
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);
