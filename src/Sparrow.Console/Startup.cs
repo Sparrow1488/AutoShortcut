@@ -13,7 +13,7 @@ namespace Sparrow.Console
     {
         public Startup()
         {
-            string filesDirectory = @"C:\Users\USER\Desktop\GitHub Repos\Schedman\src\Schedman.Scripts.DownloadVideos\bin\Debug\net6.0\downloads\fap_9 - downloads\Brigitte";
+            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\Интересности\shit";
             FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
         }
 
@@ -42,7 +42,7 @@ namespace Sparrow.Console
                 new GroupStructure().StructureFilesBy(new DurationStructure())));
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            System.Console.WriteLine("Finally video: " + compilation.Path);
+            Log.Information("Finally video: " + compilation.Path);
         }
 
         private void OnConfigureHost()

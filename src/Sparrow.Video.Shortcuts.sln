@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sparrow.Video.Abstractions"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sparrow.Console", "Sparrow.Console\Sparrow.Console.csproj", "{F97F075C-B25D-44D7-99A9-3CE7812BCBDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sparrow.Sample.Console", "Sparrow.Sample.Console\Sparrow.Sample.Console.csproj", "{8EE4B81C-B48C-4EFA-9FF3-E628E3E76161}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F97F075C-B25D-44D7-99A9-3CE7812BCBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F97F075C-B25D-44D7-99A9-3CE7812BCBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F97F075C-B25D-44D7-99A9-3CE7812BCBDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE4B81C-B48C-4EFA-9FF3-E628E3E76161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE4B81C-B48C-4EFA-9FF3-E628E3E76161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE4B81C-B48C-4EFA-9FF3-E628E3E76161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE4B81C-B48C-4EFA-9FF3-E628E3E76161}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

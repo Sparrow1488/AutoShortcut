@@ -22,18 +22,6 @@ namespace Sparrow.Console.Rules
             LoopCount = 3
         };
 
-        #region Obsolete
-        [Obsolete]
-        public static readonly FormatFileRule FormatFileRule = new(
-            Resolution.FHD, FrameFrequency.Fps60, file => true);
-
-        [Obsolete]
-        public static readonly FormatFileRule FormatVerticalFileRule = new(
-            Resolution.FHD, FrameFrequency.Fps60,
-                file => file.Analyse.StreamAnalyses.Video().Height >
-                    file.Analyse.StreamAnalyses.Video().Width);
-        #endregion
-        
         /// <summary>
         ///     Накладывает пустую аудио дорожку на видео, у которого нет звука 
         ///     (нужно для лучшей синхронизации аудио)
