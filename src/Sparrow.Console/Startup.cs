@@ -6,7 +6,6 @@ using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
-using Sparrow.Video.Shortcuts.Services;
 
 // Current Project Version: AutoShortcut 0.3.0
 
@@ -34,7 +33,7 @@ internal class Startup
 
         var project = pipeline.Configure(options =>
         {
-            options.IsSerialize = false; // Not implemented
+            options.IsSerialize = false; // TODO: Not implemented
             options.Rules.Add(ApplicationFileRules.ScaleFileRule);
             options.Rules.Add(ApplicationFileRules.SilentFileRule);
             options.Rules.Add(ApplicationFileRules.EncodingFileRule);

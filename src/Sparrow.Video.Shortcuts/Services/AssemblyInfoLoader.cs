@@ -22,6 +22,11 @@ public sealed class AssemblyInfoLoader
         var name = assemblySection["Name"];
         var author = assemblySection["Author"];
         var version = assemblySection["Version"];
-        return $"Current {name} version is {version}. Authored by {author}";
+        return $"{name} version is {version}. Authored by {author}";
+    }
+
+    public string GetCurrentEnvironmentMode()
+    {
+        return Configuration.GetRequiredSection("Environment")["Mode"];
     }
 }

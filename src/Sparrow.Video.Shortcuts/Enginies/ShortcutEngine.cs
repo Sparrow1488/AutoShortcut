@@ -15,7 +15,6 @@ namespace Sparrow.Video.Shortcuts.Enginies
     {
         public ShortcutEngine(
             ILogger<ShortcutEngine> logger,
-            AssemblyInfoLoader assemblyInfoLoader,
             IUploadFilesService uploadFilesService,
             IProjectFileCreator projectFileCreator,
             ITextFormatter textFormatter,
@@ -24,7 +23,6 @@ namespace Sparrow.Video.Shortcuts.Enginies
             IRenderUtility renderUtility)
         {
             _logger = logger;
-            _assemblyInfoLoader = assemblyInfoLoader;
             _uploadFilesService = uploadFilesService;
             _projectFileCreator = projectFileCreator;
             _textFormatter = textFormatter;
@@ -34,7 +32,6 @@ namespace Sparrow.Video.Shortcuts.Enginies
         }
 
         private readonly ILogger<ShortcutEngine> _logger;
-        private readonly AssemblyInfoLoader _assemblyInfoLoader;
         private readonly IUploadFilesService _uploadFilesService;
         private readonly IProjectFileCreator _projectFileCreator;
         private readonly ITextFormatter _textFormatter;
@@ -45,7 +42,6 @@ namespace Sparrow.Video.Shortcuts.Enginies
         public async Task<IShortcutPipeline> CreatePipelineAsync(
             string filesDirectory, CancellationToken cancellationToken = default)
         {
-            _logger.LogInformation(_assemblyInfoLoader.GetAssemblyInfo());
             var files = await _uploadFilesService.GetFilesAsync(filesDirectory, cancellationToken);
             _logger.LogInformation("Starting analyse files");
             var projectFilesList = new List<IProjectFile>();
