@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Pipelines;
@@ -21,6 +22,8 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
     {
         public override IServiceCollection OnConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IConfiguration>(x => new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build());
+
             services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
             services.AddSingleton<IPathsProvider, PathsProvider>();
             services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();

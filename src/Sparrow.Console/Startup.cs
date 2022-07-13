@@ -7,8 +7,6 @@ using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
-// Current Project Version: AutoShortcut 0.3.0
-
 namespace Sparrow.Console;
 internal class Startup
 {
