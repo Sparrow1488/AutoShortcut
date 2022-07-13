@@ -6,57 +6,58 @@ using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
+using Sparrow.Video.Shortcuts.Services;
 
-namespace Sparrow.Console
+// Current Project Version: AutoShortcut 0.3.0
+
+namespace Sparrow.Console;
+internal class Startup
 {
-    internal class Startup
+    public Startup()
     {
-        public Startup()
+        string filesDirectory = @"D:\Yoga\SFM\отдельно sfm\50\Test-Moved";
+        FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
+    }
+
+    private StringPath FilesDirectoryPath { get; }
+
+    public IServiceProvider ServiceProvider { get; set; } = default!;
+
+    public async Task OnStart(CancellationToken cancellationToken = default)
+    {
+        OnConfigureHost();
+        var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
+        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
+        var engine = factory.CreateEngine();
+        var pipeline = await engine.CreatePipelineAsync(
+                        FilesDirectoryPath.Value, cancellationToken);
+
+        var project = pipeline.Configure(options =>
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\Интересности\shit";
-            FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
-        }
+            options.IsSerialize = false; // Not implemented
+            options.Rules.Add(ApplicationFileRules.ScaleFileRule);
+            options.Rules.Add(ApplicationFileRules.SilentFileRule);
+            options.Rules.Add(ApplicationFileRules.EncodingFileRule);
+            options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
+            options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
+        }).CreateProject(opt => opt.StructureBy(
+            new GroupStructure().StructureFilesBy(new DurationStructure())))
+        .Named("Ready-Compilation");
 
-        private StringPath FilesDirectoryPath { get; }
+        var compilation = await engine.StartRenderAsync(project, cancellationToken);
+        Log.Information("Finally video: " + compilation.Path);
+    }
 
-        public IServiceProvider ServiceProvider { get; set; } = default!;
-
-        public async Task OnStart(CancellationToken cancellationToken = default)
-        {
-            OnConfigureHost();
-            var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
-            var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-            var engine = factory.CreateEngine();
-            var pipeline = await engine.CreatePipelineAsync(
-                            FilesDirectoryPath.Value, cancellationToken);
-
-            var project = pipeline.Configure(options =>
+    private void OnConfigureHost()
+    {
+        ServiceProvider = Host.CreateDefaultBuilder()
+            .UseSerilog((context, services, configuration) => configuration
+                .Enrich.FromLogContext()
+                .WriteTo.Console())
+            .ConfigureServices(services =>
             {
-                options.IsSerialize = false;
-                options.Rules.Add(ApplicationFileRules.ScaleFileRule);
-                options.Rules.Add(ApplicationFileRules.SilentFileRule);
-                options.Rules.Add(ApplicationFileRules.EncodingFileRule);
-                options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
-                options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-            }).CreateProject(opt => opt.StructureBy(
-                new GroupStructure().StructureFilesBy(new DurationStructure())))
-            .Named("Ready-Compilation");
-
-            var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            Log.Information("Finally video: " + compilation.Path);
-        }
-
-        private void OnConfigureHost()
-        {
-            ServiceProvider = Host.CreateDefaultBuilder()
-                .UseSerilog((context, services, configuration) => configuration
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console())
-                .ConfigureServices(services =>
-                {
-                    services.AddShortcutDefinision();
-                })
-                .Build().Services;
-        }
+                services.AddShortcutDefinision();
+            })
+            .Build().Services;
     }
 }

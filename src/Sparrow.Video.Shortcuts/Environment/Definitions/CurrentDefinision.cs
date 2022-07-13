@@ -33,6 +33,7 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IStoreService, StoreService>();
             services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
             services.AddSingleton<ITextFormatter, TextFormatter>();
+            services.AddSingleton<AssemblyInfoLoader>();
 
             services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
             services.AddSingleton<IEncodingProcess, EncodingProcess>();
