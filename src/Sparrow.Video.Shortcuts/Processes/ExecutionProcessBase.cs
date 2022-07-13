@@ -18,6 +18,11 @@ namespace Sparrow.Video.Shortcuts.Processes
         protected ITextProcessResult TextProcessResult { get; private set; }
         public IConfiguration Configuration { get; }
 
+        protected virtual Task OnStartingProcessAsync(ProcessSettings processSettings, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
         public virtual async Task StartAsync()
         {
             string result = "";
@@ -27,6 +32,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             startInfo.Arguments = settings.Argument;
             using (var process = new Process() { StartInfo = startInfo })
             {
+                await OnStartingProcessAsync(settings);
                 if (settings.IsReadOutputs)
                 {
                     result = await StartReadingAsync(process);

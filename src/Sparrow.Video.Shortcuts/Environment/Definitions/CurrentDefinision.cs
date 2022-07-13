@@ -28,6 +28,7 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IPathsProvider, PathsProvider>();
             services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();
             services.AddSingleton<IScriptFormatsProvider, ScriptFormatsProvider>();
+            services.AddSingleton<IEnvironmentSettingsProvider, EnvironmentSettingsProvider>();
 
             services.AddSingleton<IUploadFilesService, UploadFilesService>();
             services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
@@ -9,8 +10,13 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class MakeSilentProcess : FFmpegProcess, IMakeSilentProcess
     {
         public MakeSilentProcess(
+            ISaveService saveService,
+            IPathsProvider pathsProvider,
+            IConfiguration configuration,
+            ILogger<FFmpegProcess> logger,
             IUploadFilesService uploadFilesService,
-            IConfiguration configuration) : base(uploadFilesService, configuration)
+            IEnvironmentSettingsProvider environmentSettingsProvider)
+        : base(saveService, pathsProvider, configuration, logger, uploadFilesService, environmentSettingsProvider)
         {
         }
 

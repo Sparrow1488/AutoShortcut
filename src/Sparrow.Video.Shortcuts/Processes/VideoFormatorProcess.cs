@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
@@ -11,9 +12,14 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class VideoFormatorProcess : FFmpegProcess, IFormatorProcess
     {
         public VideoFormatorProcess(
+            ISaveService saveService,
+            IPathsProvider pathsProvider,
+            IConfiguration configuration,
+            ILogger<FFmpegProcess> logger,
             IResourcesService resourcesService,
-            IUploadFilesService uploadFilesService, 
-            IConfiguration configuration) : base(uploadFilesService, configuration)
+            IUploadFilesService uploadFilesService,
+            IEnvironmentSettingsProvider environmentSettingsProvider)
+        : base(saveService, pathsProvider, configuration, logger, uploadFilesService, environmentSettingsProvider)
         {
             _resourcesService = resourcesService;
         }

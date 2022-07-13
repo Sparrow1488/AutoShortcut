@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
@@ -9,15 +10,20 @@ namespace Sparrow.Video.Shortcuts.Processes
 {
     public class EncodingProcess : FFmpegProcess, IEncodingProcess
     {
-        public EncodingProcess(
-            IUploadFilesService uploadFilesService, 
-            IConfiguration configuration) : base(uploadFilesService, configuration)
-        {
-        }
-
         private StringPath _filePath;
         private IEncodingSettings _settings;
         private ISaveSettings _saveSettings;
+
+        public EncodingProcess(
+            ISaveService saveService, 
+            IPathsProvider pathsProvider, 
+            IConfiguration configuration, 
+            ILogger<FFmpegProcess> logger, 
+            IUploadFilesService uploadFilesService, 
+            IEnvironmentSettingsProvider environmentSettingsProvider) 
+        : base(saveService, pathsProvider, configuration, logger, uploadFilesService, environmentSettingsProvider)
+        {
+        }
 
         protected override string OnConfigureFFmpegCommand() =>
             $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -crf 17 -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
