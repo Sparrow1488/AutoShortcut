@@ -31,7 +31,11 @@ internal class Startup
 
         var project = pipeline.Configure(options =>
         {
-            options.IsSerialize = false; // TODO: Not implemented
+            // 1. Проверить, есть ли в загруженной папке с видео .restore файлы. В них будет сериализованный IFile
+            // 2. Убедиться, что все .restore файлы есть для каждого файла проекта
+            // 3. Если нет, то Rules будут применены (которые так же были сериализованы)
+            // 4. Если правила для файлов не совпадают с уже примененными, то восстановление будет не возможно (напр. было HD, а сейчас 2K)
+            options.IsSerialize = false; // TODO: Not implemented: Project RESTORE
             options.Rules.Add(ApplicationFileRules.ScaleFileRule);
             options.Rules.Add(ApplicationFileRules.SilentFileRule);
             options.Rules.Add(ApplicationFileRules.EncodingFileRule);
