@@ -1,5 +1,4 @@
-﻿using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Abstractions.Services.Options;
 using Sparrow.Video.Primitives;
@@ -99,6 +98,11 @@ namespace Sparrow.Video.Shortcuts.Services
             };
             OnUploadedFile?.Invoke(file);
             return file;
+        }
+
+        public Task<ICollection<IFile>> GetFilesAsync(string path, IUploadFilesOptions uploadFilesOptions, CancellationToken token = default)
+        {
+            return Task.FromResult(GetFiles(path, uploadFilesOptions));
         }
     }
 }

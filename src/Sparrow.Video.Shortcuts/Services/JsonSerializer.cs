@@ -10,7 +10,8 @@ namespace Sparrow.Video.Shortcuts.Services
             Formatting = Formatting.Indented,
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
             CheckAdditionalContent = true,
-            TypeNameHandling = TypeNameHandling.All
+            TypeNameHandling = TypeNameHandling.All,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
 
         public TObj Deserialize<TObj>(string json)

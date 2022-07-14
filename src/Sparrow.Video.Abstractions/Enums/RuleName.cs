@@ -1,7 +1,11 @@
-﻿namespace Sparrow.Video.Abstractions.Enums
+﻿
+using Newtonsoft.Json;
+
+namespace Sparrow.Video.Abstractions.Enums
 {
     public class RuleName
     {
+        [JsonConstructor]
         private RuleName(string name)
         {
             Value = name;

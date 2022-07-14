@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Sparrow.Video.Abstractions.Rules;
+﻿using Sparrow.Video.Abstractions.Rules;
 
 namespace Sparrow.Video.Abstractions.Primitives
 {

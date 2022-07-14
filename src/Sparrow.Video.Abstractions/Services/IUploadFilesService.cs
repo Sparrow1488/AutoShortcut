@@ -6,6 +6,7 @@ namespace Sparrow.Video.Abstractions.Services
     public interface IUploadFilesService
     {
         Task<ICollection<IFile>> GetFilesAsync(string path, CancellationToken token = default);
+        Task<ICollection<IFile>> GetFilesAsync(string path, IUploadFilesOptions uploadFilesOptions, CancellationToken token = default);
         ICollection<IFile> GetFiles(string path);
         ICollection<IFile> GetFiles(string path, IUploadFilesOptions uploadFilesOptions);
         IFile GetFile(string filePath);

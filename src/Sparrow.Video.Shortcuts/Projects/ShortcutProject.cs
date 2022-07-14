@@ -7,7 +7,6 @@ namespace Sparrow.Video.Shortcuts.Projects
     public class ShortcutProject : IProject
     {
         public string Name { get; private set; }
-        public IScript RenderScript { get; set; }
         public IEnumerable<IProjectFile> Files { get; set; }
 
         public IProject Named(string projectName)

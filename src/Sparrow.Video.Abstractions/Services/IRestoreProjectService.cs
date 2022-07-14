@@ -4,6 +4,7 @@ namespace Sparrow.Video.Abstractions.Services
 {
     public interface IRestoreProjectService
     {
-        Task<IProject> RestoreAsync(string restoreFilesDirectoryPath);
+        Task<IProject> RestoreAsync(
+            string restoreFilesDirectoryPath, CancellationToken cancellationToken = default);
     }
 }

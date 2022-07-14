@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Projects;
 
 namespace Sparrow.Video.Shortcuts.Services
 {
@@ -8,31 +9,31 @@ namespace Sparrow.Video.Shortcuts.Services
     {
         public RestoreProjectService(
             ILogger<RestoreProjectService> logger,
+            IRestoreFilesService restoreFilesService,
             IUploadFilesService uploadFilesService)
         {
             _logger = logger;
+            _restoreFilesService = restoreFilesService;
             _uploadFilesService = uploadFilesService;
         }
 
         private readonly ILogger<RestoreProjectService> _logger;
+        private readonly IRestoreFilesService _restoreFilesService;
         private readonly IUploadFilesService _uploadFilesService;
-        private string _restoreDirectoryPath = string.Empty;
 
-        public RestoreProjectService RestoreFrom(string directoryPath)
+        public async Task<IProject> RestoreAsync(string restoreFilesDirectoryPath, CancellationToken cancellationToken = default)
         {
-            _restoreDirectoryPath = directoryPath;
-            return this;
-        }
-
-        public Task<IProject> RestoreAsync(string restoreFilesDirectoryPath)
-        {
-            // 1. Восстановить файлы
+            // 1. Восстановить файлы +
             // 2. Получить инфу о проекте (Rules, OutputInfo)
             // 3. Соотнести востановленные файлы с Rules
             // 4. Сравнить, не были ли изменены итоговые характеристики
 
-            var files = _uploadFilesService.GetFiles(_restoreDirectoryPath);
-            throw new NotImplementedException();
+            var restoredFiles = await _restoreFilesService.RestoreFilesAsync(restoreFilesDirectoryPath);
+            var project = new ShortcutProject()
+            {
+                Files = restoredFiles.Select(X => X.RestoredProjectFile)
+            }.Named("NOT-RESTORED-NAME");
+            return project;
         }
     }
 }
