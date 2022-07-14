@@ -14,6 +14,12 @@ namespace Sparrow.Video.Shortcuts.Rules
         [JsonProperty]
         public bool IsApplied { get; set; }
 
+        /// <summary>
+        ///     Default value is <see cref="RuleApply.Permanent"/>
+        /// </summary>
+        [JsonProperty]
+        public virtual RuleApply RuleApply => RuleApply.Permanent;
+
         public void Applied() => IsApplied = true;
         public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
     }

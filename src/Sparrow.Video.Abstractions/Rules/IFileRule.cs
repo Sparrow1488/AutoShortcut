@@ -7,6 +7,7 @@ namespace Sparrow.Video.Abstractions.Rules
     {
         bool IsApplied { get; }
         RuleName RuleName { get; }
+        RuleApply RuleApply { get; }
         bool IsInRule(IProjectFile file);
         void Applied();
     }

@@ -6,5 +6,7 @@ namespace Sparrow.Video.Abstractions.Pipelines.Options
     {
         bool IsSerialize { get; set; }
         ICollection<IFileRule> Rules { get; }
+        IEnumerable<Type> RulesTypes { get; }
+        void AddRule<TRule>() where TRule : IFileRule;
     }
 }

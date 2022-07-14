@@ -5,6 +5,7 @@ using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Pipelines;
 using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Processes;
+using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enginies;
@@ -12,6 +13,7 @@ using Sparrow.Video.Shortcuts.Factories;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
+using Sparrow.Video.Shortcuts.Projects;
 using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
 using Sparrow.Video.Shortcuts.Services;
@@ -38,8 +40,10 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IReadFileTextService, ReadFileTextService>();
             services.AddSingleton<IStoreService, StoreService>();
             services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
+            services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
             services.AddSingleton<IRestoreProjectService, RestoreProjectService>();
             services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
+            services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
             services.AddSingleton<ITextFormatter, TextFormatter>();
             services.AddSingleton<AssemblyInfoLoader>();
 

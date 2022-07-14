@@ -20,6 +20,7 @@ public class RenderUtility : IRenderUtility
         ITextFormatter textFormatter,
         ISaveService saveService,
         IJsonSerializer serializer,
+        IPathsProvider pathsProvider,
         IConcatinateProcess concatinateProcess)
     {
         _logger = logger;
@@ -27,6 +28,7 @@ public class RenderUtility : IRenderUtility
         _textFormatter = textFormatter;
         _saveService = saveService;
         _serializer = serializer;
+        _pathsProvider = pathsProvider;
         _concatinateProcess = concatinateProcess;
     }
 
@@ -35,12 +37,14 @@ public class RenderUtility : IRenderUtility
     private readonly ITextFormatter _textFormatter;
     private readonly ISaveService _saveService;
     private readonly IJsonSerializer _serializer;
+    private readonly IPathsProvider _pathsProvider;
     private readonly IConcatinateProcess _concatinateProcess;
 
     public async Task<IFile> StartRenderAsync(
         IProject project, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting render project");
+        await SaveProjectOptionsAsync(project);
         _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
         foreach (var file in project.Files)
             foreach (var rule in file.RulesCollection)
@@ -51,12 +55,22 @@ public class RenderUtility : IRenderUtility
         return result;
     }
 
+    private async Task SaveProjectOptionsAsync(IProject project)
+    {
+        var serializedOptions = _serializer.Serialize(project.Options);
+        var saveProjectOptionsPath = _pathsProvider.GetPathFromCurrent("ProjectOptions");
+        var saveSettings = new SaveSettings()
+        {
+            SaveFullPath = Path.Combine(saveProjectOptionsPath, "project-options.json")
+        };
+        await _saveService.SaveTextAsync(serializedOptions, saveSettings);
+    }
+
     private async Task ApplyFileRuleAsync(IProjectFile file, IFileRule rule)
     {
-        if (!rule.IsApplied)
+        if (!rule.IsApplied || rule.RuleApply == RuleApply.Runtime)
         {
-            _logger.LogInformation($"Applying rule \"{rule.RuleName.Value}\" " +
-                                   $"for {_textFormatter.GetPrintable(file.File.Name)}");
+            _logger.LogInformation($"Applying {rule.RuleApply.Type} rule \"{rule.RuleName.Value}\" for {_textFormatter.GetPrintable(file.File.Name)}");
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(rule.GetType());
             await processor.ProcessAsync(file, rule);
             rule.Applied();

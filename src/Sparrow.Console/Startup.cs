@@ -1,26 +1,18 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Serilog;
 using Sparrow.Console.Rules;
-using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Factories;
-using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Abstractions.Services.Options;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Primitives;
-using Sparrow.Video.Shortcuts.Primitives.Mementos;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
-using Sparrow.Video.Shortcuts.Processes.Settings;
-using Sparrow.Video.Shortcuts.Services.Options;
 
 namespace Sparrow.Console;
 internal class Startup
 {
     public Startup()
     {
-        string filesDirectory = @"D:\Yoga\SFM\отдельно sfm\50\Test-Moved";
+        string filesDirectory = @"D:\Yoga\SFM\отдельно sfm\fap9";
         FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
     }
 
@@ -34,6 +26,8 @@ internal class Startup
         var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
         var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
         var engine = factory.CreateEngine();
+
+        //var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
 
         #region Not Used
         //var uploadFilesService = ServiceProvider.GetRequiredService<IUploadFilesService>();
@@ -61,34 +55,25 @@ internal class Startup
         //var restoredFiles = await restoreService.RestoreFilesAsync(FilesDirectoryPath.Value);
         #endregion
 
-        //var pipeline = await engine.CreatePipelineAsync(
-        //                FilesDirectoryPath.Value, cancellationToken);
+        var pipeline = await engine.CreatePipelineAsync(
+                        FilesDirectoryPath.Value, cancellationToken);
 
-        //var project = pipeline.Configure(options =>
-        //{
-        //    #region PLAN
+        var project = pipeline.Configure(options =>
+        {
+            options.IsSerialize = true; // TODO: Not implemented: Project RESTORE
+            options.AddRule<ScaleFileRule>();
+            options.AddRule<SilentFileRule>();
+            options.AddRule<EncodingFileRule>();
+            options.AddRule<LoopFileRule>();
 
-        //    // 1. Проверить, есть ли в загруженной папке с видео .restore файлы. В них будет сериализованный IFile
-        //    // 2. Убедиться, что все .restore файлы есть для каждого файла проекта
-        //    // 3. Если нет, то Rules будут применены (которые так же были сериализованы)
-        //    // 4. Если правила для файлов не совпадают с уже примененными, то восстановление будет не возможно (напр. было HD, а сейчас 2K)
+        }).CreateProject(options =>
+        {
+            options.StructureBy(new GroupStructure().StructureFilesBy(new DurationStructure()));
+            options.Named("Ready-Compilation");
+        });
 
-        //    #endregion
-
-        //    options.IsSerialize = false; // TODO: Not implemented: Project RESTORE
-        //    options.Rules.Add(ApplicationFileRules.ScaleFileRule);
-        //    options.Rules.Add(ApplicationFileRules.SilentFileRule);
-        //    options.Rules.Add(ApplicationFileRules.EncodingFileRule);
-        //    options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
-        //    options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-        //}).CreateProject(opt => opt.StructureBy(
-        //    new GroupStructure().StructureFilesBy(new DurationStructure())))
-        //.Named("Ready-Compilation");
-
-        //var compilation = await engine.StartRenderAsync(project, cancellationToken);
-        //Log.Information("Finally video: " + compilation.Path);
-
-        var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
+        var compilation = await engine.StartRenderAsync(project, cancellationToken);
+        Log.Information("Finally video: " + compilation.Path);
     }
 
     private void OnConfigureHost()
