@@ -1,5 +1,7 @@
-﻿using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Enums;
+using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Abstractions.Services.Options;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Exceptions;
 using System.Collections.ObjectModel;
@@ -15,6 +17,7 @@ namespace Sparrow.Video.Shortcuts.Services
         }
 
         public IFileTypesProvider TypesProvider { get; }
+        public event Action<IFile> OnUploadedFile;
 
         public IFile GetFile(string filePath)
         {
@@ -28,6 +31,27 @@ namespace Sparrow.Video.Shortcuts.Services
                 Path = stringPath.Value
             };
             return file;
+        }
+
+        public ICollection<IFile> GetFiles(string path, IUploadFilesOptions uploadFilesOptions)
+        {
+            var ignoreFilesCollection = new Collection<IFile>();
+            OnUploadedFile += file =>
+            {
+                if (uploadFilesOptions.IgnoreFileTypes.Contains(file.FileType))
+                {
+                    var action = uploadFilesOptions.OnUploadedIgnoreFile.Invoke(file);
+                    switch (action.ActionName)
+                    {
+                        case "NoAction": break;
+                        case "Skip": ignoreFilesCollection.Add(file); break;
+                        case "Exception": throw new IgnoreFileUploadedException("Uploaded file that marked as ignore " + file.FileType);
+                    }
+                }
+            };
+            var uploadedFiles = GetFiles(path).ToList();
+            var removedCount = uploadedFiles.RemoveAll(x => ignoreFilesCollection.Contains(x));
+            return uploadedFiles;
         }
 
         /// <summary>
@@ -73,6 +97,7 @@ namespace Sparrow.Video.Shortcuts.Services
                Path =  path,
                Group = fileGroup
             };
+            OnUploadedFile?.Invoke(file);
             return file;
         }
     }

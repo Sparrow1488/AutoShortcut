@@ -2,7 +2,6 @@
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Primitives.Mementos;
-using Sparrow.Video.Shortcuts.Services.Options;
 
 namespace Sparrow.Video.Shortcuts.Services
 {

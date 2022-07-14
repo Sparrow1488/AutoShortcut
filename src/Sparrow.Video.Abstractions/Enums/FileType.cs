@@ -6,5 +6,6 @@
         public const string Video = nameof(Video);
         public const string Image = nameof(Image);
         public const string Audio = nameof(Audio);
+        public const string Restore = nameof(Restore);
     }
 }

@@ -29,12 +29,16 @@ namespace Sparrow.Video.Shortcuts.Environment.Definitions
             services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();
             services.AddSingleton<IScriptFormatsProvider, ScriptFormatsProvider>();
             services.AddSingleton<IEnvironmentSettingsProvider, EnvironmentSettingsProvider>();
+            services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
             services.AddSingleton<IUploadFilesService, UploadFilesService>();
             services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
             services.AddSingleton<IResourcesService, ResourcesService>();
             services.AddSingleton<ISaveService, SaveService>();
+            services.AddSingleton<IReadFileTextService, ReadFileTextService>();
             services.AddSingleton<IStoreService, StoreService>();
+            services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
+            services.AddSingleton<IRestoreProjectService, RestoreProjectService>();
             services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
             services.AddSingleton<ITextFormatter, TextFormatter>();
             services.AddSingleton<AssemblyInfoLoader>();

@@ -72,5 +72,11 @@ namespace Sparrow.Video.Shortcuts.Enginies
             };
             return await _renderUtility.StartRenderAsync(project, resultSaveSettings);
         }
+
+        public Task<IFile> ContinueRenderAsync(
+            IRestoreProjectService restoreService, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
