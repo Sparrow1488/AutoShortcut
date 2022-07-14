@@ -1,16 +1,15 @@
 ﻿using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Console.Rules
 {
     public class LoopFileRule : FileRuleBase
     {
-        public LoopFileRule(Func<IProjectFile, bool> condition) : base(condition)
-        {
-        }
+        public int LoopCount => 3;
+        public override Func<IProjectFile, bool> Condition => file => file.Analyse.StreamAnalyses.Video().Duration <= 8;
 
-        public int LoopCount { get; set; }
         public override RuleName RuleName { get; } = RuleName.New("Loop");
     }
 }

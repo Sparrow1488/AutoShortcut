@@ -7,26 +7,14 @@ namespace Sparrow.Video.Shortcuts.Rules
 {
     public abstract class FileRuleBase : IFileRule
     {
-        public FileRuleBase(Func<IProjectFile, bool> condition)
-        {
-            Condition = condition;
-        }
-
         [JsonProperty]
         public abstract RuleName RuleName { get; }
         [JsonIgnore]
-        public Func<IProjectFile, bool> Condition { get; }
+        public abstract Func<IProjectFile, bool> Condition { get; }
         [JsonProperty]
         public bool IsApplied { get; set; }
 
-        public void Applied()
-        {
-            IsApplied = true;
-        }
-
-        public bool IsInRule(IProjectFile file)
-        {
-            return Condition.Invoke(file);
-        }
+        public void Applied() => IsApplied = true;
+        public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
     }
 }
