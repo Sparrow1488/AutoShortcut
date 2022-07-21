@@ -46,9 +46,10 @@ public class RenderUtility : IRenderUtility
         _logger.LogInformation("Starting render project");
         await SaveProjectOptionsAsync(project);
         _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
-        foreach (var file in project.Files)
+        var filesArray = project.Files.ToArray();
+        foreach (var file in filesArray)
             foreach (var rule in file.RulesCollection)
-                await ApplyFileRuleAsync(file, rule);
+                await ApplyFileRuleAsync(file, rule, new ProcessedFilesStatistic(filesArray.Length, Array.IndexOf(filesArray, file)));
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
        
         var result = await _concatinateProcess.ConcatinateFilesAsync(concatinateFilesPaths, saveSettings);
@@ -66,11 +67,11 @@ public class RenderUtility : IRenderUtility
         await _saveService.SaveTextAsync(serializedOptions, saveSettings);
     }
 
-    private async Task ApplyFileRuleAsync(IProjectFile file, IFileRule rule)
+    private async Task ApplyFileRuleAsync(IProjectFile file, IFileRule rule, ProcessedFilesStatistic statistic)
     {
         if (!rule.IsApplied || rule.RuleApply == RuleApply.Runtime)
         {
-            _logger.LogInformation($"Applying {rule.RuleApply.Type} rule \"{rule.RuleName.Value}\" for {_textFormatter.GetPrintable(file.File.Name)}");
+            _logger.LogInformation($"({statistic.CurrentIndexProcessed + 1}/{statistic.TotalFiles}) Applying {rule.RuleApply.Type} rule \"{rule.RuleName.Value}\" for {_textFormatter.GetPrintable(file.File.Name)}");
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(rule.GetType());
             await processor.ProcessAsync(file, rule);
             rule.Applied();
@@ -109,5 +110,17 @@ public class RenderUtility : IRenderUtility
             renderPathsList.AddRange(renderPaths);
         }
         return renderPathsList;
+    }
+
+    private struct ProcessedFilesStatistic
+    {
+        public ProcessedFilesStatistic(int total, int current)
+        {
+            TotalFiles = total;
+            CurrentIndexProcessed = current;
+        }
+
+        public int TotalFiles { get; }
+        public int CurrentIndexProcessed { get; }
     }
 }
