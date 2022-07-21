@@ -40,7 +40,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         ///     StackOverflow solution: https://stackoverflow.com/questions/34391499/change-video-resolution-ffmpeg
         /// </summary>
         protected override string OnConfigureFFmpegCommand() =>
-            $"-y -i \"{_file.Path}\" -vf \"[in] scale=iw* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih):ih* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih)[scaled]; [scaled] pad={_scaleSettings.Width}:{_scaleSettings.Heigth}:({_scaleSettings.Width}-iw* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih))/2:({_scaleSettings.Heigth}-ih* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih))/2[padded]; [padded] setsar=1:1[out]\" -c:v libx264 -c:a copy \"{_saveSettings.SaveFullPath}\"";
+            $"-y -i \"{_file.Path}\" -vf \"[in] scale=iw* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih):ih* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih)[scaled]; [scaled] pad={_scaleSettings.Width}:{_scaleSettings.Heigth}:({_scaleSettings.Width}-iw* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih))/2:({_scaleSettings.Heigth}-ih* min({_scaleSettings.Width}/iw\\,{_scaleSettings.Heigth}/ih))/2[padded]; [padded] setsar=1:1[out]\" -threads 2 -c:v libx264 -c:a copy \"{_saveSettings.SaveFullPath}\"";
 
         protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
     }

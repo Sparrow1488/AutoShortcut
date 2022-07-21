@@ -12,7 +12,7 @@ internal class Startup
 {
     public Startup()
     {
-        string filesDirectory = @"D:\Yoga\SFM\отдельно sfm\fap9";
+        string filesDirectory = @"C:\Users\USER\Desktop\downloads\1";
         FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
     }
 
@@ -20,40 +20,26 @@ internal class Startup
 
     public IServiceProvider ServiceProvider { get; set; } = default!;
 
+    private void FixNames()
+    {
+        var files = Directory.GetFiles(FilesDirectoryPath.Value);
+        foreach (var filePath in files)
+        {
+            var newName = Path.GetFileName(filePath).Replace("'", "");
+            var newPath = Path.Combine(Path.GetDirectoryName(filePath), newName);
+            File.Move(filePath, newPath);
+        }
+    }
+
     public async Task OnStart(CancellationToken cancellationToken = default)
     {
+        FixNames();
         OnConfigureHost();
         var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
         var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
         var engine = factory.CreateEngine();
 
         //var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
-
-        #region Not Used
-        //var uploadFilesService = ServiceProvider.GetRequiredService<IUploadFilesService>();
-        //var creator = ServiceProvider.GetRequiredService<IProjectFileCreator>();
-        //var serializer = ServiceProvider.GetRequiredService<IJsonSerializer>();
-        //var saveService = ServiceProvider.GetRequiredService<ISaveService>();
-        //var files = uploadFilesService.GetFiles(FilesDirectoryPath.Value, 
-        //    new UploadFilesOptions()
-        //    {
-        //        OnUploadedIgnoreFile = file => UploadFileAction.Skip
-        //    }
-        //    .Ignore(FileType.Restore)
-        //    .Ignore(FileType.Audio));
-        //foreach (var file in files)
-        //{
-        //    var projectFile = await creator.CreateAsync(file);
-        //    var json = serializer.Serialize(projectFile);
-        //    await saveService.SaveTextAsync(json, new SaveSettings()
-        //    {
-        //        SaveFullPath = Path.Combine(Path.GetDirectoryName(file.Path), file.Name + ".restore")
-        //    }, cancellationToken);
-        //}
-
-        //var restoreService = ServiceProvider.GetRequiredService<IRestoreFilesService>();
-        //var restoredFiles = await restoreService.RestoreFilesAsync(FilesDirectoryPath.Value);
-        #endregion
 
         var pipeline = await engine.CreatePipelineAsync(
                         FilesDirectoryPath.Value, cancellationToken);
@@ -64,12 +50,13 @@ internal class Startup
             options.AddRule<ScaleFileRule>();
             options.AddRule<SilentFileRule>();
             options.AddRule<EncodingFileRule>();
-            options.AddRule<LoopFileRule>();
+            options.AddRule<LoopShortFileRule>();
+            options.AddRule<LoopMediumFileRule>();
 
         }).CreateProject(options =>
         {
             options.StructureBy(new GroupStructure().StructureFilesBy(new DurationStructure()));
-            options.Named("Ready-Compilation");
+            options.Named("Compilation");
         });
 
         var compilation = await engine.StartRenderAsync(project, cancellationToken);

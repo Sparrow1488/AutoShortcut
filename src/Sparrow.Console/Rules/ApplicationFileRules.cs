@@ -20,7 +20,7 @@ namespace Sparrow.Console.Rules
         public static readonly EncodingFileRule EncodingFileRule = new();
 
 
-        public static readonly LoopFileRule LoopMediumFileRule = new();
-        public static readonly LoopFileRule LoopShortFileRule = new();
+        public static readonly LoopMediumFileRule LoopMediumFileRule = new();
+        public static readonly LoopShortFileRule LoopShortFileRule = new();
     }
 }

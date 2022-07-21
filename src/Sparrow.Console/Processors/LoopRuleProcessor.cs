@@ -8,7 +8,7 @@ using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors
 {
-    public class LoopRuleProcessor : RuleProcessorBase<LoopFileRule>
+    public class LoopRuleProcessor : RuleProcessorBase<LoopFileRuleBase>
     {
         public LoopRuleProcessor(
             IUploadFilesService uploadFilesService)
@@ -18,7 +18,7 @@ namespace Sparrow.Console.Processors
 
         private readonly IUploadFilesService _uploadFilesService;
 
-        public override Task ProcessAsync(IProjectFile file, LoopFileRule rule)
+        public override Task ProcessAsync(IProjectFile file, LoopFileRuleBase rule)
         {
             var processFileReference = file.References.GetActual();
             var processFile = _uploadFilesService.GetFile(processFileReference.FileFullPath);

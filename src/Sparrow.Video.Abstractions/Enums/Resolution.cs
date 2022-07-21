@@ -29,8 +29,12 @@
         /// </summary>
         public static readonly Resolution FHD = new Resolution("1080p", 1080, 1920);
         /// <summary>
-        ///     Display resoulution in 2K (2048p)
+        ///     Display resoulution in 2K (1440p)
         /// </summary>
-        public static readonly Resolution QFHD = new Resolution("2048p", 1080, 2048);
+        public static readonly Resolution QHD = new Resolution("1440p", 1440, 2560);
+        /// <summary>
+        ///     Display resoulution in 4K Ultra HD (2160p)
+        /// </summary>
+        public static readonly Resolution UHD = new Resolution("2160p", 2160, 3840);
     }
 }
