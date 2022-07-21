@@ -7,56 +7,72 @@ using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
-namespace Sparrow.Console
+namespace Sparrow.Console;
+internal class Startup
 {
-    internal class Startup
+    public Startup()
     {
-        public Startup()
+        string filesDirectory = @"C:\Users\USER\Desktop\downloads\1";
+        FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
+    }
+
+    private StringPath FilesDirectoryPath { get; }
+
+    public IServiceProvider ServiceProvider { get; set; } = default!;
+
+    private void FixNames()
+    {
+        var files = Directory.GetFiles(FilesDirectoryPath.Value);
+        foreach (var filePath in files)
         {
-            string filesDirectory = @"D:\Йога\SFM\отдельно sfm\Интересности\shit";
-            FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
+            var newName = Path.GetFileName(filePath).Replace("'", "");
+            var newPath = Path.Combine(Path.GetDirectoryName(filePath), newName);
+            File.Move(filePath, newPath);
         }
+    }
 
-        private StringPath FilesDirectoryPath { get; }
+    public async Task OnStart(CancellationToken cancellationToken = default)
+    {
+        FixNames();
+        OnConfigureHost();
+        var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
+        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
+        var engine = factory.CreateEngine();
 
-        public IServiceProvider ServiceProvider { get; set; } = default!;
+        //var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
 
-        public async Task OnStart(CancellationToken cancellationToken = default)
+        var pipeline = await engine.CreatePipelineAsync(
+                        FilesDirectoryPath.Value, cancellationToken);
+
+        var project = pipeline.Configure(options =>
         {
-            OnConfigureHost();
-            var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
-            var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-            var engine = factory.CreateEngine();
-            var pipeline = await engine.CreatePipelineAsync(
-                            FilesDirectoryPath.Value, cancellationToken);
+            options.IsSerialize = true; // TODO: Not implemented: Project RESTORE
+            options.AddRule<ScaleFileRule>();
+            options.AddRule<SilentFileRule>();
+            options.AddRule<EncodingFileRule>();
+            options.AddRule<LoopShortFileRule>();
+            options.AddRule<LoopMediumFileRule>();
 
-            var project = pipeline.Configure(options =>
+        }).CreateProject(options =>
+        {
+            options.StructureBy(new GroupStructure().StructureFilesBy(new DurationStructure()));
+            options.Named("Compilation");
+        });
+
+        var compilation = await engine.StartRenderAsync(project, cancellationToken);
+        Log.Information("Finally video: " + compilation.Path);
+    }
+
+    private void OnConfigureHost()
+    {
+        ServiceProvider = Host.CreateDefaultBuilder()
+            .UseSerilog((context, services, configuration) => configuration
+                .Enrich.FromLogContext()
+                .WriteTo.Console())
+            .ConfigureServices(services =>
             {
-                options.IsSerialize = false;
-                options.Rules.Add(ApplicationFileRules.ScaleFileRule);
-                options.Rules.Add(ApplicationFileRules.SilentFileRule);
-                options.Rules.Add(ApplicationFileRules.EncodingFileRule);
-                options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
-                options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-            }).CreateProject(opt => opt.StructureBy(
-                new GroupStructure().StructureFilesBy(new DurationStructure())))
-            .Named("Ready-Compilation");
-
-            var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            Log.Information("Finally video: " + compilation.Path);
-        }
-
-        private void OnConfigureHost()
-        {
-            ServiceProvider = Host.CreateDefaultBuilder()
-                .UseSerilog((context, services, configuration) => configuration
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console())
-                .ConfigureServices(services =>
-                {
-                    services.AddShortcutDefinision();
-                })
-                .Build().Services;
-        }
+                services.AddShortcutDefinision();
+            })
+            .Build().Services;
     }
 }

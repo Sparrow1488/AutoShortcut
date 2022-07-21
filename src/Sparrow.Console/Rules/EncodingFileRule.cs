@@ -6,11 +6,9 @@ namespace Sparrow.Console.Rules
 {
     public class EncodingFileRule : FileRuleBase
     {
-        public EncodingFileRule(Func<IProjectFile, bool> condition) : base(condition)
-        {
-        }
+        public override Func<IProjectFile, bool> Condition => file => true;
+        public string EncodingType => Video.Abstractions.Enums.EncodingType.Mpegts;
 
-        public string EncodingType { get; set; }
-        public override RuleName RuleName { get; } = RuleName.New("Encoding");
+        public override RuleName RuleName => RuleName.New("Encoding");
     }
 }

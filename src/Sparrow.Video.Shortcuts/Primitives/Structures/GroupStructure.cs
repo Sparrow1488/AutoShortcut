@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Sparrow.Video.Abstractions.Primitives;
 
 namespace Sparrow.Video.Shortcuts.Primitives.Structures
@@ -17,6 +18,7 @@ namespace Sparrow.Video.Shortcuts.Primitives.Structures
 
         private readonly ILogger? _logger;
 
+        [JsonProperty]
         public IFilesStructure FilesStructure { get; private set; }
 
         public IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files)

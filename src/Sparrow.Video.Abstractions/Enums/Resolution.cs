@@ -17,9 +17,13 @@
         public int Width { get; }
 
         /// <summary>
+        ///     Display resoulution in 360p
+        /// </summary>
+        public static readonly Resolution Preview = new Resolution("480p", 360, 640);
+        /// <summary>
         ///     Display resoulution in 480p
         /// </summary>
-        public static readonly Resolution Small = new Resolution("480p", 480, 640);
+        public static readonly Resolution Small = new Resolution("480p", 480, 854);
         /// <summary>
         ///     Display resoulution in 480p
         /// </summary>
@@ -29,8 +33,12 @@
         /// </summary>
         public static readonly Resolution FHD = new Resolution("1080p", 1080, 1920);
         /// <summary>
-        ///     Display resoulution in 2K (2048p)
+        ///     Display resoulution in 2K (1440p)
         /// </summary>
-        public static readonly Resolution QFHD = new Resolution("2048p", 1080, 2048);
+        public static readonly Resolution QHD = new Resolution("1440p", 1440, 2560);
+        /// <summary>
+        ///     Display resoulution in 4K Ultra HD (2160p)
+        /// </summary>
+        public static readonly Resolution UHD = new Resolution("2160p", 2160, 3840);
     }
 }

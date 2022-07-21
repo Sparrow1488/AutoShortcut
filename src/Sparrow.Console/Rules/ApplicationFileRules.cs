@@ -1,5 +1,4 @@
 ﻿using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Shortcuts.Extensions;
 
 namespace Sparrow.Console.Rules
 {
@@ -8,33 +7,20 @@ namespace Sparrow.Console.Rules
         /// <summary>
         ///     Приводит видос к общему разрешению в нарезке
         /// </summary>
-        public static readonly ScaleFileRule ScaleFileRule = new(
-            Resolution.FHD, file => true);
-
-        public static readonly LoopFileRule LoopMediumFileRule = new(
-            file => file.Analyse.StreamAnalyses.Video().Duration < 14 && 
-                    file.Analyse.StreamAnalyses.Video().Duration > 8) {
-            LoopCount = 2
-        };
-
-        public static readonly LoopFileRule LoopShortFileRule = new(
-            file => file.Analyse.StreamAnalyses.Video().Duration <= 8) {
-            LoopCount = 3
-        };
+        public static readonly ScaleFileRule ScaleFileRule = new();
 
         /// <summary>
-        ///     Накладывает пустую аудио дорожку на видео, у которого нет звука 
-        ///     (нужно для лучшей синхронизации аудио)
+        ///     Накладывает пустую аудио дорожку на видео, у которого нет звука (нужно для лучшей синхронизации аудио)
         /// </summary>
-        public static readonly SilentFileRule SilentFileRule = new(
-            file => !file.Analyse.StreamAnalyses.WithAudio());
+        public static readonly SilentFileRule SilentFileRule = new();
 
         /// <summary>
-        ///     Используется для корректной конкатинации файлов
+        ///     Используется для корректной конкатинации файлов, конвертируя видеозаписи перед склейкой в кодировку <see cref="EncodingType.Mpegts"/> (.ts)
         /// </summary>
-        public static readonly EncodingFileRule EncodingFileRule = new(file => true)
-        {
-            EncodingType = EncodingType.Mpegts
-        };
+        public static readonly EncodingFileRule EncodingFileRule = new();
+
+
+        public static readonly LoopMediumFileRule LoopMediumFileRule = new();
+        public static readonly LoopShortFileRule LoopShortFileRule = new();
     }
 }

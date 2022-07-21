@@ -18,6 +18,11 @@ namespace Sparrow.Video.Shortcuts.Processes
         protected ITextProcessResult TextProcessResult { get; private set; }
         public IConfiguration Configuration { get; }
 
+        protected virtual Task OnStartingProcessAsync(ProcessSettings processSettings, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
         public virtual async Task StartAsync()
         {
             string result = "";
@@ -27,6 +32,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             startInfo.Arguments = settings.Argument;
             using (var process = new Process() { StartInfo = startInfo })
             {
+                await OnStartingProcessAsync(settings);
                 if (settings.IsReadOutputs)
                 {
                     result = await StartReadingAsync(process);
@@ -57,6 +63,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             {
                 FileName = OnGetProcessPath().Value,
                 WorkingDirectory = Directory.GetCurrentDirectory(),
+                CreateNoWindow = true
             };
             var settings = OnConfigureSettings();
             if (settings.IsReadOutputs)
@@ -68,7 +75,7 @@ namespace Sparrow.Video.Shortcuts.Processes
             }
             if (settings.IsShowConsole)
             {
-                startInfo.CreateNoWindow = true;
+                startInfo.CreateNoWindow = false;
             }
             return startInfo;
         }
@@ -79,14 +86,5 @@ namespace Sparrow.Video.Shortcuts.Processes
             process.Start();
             return await process.StandardOutput.ReadToEndAsync();
         }
-
-        //private ProcessStartInfo CreateStartInfo()
-        //{
-        //    var startInfo = CreateStartInfo();
-            
-        //    startInfo.UseShellExecute = false;
-        //    startInfo.CreateNoWindow = true;
-        //    return startInfo;
-        //}
     }
 }

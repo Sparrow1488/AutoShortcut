@@ -1,6 +1,7 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Rules;
+using Sparrow.Video.Shortcuts.Exceptions;
 
 namespace Sparrow.Video.Shortcuts.Processors
 {
@@ -16,9 +17,14 @@ namespace Sparrow.Video.Shortcuts.Processors
 
         public async Task ProcessAsync(IProjectFile file, IFileRule rule)
         {
-            if (rule.GetType() != GetRuleType())
-                throw new Exception("Processor can't handle current rule type");
-            await ProcessAsync(file, (TRule)rule);
+            if (rule.GetType().IsAssignableTo(GetRuleType()) || rule.GetType() == GetRuleType())
+            {
+                await ProcessAsync(file, (TRule)rule);
+            }
+            else
+            {
+                throw new FailedProcessRuleException("Processor can't handle current rule type " + rule.RuleName.Value);
+            }
         }
     }
 }

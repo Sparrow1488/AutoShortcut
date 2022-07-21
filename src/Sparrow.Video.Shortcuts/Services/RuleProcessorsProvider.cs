@@ -2,6 +2,7 @@
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Exceptions;
 using System.Reflection;
 
 namespace Sparrow.Video.Shortcuts.Services
@@ -31,7 +32,11 @@ namespace Sparrow.Video.Shortcuts.Services
                 var created = (IRuleProcessor)ActivatorUtilities.CreateInstance(Services, type);
                 ruleProcessors.Add(created);
             }
-            var found = ruleProcessors.Where(p => p.GetRuleType() == ruleType).FirstOrDefault();
+            var found = ruleProcessors.Where(p => ruleType.IsAssignableTo(p.GetRuleType())).FirstOrDefault();
+            if (found is null)
+            {
+                throw new FileRuleProcessorNotFoundException("Not found rule processor for type " + ruleType.FullName);
+            }
             return found;
         }
     }

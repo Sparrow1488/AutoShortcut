@@ -10,5 +10,7 @@ namespace Sparrow.Video.Abstractions.Enginies
             string filesDirectory, CancellationToken cancellationToken = default);
         Task<IFile> StartRenderAsync(
             IProject project, CancellationToken cancellationToken = default);
+        Task<IFile> ContinueRenderAsync(
+            string restoreDirectoryPath, CancellationToken cancellationToken = default);
     }
 }

@@ -2,6 +2,7 @@
 {
     public class ReferenceType
     {
+        [Newtonsoft.Json.JsonConstructor]
         private ReferenceType(string value)
         {
             Value = value;

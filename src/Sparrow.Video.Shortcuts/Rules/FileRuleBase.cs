@@ -1,4 +1,5 @@
-﻿using Sparrow.Video.Abstractions.Enums;
+﻿using Newtonsoft.Json;
+using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Rules;
 
@@ -6,17 +7,20 @@ namespace Sparrow.Video.Shortcuts.Rules
 {
     public abstract class FileRuleBase : IFileRule
     {
-        public FileRuleBase(Func<IProjectFile, bool> condition)
-        {
-            Condition = condition;
-        }
-
+        [JsonProperty]
         public abstract RuleName RuleName { get; }
-        public Func<IProjectFile, bool> Condition { get; }
+        [JsonIgnore]
+        public abstract Func<IProjectFile, bool> Condition { get; }
+        [JsonProperty]
+        public bool IsApplied { get; set; }
 
-        public bool IsInRule(IProjectFile file)
-        {
-            return Condition.Invoke(file);
-        }
+        /// <summary>
+        ///     Default value is <see cref="RuleApply.Permanent"/>
+        /// </summary>
+        [JsonProperty]
+        public virtual RuleApply RuleApply => RuleApply.Permanent;
+
+        public void Applied() => IsApplied = true;
+        public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
     }
 }
