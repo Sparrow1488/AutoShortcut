@@ -17,7 +17,8 @@ namespace Sparrow.Video.Shortcuts.Processes
             IConfiguration configuration,
             ILogger<FFmpegProcess> logger,
             IUploadFilesService uploadFilesService,
-            IEnvironmentSettingsProvider environmentSettingsProvider) : base(configuration)
+            IEnvironmentSettingsProvider environmentSettingsProvider) 
+        : base(configuration)
         {
             _saveService = saveService;
             _pathsProvider = pathsProvider;
@@ -51,7 +52,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         {
             if (_environmentSettingsProvider.IsFFmpegScriptsLoggingEnabled())
             {
-                _logger.LogInformation("FFmpegScriptsLogging is {status}. Saving executable script", EnvironmentSettings.FFmpegLogging.Enable);
+                _logger.LogDebug("FFmpegScriptsLogging is {status}. Saving executable script", EnvironmentSettings.FFmpegLogging.Enable);
                 var saveScriptsPath = _pathsProvider.GetPathFromCurrent("Scripts");
                 var logFileName = GetType().Name + "_FFmpeg_" + DateTime.Now.ToString("hh.mm.ss-yyyy.MM.dd") + ".txt";
                 var saveScriptSettings = new SaveSettings() { SaveFullPath = Path.Combine(saveScriptsPath, logFileName) };

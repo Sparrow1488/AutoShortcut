@@ -17,9 +17,13 @@
         public int Width { get; }
 
         /// <summary>
+        ///     Display resoulution in 360p
+        /// </summary>
+        public static readonly Resolution Preview = new Resolution("480p", 360, 640);
+        /// <summary>
         ///     Display resoulution in 480p
         /// </summary>
-        public static readonly Resolution Small = new Resolution("480p", 480, 640);
+        public static readonly Resolution Small = new Resolution("480p", 480, 854);
         /// <summary>
         ///     Display resoulution in 480p
         /// </summary>

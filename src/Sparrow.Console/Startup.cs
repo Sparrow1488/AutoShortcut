@@ -12,7 +12,7 @@ internal class Startup
 {
     public Startup()
     {
-        string filesDirectory = @"D:\Yoga\SourceFilmMakers\PUBLIC\Categories\Overwatch\a";
+        string filesDirectory = @"D:\Yoga\SourceFilmMakers\PUBLIC\Categories\B2\te";
         FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
     }
 
