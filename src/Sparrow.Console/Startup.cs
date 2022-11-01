@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Sparrow.Console.Rules;
@@ -12,7 +13,10 @@ internal class Startup
 {
     public Startup()
     {
-        string filesDirectory = @"C:\Users\USER\Desktop\downloads\1";
+        var configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.Console.json").Build();
+        string filesDirectory = configuration["FilesRootDirectoryPath"];
         FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
     }
 
@@ -26,7 +30,7 @@ internal class Startup
         foreach (var filePath in files)
         {
             var newName = Path.GetFileName(filePath).Replace("'", "");
-            var newPath = Path.Combine(Path.GetDirectoryName(filePath), newName);
+            var newPath = Path.Combine(Path.GetDirectoryName(filePath)!, newName);
             File.Move(filePath, newPath);
         }
     }
@@ -35,6 +39,11 @@ internal class Startup
     {
         FixNames();
         OnConfigureHost();
+
+        Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
+        await Task.Delay(3000, cancellationToken);
+        Log.Information("Start application");
+
         var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
         var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
         var engine = factory.CreateEngine();

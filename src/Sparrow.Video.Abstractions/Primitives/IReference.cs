@@ -1,13 +1,12 @@
 ﻿using Sparrow.Video.Abstractions.Enums;
 
-namespace Sparrow.Video.Abstractions.Primitives
+namespace Sparrow.Video.Abstractions.Primitives;
+
+public interface IReference
 {
-    public interface IReference
-    {
-        string Name { get; }
-        string FileFullPath { get; }
-        string Target { get; }
-        ReferenceType Type { get; }
-        DateTime CreatedAt { get; }
-    }
+    string Name { get; }
+    string FileFullPath { get; }
+    string Target { get; }
+    ReferenceType Type { get; }
+    DateTime CreatedAt { get; }
 }
