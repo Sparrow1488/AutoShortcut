@@ -1,5 +1,5 @@
-﻿using Sparrow.Video.Abstractions.Exceptions;
-using System.Reflection;
+﻿using Newtonsoft.Json;
+using Sparrow.Video.Abstractions.Exceptions;
 
 namespace Sparrow.Video.Abstractions.Enums
 {
@@ -8,6 +8,12 @@ namespace Sparrow.Video.Abstractions.Enums
     /// </summary>
     public class Resolution
     {
+        [JsonConstructor]
+        private Resolution()
+        {
+
+        }
+
         private Resolution(string resolution, int height, int width)
         {
             Value = resolution;
@@ -15,8 +21,11 @@ namespace Sparrow.Video.Abstractions.Enums
             Width = width;
         }
 
+        [JsonProperty]
         public string Value { get; }
+        [JsonProperty]
         public int Height { get; }
+        [JsonProperty]
         public int Width { get; }
 
         /// <summary>

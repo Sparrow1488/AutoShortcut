@@ -55,15 +55,15 @@ namespace Sparrow.Video.Shortcuts.Services
 
         private void CheckFullnessFileReferences(IProjectFile restoreProjectFile)
         {
-            _logger.LogInformation("Check file reference fullness");
+            _logger.LogInformation(
+                "Check file '{file}' reference fullness", 
+                restoreProjectFile.File.Name);
+
             foreach (var reference in restoreProjectFile.References)
-            {
                 if (!System.IO.File.Exists(reference.FileFullPath))
-                {
-                    _logger.LogWarning("File with target '{target}' is specified, but not exists",
+                    _logger.LogWarning(
+                        "File with target '{target}' is specified, but not exists",
                         reference.Target);
-                }
-            }
         }
     }
 }

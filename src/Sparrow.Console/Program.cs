@@ -6,12 +6,6 @@ using Sparrow.Video.Shortcuts.Exceptions;
 Startup cli = new AutoshortcutStartup();
 CancellationToken token = new();
 
-/*
- * TODO: + 1. Параметры запуска 
- *       + 2. Сервис сохранения (включен/выключен)
- *       3. Удаление .restore файлов
- */
-
 try
 {
     await cli.StartAsync(token);
