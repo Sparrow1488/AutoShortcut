@@ -11,7 +11,8 @@ namespace Sparrow.Video.Shortcuts.Services
             TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Full,
             CheckAdditionalContent = true,
             TypeNameHandling = TypeNameHandling.All,
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            ReferenceLoopHandling = ReferenceLoopHandling.Error,
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         };
 
         public TObj Deserialize<TObj>(string json)

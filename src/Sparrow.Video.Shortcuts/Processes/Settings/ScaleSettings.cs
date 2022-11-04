@@ -1,20 +1,26 @@
-﻿using Sparrow.Video.Abstractions.Enums;
+﻿using Newtonsoft.Json;
+using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Processes.Settings;
 
-namespace Sparrow.Video.Shortcuts.Processes.Settings
-{
-    public class ScaleSettings : IScaleSettings
-    {
-        public int Width { get; set; } = -2;
-        public int Heigth { get; set; } = -2;
+namespace Sparrow.Video.Shortcuts.Processes.Settings;
 
-        public static IScaleSettings Create(Resolution resolution)
+[Serializable]
+public class ScaleSettings : IScaleSettings
+{
+    [JsonConstructor]
+    public ScaleSettings() { }
+
+    [JsonProperty]
+    public int Width { get; set; } = -2;
+    [JsonProperty]
+    public int Heigth { get; set; } = -2;
+
+    public static IScaleSettings Create(Resolution resolution)
+    {
+        return new ScaleSettings()
         {
-            return new ScaleSettings()
-            {
-                Heigth = resolution.Height,
-                Width = resolution.Width
-            };
-        }
+            Heigth = resolution.Height,
+            Width = resolution.Width
+        };
     }
 }

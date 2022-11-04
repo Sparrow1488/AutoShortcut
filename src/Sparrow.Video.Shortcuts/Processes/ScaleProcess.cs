@@ -33,7 +33,17 @@ namespace Sparrow.Video.Shortcuts.Processes
             _saveSettings = saveSettings;
             _scaleSettings = scaleSettings;
             _file = file;
+            ThrowIfScaleSettingsInvalid();
             return await StartFFmpegAsync();
+        }
+
+        protected void ThrowIfScaleSettingsInvalid()
+        {
+            if (_scaleSettings.Heigth < 1 || _scaleSettings.Width < 1)
+            {
+                throw new InvalidOperationException("" +
+                    $"Failed to process scale video with input parameters: Height:{_scaleSettings.Heigth}, Width:{_scaleSettings.Width}");
+            }
         }
 
         /// <summary>
