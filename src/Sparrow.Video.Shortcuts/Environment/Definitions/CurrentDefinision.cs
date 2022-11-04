@@ -62,6 +62,7 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddScoped<IShortcutEngine, ShortcutEngine>();
         services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
 
+        services.AddScoped<IProjectSerializationService, ProjectSerializationService>();
         services.AddScoped<IRenderUtility, RenderUtility>();
 
         return services;

@@ -8,7 +8,6 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 using System.Text;
 
 namespace Sparrow.Video.Shortcuts.Render;
@@ -18,9 +17,7 @@ public class RenderUtility : IRenderUtility
     private readonly ILogger<RenderUtility> _logger;
     private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
     private readonly ITextFormatter _textFormatter;
-    private readonly ISaveService _saveService;
-    private readonly IJsonSerializer _serializer;
-    private readonly IPathsProvider _pathsProvider;
+    private readonly IProjectSerializationService _projectSerialization;
     private readonly IConcatinateProcess _concatinateProcess;
 
     private IProjectFile? _loggedProcessingFile;
@@ -29,17 +26,13 @@ public class RenderUtility : IRenderUtility
         ILogger<RenderUtility> logger,
         IRuleProcessorsProvider ruleProcessorsProvider,
         ITextFormatter textFormatter,
-        ISaveService saveService,
-        IJsonSerializer serializer,
-        IPathsProvider pathsProvider,
+        IProjectSerializationService projectSerialization,
         IConcatinateProcess concatinateProcess)
     {
         _logger = logger;
         _ruleProcessorsProvider = ruleProcessorsProvider;
         _textFormatter = textFormatter;
-        _saveService = saveService;
-        _serializer = serializer;
-        _pathsProvider = pathsProvider;
+        _projectSerialization = projectSerialization;
         _concatinateProcess = concatinateProcess;
     }
 
@@ -51,10 +44,10 @@ public class RenderUtility : IRenderUtility
         IProject project, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting render project");
-        await SaveProjectOptionsAsync(project);
+        await _projectSerialization.SaveProjectOptionsAsync(project);
         _logger.LogInformation("Total shortcut files {count}", project.Files.Count());
 
-        await SaveProjectFilesAsync(project.Files);
+        await _projectSerialization.SaveProjectFilesAsync(project.Files);
 
         var filesArray = project.Files.ToArray();
         foreach (var file in filesArray)
@@ -71,17 +64,6 @@ public class RenderUtility : IRenderUtility
         return result;
     }
 
-    private async Task SaveProjectOptionsAsync(IProject project)
-    {
-        var serializedOptions = _serializer.Serialize(project.Options);
-        var saveProjectOptionsPath = _pathsProvider.GetPathFromCurrent("ProjectOptions");
-        var saveSettings = new SaveSettings()
-        {
-            SaveFullPath = Path.Combine(saveProjectOptionsPath, "project-options.json")
-        };
-        await _saveService.SaveTextAsync(serializedOptions, saveSettings);
-    }
-
     private async Task ApplyFileRuleAsync()
     {
         if (IsCurrentFileRuleNotAppliedOrRuntimeProcessing())
@@ -90,7 +72,7 @@ public class RenderUtility : IRenderUtility
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(CurrentApplyingRule.GetType());
             await processor.ProcessAsync(CurrentProcessFile, CurrentApplyingRule);
             CurrentApplyingRule.Applied();
-            await SaveProjectFileAsync(CurrentProcessFile);
+            await _projectSerialization.SaveProjectFileAsync(CurrentProcessFile);
         }
         else
         {
@@ -101,6 +83,7 @@ public class RenderUtility : IRenderUtility
     private bool IsCurrentFileRuleNotAppliedOrRuntimeProcessing()
         => !CurrentApplyingRule.IsApplied || CurrentApplyingRule.RuleApply == RuleApply.Runtime;
 
+    #region Log Current Processing File Rules
     private void PrintCurrentApplyingRuleLog()
     {
         if (_loggedProcessingFile != CurrentProcessFile)
@@ -118,24 +101,10 @@ public class RenderUtility : IRenderUtility
             var buildedLog = stringBuilder.Append(' ', processingFileNumeric.Length).Append(logText).ToString();
             _logger.LogInformation(buildedLog);
         }
-        
+
         _loggedProcessingFile ??= CurrentProcessFile;
     }
-
-    private async Task SaveProjectFilesAsync(IEnumerable<IProjectFile> files)
-    {
-        foreach (var file in files)
-            await SaveProjectFileAsync(file);
-    }
-
-    private async Task SaveProjectFileAsync(IProjectFile file)
-    {
-        var saveSettings = new SaveSettings() {
-            SaveFullPath = file.File.Path.ChangeFileExtension(setExtension: ".restore")
-        };
-        var serializedFile = _serializer.Serialize(file);
-        await _saveService.SaveTextAsync(serializedFile, saveSettings);
-    }
+    #endregion
 
     private IEnumerable<string> GetConcatinateFilesPaths(IEnumerable<IProjectFile> files)
     {
