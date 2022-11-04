@@ -22,7 +22,7 @@ namespace Sparrow.Video.Abstractions.Enums
         /// <summary>
         ///     Display resoulution in 360p
         /// </summary>
-        public static readonly Resolution Preview = new Resolution("480p", 360, 640);
+        public static readonly Resolution Preview = new Resolution("360p", 360, 640);
         /// <summary>
         ///     Display resoulution in 480p
         /// </summary>

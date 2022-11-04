@@ -2,6 +2,9 @@
 
 public class EnvironmentVariableNames
 {
+    /// <summary>
+    ///     Specify the root files directory path
+    /// </summary>
     public const string InputDirectoryPath = "input";
     /// <summary>
     ///     Specifies that the files used in the project should be serialized for further restoration
