@@ -64,8 +64,8 @@ internal class Startup
 
         }).CreateProject(options =>
         {
-            options.StructureBy(new GroupStructure(logger).StructureFilesBy(new DurationStructure()));
-            options.Named("Compilation");
+            options.StructureBy(new GroupStructure(logger).StructureFilesBy(new NameStructure()));
+            options.Named("Compilation-2");
         });
 
         var compilation = await engine.StartRenderAsync(project, cancellationToken);

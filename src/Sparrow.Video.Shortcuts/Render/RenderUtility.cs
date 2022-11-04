@@ -15,6 +15,16 @@ namespace Sparrow.Video.Shortcuts.Render;
 
 public class RenderUtility : IRenderUtility
 {
+    private readonly ILogger<RenderUtility> _logger;
+    private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
+    private readonly ITextFormatter _textFormatter;
+    private readonly ISaveService _saveService;
+    private readonly IJsonSerializer _serializer;
+    private readonly IPathsProvider _pathsProvider;
+    private readonly IConcatinateProcess _concatinateProcess;
+
+    private IProjectFile? _loggedProcessingFile;
+
     public RenderUtility(
         ILogger<RenderUtility> logger,
         IRuleProcessorsProvider ruleProcessorsProvider,
@@ -33,14 +43,6 @@ public class RenderUtility : IRenderUtility
         _concatinateProcess = concatinateProcess;
     }
 
-    private readonly ILogger<RenderUtility> _logger;
-    private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
-    private readonly ITextFormatter _textFormatter;
-    private readonly ISaveService _saveService;
-    private readonly IJsonSerializer _serializer;
-    private readonly IPathsProvider _pathsProvider;
-    private readonly IConcatinateProcess _concatinateProcess;
-
     public IProjectFile CurrentProcessFile { get; private set; }
     public IFileRule CurrentApplyingRule { get; private set; }
     private ProcessingFilesStatistic FilesStatistic { get; set; }
@@ -51,6 +53,9 @@ public class RenderUtility : IRenderUtility
         _logger.LogInformation("Starting render project");
         await SaveProjectOptionsAsync(project);
         _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
+
+        await SaveProjectFilesAsync(project.Files);
+
         var filesArray = project.Files.ToArray();
         foreach (var file in filesArray)
             foreach (var rule in file.RulesCollection)
@@ -79,7 +84,7 @@ public class RenderUtility : IRenderUtility
 
     private async Task ApplyFileRuleAsync()
     {
-        if (!CurrentApplyingRule.IsApplied || CurrentApplyingRule.RuleApply == RuleApply.Runtime)
+        if (IsCurrentFileRuleNotAppliedOrRuntimeProcessing())
         {
             PrintCurrentApplyingRuleLog();
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(CurrentApplyingRule.GetType());
@@ -93,7 +98,9 @@ public class RenderUtility : IRenderUtility
         }
     }
 
-    private IProjectFile? _loggedProcessingFile;
+    private bool IsCurrentFileRuleNotAppliedOrRuntimeProcessing()
+        => !CurrentApplyingRule.IsApplied || CurrentApplyingRule.RuleApply == RuleApply.Runtime;
+
     private void PrintCurrentApplyingRuleLog()
     {
         if (_loggedProcessingFile != CurrentProcessFile)
@@ -115,11 +122,16 @@ public class RenderUtility : IRenderUtility
         _loggedProcessingFile ??= CurrentProcessFile;
     }
 
+    private async Task SaveProjectFilesAsync(IEnumerable<IProjectFile> files)
+    {
+        foreach (var file in files)
+            await SaveProjectFileAsync(file);
+    }
+
     private async Task SaveProjectFileAsync(IProjectFile file)
     {
-        var saveSettings = new SaveSettings()
-        {
-            SaveFullPath = Path.Combine(Path.GetDirectoryName(file.File.Path), file.File.Name + ".restore")
+        var saveSettings = new SaveSettings() {
+            SaveFullPath = file.File.Path.ChangeFileExtension(setExtension: ".restore")
         };
         var serializedFile = _serializer.Serialize(file);
         await _saveService.SaveTextAsync(serializedFile, saveSettings);
