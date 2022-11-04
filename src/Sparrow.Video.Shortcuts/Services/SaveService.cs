@@ -47,27 +47,23 @@ namespace Sparrow.Video.Shortcuts.Services
             await SaveTextAsync(metaFileFullName, fileMeta, cancellationToken);
         }
 
-        private async Task SaveTextAsync(
-            string fullFilePath, string saveText, CancellationToken cancellation)
-        {
-            var fileDirectory = new FileInfo(fullFilePath).Directory.FullName;
-            Directory.CreateDirectory(fileDirectory);
-            using (var fileStream = File.Create(fullFilePath))
-            {
-                var objectBytes = EncodingString(saveText, Encoding.UTF8);
-                await fileStream.WriteAsync(objectBytes, cancellation);
-            }
-        }
-
-        private byte[] EncodingString(string obj, Encoding encoding)
-        {
-            return encoding.GetBytes(obj);
-        }
-
         public async Task SaveTextAsync(
             string text, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
         {
             await SaveTextAsync(saveSettings.SaveFullPath, text, cancellationToken);
         }
+
+        private async Task SaveTextAsync(
+            string fullFilePath, string saveText, CancellationToken cancellation)
+        {
+            var fileDirectory = new FileInfo(fullFilePath).Directory.FullName;
+            Directory.CreateDirectory(fileDirectory);
+            using var fileStream = File.Create(fullFilePath);
+            var objectBytes = EncodingString(saveText, Encoding.UTF8);
+            await fileStream.WriteAsync(objectBytes, cancellation);
+        }
+
+        private byte[] EncodingString(string obj, Encoding encoding)
+            => encoding.GetBytes(obj);
     }
 }
