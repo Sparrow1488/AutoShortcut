@@ -49,7 +49,7 @@ internal class Startup
         var engine = factory.CreateEngine();
 
         //var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
-
+        //return;
         var pipeline = await engine.CreatePipelineAsync(
                         FilesDirectoryPath.Value, cancellationToken);
 
@@ -64,7 +64,7 @@ internal class Startup
 
         }).CreateProject(options =>
         {
-            options.StructureBy(new GroupStructure().StructureFilesBy(new DurationStructure()));
+            options.StructureBy(new GroupStructure(logger).StructureFilesBy(new DurationStructure()));
             options.Named("Compilation");
         });
 

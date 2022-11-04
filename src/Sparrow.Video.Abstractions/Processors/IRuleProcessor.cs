@@ -6,12 +6,12 @@ namespace Sparrow.Video.Abstractions.Processors
     public interface IRuleProcessor<in TRule> : IRuleProcessor
         where TRule : IFileRule
     {
-        Task ProcessAsync(IProjectFile file, TRule rule);
+        Task<IFile> ProcessAsync(IProjectFile file, TRule rule);
     }
 
     public interface IRuleProcessor : IProcessor
     {
         Type GetRuleType();
-        Task ProcessAsync(IProjectFile file, IFileRule rule);
+        Task<IFile> ProcessAsync(IProjectFile file, IFileRule rule);
     }
 }

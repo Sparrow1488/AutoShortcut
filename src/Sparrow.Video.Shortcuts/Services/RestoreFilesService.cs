@@ -41,6 +41,7 @@ namespace Sparrow.Video.Shortcuts.Services
             {
                 var fileJson = await _fileTextService.ReadTextAsync(restoreFile.Path);
                 var restoreFileObject = _serializer.Deserialize<ProjectFile>(fileJson);
+                CheckFullnessFileReferences(restoreFileObject);
                 RestoreFile restoredFile = new()
                 {
                     IsSuccess = true,
@@ -50,6 +51,19 @@ namespace Sparrow.Video.Shortcuts.Services
                 restoredFilesList.Add(restoredFile);
             }
             return restoredFilesList;
+        }
+
+        private void CheckFullnessFileReferences(IProjectFile restoreProjectFile)
+        {
+            _logger.LogInformation("Check file reference fullness");
+            foreach (var reference in restoreProjectFile.References)
+            {
+                if (!System.IO.File.Exists(reference.FileFullPath))
+                {
+                    _logger.LogWarning("File with target '{target}' is specified, but not exists",
+                        reference.Target);
+                }
+            }
         }
     }
 }
