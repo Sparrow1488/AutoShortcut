@@ -4,12 +4,15 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
+using Sparrow.Video.Shortcuts.Enums;
+using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console;
-internal class Startup
+internal abstract class Startup
 {
     public Startup()
     {
@@ -20,11 +23,11 @@ internal class Startup
         FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
     }
 
-    private StringPath FilesDirectoryPath { get; }
-
+    public StringPath FilesDirectoryPath { get; }
     public IServiceProvider ServiceProvider { get; set; } = default!;
+    public IEnvironmentVariablesProvider Variables { get; set; } = default!;
 
-    private void FixNames()
+    protected void FixNames()
     {
         var files = Directory.GetFiles(FilesDirectoryPath.Value);
         foreach (var filePath in files)
@@ -35,44 +38,18 @@ internal class Startup
         }
     }
 
-    public async Task OnStart(CancellationToken cancellationToken = default)
+    public async Task StartAsync(CancellationToken token = default!)
     {
+        OnConfigureStartup();
         FixNames();
-        OnConfigureHost();
-
-        Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
-        await Task.Delay(3000, cancellationToken);
-        Log.Information("Start application");
-
-        var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
-        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-        var engine = factory.CreateEngine();
-
-        //var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
-        //return;
-        var pipeline = await engine.CreatePipelineAsync(
-                        FilesDirectoryPath.Value, cancellationToken);
-
-        var project = pipeline.Configure(options =>
-        {
-            options.IsSerialize = true; // TODO: Not implemented: Project RESTORE
-            options.AddRule<ScaleFileRule>();
-            options.AddRule<SilentFileRule>();
-            options.AddRule<EncodingFileRule>();
-            options.AddRule<LoopShortFileRule>();
-            options.AddRule<LoopMediumFileRule>();
-
-        }).CreateProject(options =>
-        {
-            options.StructureBy(new GroupStructure(logger).StructureFilesBy(new NameStructure()));
-            options.Named("Compilation-2");
-        });
-
-        var compilation = await engine.StartRenderAsync(project, cancellationToken);
-        Log.Information("Finally video: " + compilation.Path);
+        await OnStart(token);
     }
 
-    private void OnConfigureHost()
+    public virtual void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
+
+    public abstract Task OnStart(CancellationToken cancellationToken = default);
+    
+    private void OnConfigureStartup()
     {
         ServiceProvider = Host.CreateDefaultBuilder()
             .UseSerilog((context, services, configuration) => configuration
@@ -83,5 +60,11 @@ internal class Startup
                 services.AddShortcutDefinision();
             })
             .Build().Services;
+
+        Variables = ServiceProvider.GetRequiredService<IEnvironmentVariablesProvider>();
+        if (Variables.IsDevelopment())
+        {
+            OnConfigreDevelopmentVariables(Variables);
+        }
     }
 }

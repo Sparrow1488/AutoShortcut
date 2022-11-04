@@ -18,52 +18,52 @@ using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
 using Sparrow.Video.Shortcuts.Services;
 
-namespace Sparrow.Video.Shortcuts.Environment.Definitions
+namespace Sparrow.Video.Shortcuts.Environment.Definitions;
+
+public class CurrentDefinision : ApplicationDefinition
 {
-    public class CurrentDefinision : ApplicationDefinition
+    public override IServiceCollection OnConfigureServices(IServiceCollection services)
     {
-        public override IServiceCollection OnConfigureServices(IServiceCollection services)
-        {
-            services.AddScoped<IConfiguration>(x => new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build());
+        services.AddScoped<IConfiguration>(x => new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build());
 
-            services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
-            services.AddSingleton<IPathsProvider, PathsProvider>();
-            services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();
-            services.AddSingleton<IScriptFormatsProvider, ScriptFormatsProvider>();
-            services.AddSingleton<IEnvironmentSettingsProvider, EnvironmentSettingsProvider>();
-            services.AddSingleton<IJsonSerializer, JsonSerializer>();
+        services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
+        services.AddSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();
+        services.AddSingleton<IPathsProvider, PathsProvider>();
+        services.AddSingleton<IRuleProcessorsProvider, RuleProcessorsProvider>();
+        services.AddSingleton<IScriptFormatsProvider, ScriptFormatsProvider>();
+        services.AddSingleton<IEnvironmentSettingsProvider, EnvironmentSettingsProvider>();
+        services.AddSingleton<IJsonSerializer, JsonSerializer>();
 
-            services.AddSingleton<IUploadFilesService, UploadFilesService>();
-            services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
-            services.AddSingleton<IResourcesService, ResourcesService>();
-            services.AddSingleton<ISaveService, SaveService>();
-            services.AddSingleton<IReadFileTextService, ReadFileTextService>();
-            services.AddSingleton<IStoreService, StoreService>();
-            services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
-            services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
-            services.AddSingleton<IRestoreProjectService, RestoreProjectService>();
-            services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
-            services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
-            services.AddSingleton<ITextFormatter, TextFormatter>();
-            services.AddSingleton<AssemblyInfoLoader>();
+        services.AddSingleton<IUploadFilesService, UploadFilesService>();
+        services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
+        services.AddSingleton<IResourcesService, ResourcesService>();
+        services.AddSingleton<ISaveService, SaveService>();
+        services.AddSingleton<IReadFileTextService, ReadFileTextService>();
+        services.AddSingleton<IStoreService, StoreService>();
+        services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
+        services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
+        services.AddSingleton<IRestoreProjectService, RestoreProjectService>();
+        services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
+        services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
+        services.AddSingleton<ITextFormatter, TextFormatter>();
+        services.AddSingleton<AssemblyInfoLoader>();
 
-            services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
-            services.AddSingleton<IEncodingProcess, EncodingProcess>();
-            services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
-            services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
-            services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
-            services.AddSingleton<IScaleProcess, ScaleProcess>();
+        services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
+        services.AddSingleton<IEncodingProcess, EncodingProcess>();
+        services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
+        services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
+        services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
+        services.AddSingleton<IScaleProcess, ScaleProcess>();
 
-            services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
+        services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
 
-            services.AddScoped<IPipelineOptions, PipelineOptions>();
-            services.AddScoped<IProjectOptions, ProjectOptions>();
-            services.AddScoped<IShortcutEngine, ShortcutEngine>();
-            services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
+        services.AddScoped<IPipelineOptions, PipelineOptions>();
+        services.AddScoped<IProjectOptions, ProjectOptions>();
+        services.AddScoped<IShortcutEngine, ShortcutEngine>();
+        services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
 
-            services.AddScoped<IRenderUtility, RenderUtility>();
+        services.AddScoped<IRenderUtility, RenderUtility>();
 
-            return services;
-        }
+        return services;
     }
 }

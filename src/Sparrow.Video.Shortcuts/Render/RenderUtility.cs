@@ -52,7 +52,7 @@ public class RenderUtility : IRenderUtility
     {
         _logger.LogInformation("Starting render project");
         await SaveProjectOptionsAsync(project);
-        _logger.LogInformation($"Total shortcut files => {project.Files.Count()}");
+        _logger.LogInformation("Total shortcut files {count}", project.Files.Count());
 
         await SaveProjectFilesAsync(project.Files);
 

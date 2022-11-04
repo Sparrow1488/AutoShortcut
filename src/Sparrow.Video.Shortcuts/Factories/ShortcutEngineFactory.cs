@@ -4,31 +4,30 @@ using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Shortcuts.Services;
 
-namespace Sparrow.Video.Shortcuts.Factories
+namespace Sparrow.Video.Shortcuts.Factories;
+
+public class ShortcutEngineFactory : IShortcutEngineFactory
 {
-    public class ShortcutEngineFactory : IShortcutEngineFactory
+    public ShortcutEngineFactory(
+        ILogger<ShortcutEngineFactory> logger,
+        IServiceProvider services,
+        AssemblyInfoLoader assemblyInfoLoader)
     {
-        public ShortcutEngineFactory(
-            ILogger<ShortcutEngineFactory> logger,
-            IServiceProvider services,
-            AssemblyInfoLoader assemblyInfoLoader)
-        {
-            _logger = logger;
-            Services = services;
-            AssemblyInfoLoader = assemblyInfoLoader;
-        }
+        _logger = logger;
+        Services = services;
+        AssemblyInfoLoader = assemblyInfoLoader;
+    }
 
-        private readonly ILogger<ShortcutEngineFactory> _logger;
+    private readonly ILogger<ShortcutEngineFactory> _logger;
 
-        public IServiceProvider Services { get; private set; }
-        public AssemblyInfoLoader AssemblyInfoLoader { get; }
+    public IServiceProvider Services { get; private set; }
+    public AssemblyInfoLoader AssemblyInfoLoader { get; }
 
-        public IShortcutEngine CreateEngine()
-        {
-            _logger.LogInformation(AssemblyInfoLoader.GetAssemblyInfo());
-            _logger.LogInformation("Current environment mode: " + AssemblyInfoLoader.GetCurrentEnvironmentMode());
-            var engine = Services.GetService<IShortcutEngine>();
-            return engine;
-        }
+    public IShortcutEngine CreateEngine()
+    {
+        _logger.LogInformation(AssemblyInfoLoader.GetAssemblyInfo());
+        _logger.LogInformation("Current environment mode {mode}", AssemblyInfoLoader.GetCurrentEnvironmentMode());
+        var engine = Services.GetService<IShortcutEngine>();
+        return engine;
     }
 }

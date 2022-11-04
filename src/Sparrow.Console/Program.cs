@@ -1,6 +1,15 @@
 ﻿using Sparrow.Console;
+using Sparrow.Video.Shortcuts.Enums;
 
-var cli = new Startup();
-var token = new CancellationToken();
+Startup cli = new AutoshortcutStartup();
+CancellationToken token = new();
 
-await cli.OnStart(token);
+Environment.SetEnvironmentVariable(EnvironmentVariableNames.Environment, "dev", EnvironmentVariableTarget.User);
+
+/*
+ * TODO: 1. Параметры запуска (develop из конфига, production из консоли)
+ *       2. Сервис сохранения (включен/выключен)
+ *       3. Удаление .restore файлов
+ */
+
+await cli.StartAsync(token);

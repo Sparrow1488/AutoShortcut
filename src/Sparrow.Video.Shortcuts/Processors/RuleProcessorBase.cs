@@ -34,6 +34,11 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
         return processedResultFile;
     }
 
+    private bool IsInputAndCurrentRulesAreTheSame(IFileRule input)
+        => input.GetType().IsAssignableTo(GetRuleType()) || input.GetType() == GetRuleType();
+
+    public Type GetRuleType() => typeof(TRule);
+
     protected void AddReference(IProjectFile toFile, IFileRule appliedRule, IFile resultFile)
     {
         toFile.References.Add(new Reference()
@@ -43,9 +48,4 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
             FileFullPath = resultFile.Path
         });
     }
-
-    private bool IsInputAndCurrentRulesAreTheSame(IFileRule input)
-        => input.GetType().IsAssignableTo(GetRuleType()) || input.GetType() == GetRuleType();
-
-    public Type GetRuleType() => typeof(TRule);
 }
