@@ -2,6 +2,6 @@
 
 public interface IEnvironmentVariablesProvider
 {
-    string GetVariable(string variableName);
+    string? GetVariable(string variableName);
     IEnvironmentVariablesProvider SetVariable(string variableName, string value);
 }

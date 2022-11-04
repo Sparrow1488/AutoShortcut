@@ -1,7 +1,8 @@
 {
   "profiles": {
     "Sparrow.Console": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "-env=dev -serialize=false -output=Compilation mode=new"
     }
   }
 }

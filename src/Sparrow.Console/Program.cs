@@ -1,15 +1,26 @@
-﻿using Sparrow.Console;
-using Sparrow.Video.Shortcuts.Enums;
+﻿using Serilog;
+using Sparrow.Console;
+using Sparrow.Video.Abstractions.Exceptions;
+using Sparrow.Video.Shortcuts.Exceptions;
 
 Startup cli = new AutoshortcutStartup();
 CancellationToken token = new();
 
-Environment.SetEnvironmentVariable(EnvironmentVariableNames.Environment, "dev", EnvironmentVariableTarget.User);
-
 /*
- * TODO: 1. Параметры запуска (develop из конфига, production из консоли)
+ * TODO: + 1. Параметры запуска 
  *       2. Сервис сохранения (включен/выключен)
  *       3. Удаление .restore файлов
  */
 
-await cli.StartAsync(token);
+try
+{
+    await cli.StartAsync(token);
+}
+catch (InvalidEnvironmentVariableException ex)
+{
+    Log.Error(ex.Message);
+}
+catch (InputResolutionNameNotRequiredException ex)
+{
+    Log.Error(ex.Message);
+}

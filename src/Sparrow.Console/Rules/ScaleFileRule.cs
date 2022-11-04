@@ -8,7 +8,14 @@ namespace Sparrow.Console.Rules
 {
     public class ScaleFileRule : FileRuleBase
     {
-        public IScaleSettings Scale => ScaleSettings.Create(Resolution.Preview);
+        private readonly Resolution _resolution;
+
+        public ScaleFileRule(Resolution resolution)
+        {
+            _resolution = resolution;
+        }
+
+        public IScaleSettings Scale => ScaleSettings.Create(_resolution);
         public override Func<IProjectFile, bool> Condition => file => true;
 
         public override RuleName RuleName => RuleName.New("Scale");

@@ -2,6 +2,7 @@
 
 public class EnvironmentVariableNames
 {
+    public const string InputDirectoryPath = "input";
     /// <summary>
     ///     Specifies that the files used in the project should be serialized for further restoration
     /// </summary>
@@ -18,4 +19,8 @@ public class EnvironmentVariableNames
     ///     Development or Production (dev or prod)
     /// </summary>
     public const string Environment = "env";
+    /// <summary>
+    ///     Specify output video resolution
+    /// </summary>
+    public const string Quality = "quality";
 }

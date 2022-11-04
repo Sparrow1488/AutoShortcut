@@ -40,14 +40,6 @@ namespace Sparrow.Video.Shortcuts.Pipelines
             return _projectCreator.CreateProject(ProjectFiles, options);
         }
 
-        //private void ApplyRules()
-        //{
-        //    foreach (var file in ProjectFiles)
-        //        foreach (var rule in _options.Rules)
-        //            if (rule.IsInRule(file))
-        //                file.RulesCollection.Add(rule);
-        //}
-
         private void ApplyRules()
         {
             foreach (var file in ProjectFiles)

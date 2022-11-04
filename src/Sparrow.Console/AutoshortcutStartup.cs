@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Sparrow.Console.Rules;
+using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
@@ -15,9 +16,8 @@ internal class AutoshortcutStartup : Startup
     public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
     {
         base.OnConfigreDevelopmentVariables(variables);
-        Variables.SetVariable(EnvironmentVariableNames.Serialize, "true")
-                 .SetVariable(EnvironmentVariableNames.OutputName, "Compilation")
-                 .SetVariable(EnvironmentVariableNames.ProjectOpenMode, ProjectModes.New);
+        Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath, 
+                             @"C:\Users\USER\Desktop\Test");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
@@ -43,14 +43,18 @@ internal class AutoshortcutStartup : Startup
                         FilesDirectoryPath.Value, cancellationToken);
 
             Log.Information(
-                "Project will serialize {isSerialize} and named {name}", 
+                "Project serialize  {isSerialize}; Named: {name}; Resolution: {resolution}", 
                 Variables.IsSerialize(),
-                Variables.OutputFileName());
+                Variables.OutputFileName(),
+                Variables.GetOutputVideoQuality());
+
+            ScaleFileRule outputVideoResolutionScale 
+                = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
 
             var project = pipeline.Configure(options =>
             {
                 options.IsSerialize = Variables.IsSerialize();
-                options.AddRule<ScaleFileRule>();
+                options.AddRule(outputVideoResolutionScale);
                 options.AddRule<SilentFileRule>();
                 options.AddRule<EncodingFileRule>();
                 options.AddRule<LoopShortFileRule>();

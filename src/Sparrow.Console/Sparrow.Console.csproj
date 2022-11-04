@@ -19,10 +19,4 @@
     <ProjectReference Include="..\Sparrow.Video.Shortcuts\Sparrow.Video.Shortcuts.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="appsettings.Console.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

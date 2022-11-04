@@ -2,28 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Sparrow.Console.Rules;
-using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console;
 internal abstract class Startup
 {
-    public Startup()
-    {
-        var configuration = new ConfigurationBuilder()
-                        .SetBasePath(Directory.GetCurrentDirectory())
-                        .AddJsonFile("appsettings.Console.json").Build();
-        string filesDirectory = configuration["FilesRootDirectoryPath"];
-        FilesDirectoryPath = StringPath.CreateExists(filesDirectory);
-    }
-
-    public StringPath FilesDirectoryPath { get; }
+    public StringPath FilesDirectoryPath { get; private set; }
     public IServiceProvider ServiceProvider { get; set; } = default!;
     public IEnvironmentVariablesProvider Variables { get; set; } = default!;
 
@@ -66,5 +53,10 @@ internal abstract class Startup
         {
             OnConfigreDevelopmentVariables(Variables);
         }
+
+        var inputDirectoryPath = Variables.GetInputDirectoryPath()
+                                    ?? throw new InvalidEnvironmentVariableException(
+                                        "No specified files directory path. Use '-input' variable");
+        FilesDirectoryPath = StringPath.CreateExists(inputDirectoryPath);
     }
 }

@@ -7,7 +7,7 @@ namespace Sparrow.Console.Rules
         /// <summary>
         ///     Приводит видос к общему разрешению в нарезке
         /// </summary>
-        public static readonly ScaleFileRule ScaleFileRule = new();
+        public static readonly ScaleFileRule ScaleFileRule = new(Resolution.HD);
 
         /// <summary>
         ///     Накладывает пустую аудио дорожку на видео, у которого нет звука (нужно для лучшей синхронизации аудио)

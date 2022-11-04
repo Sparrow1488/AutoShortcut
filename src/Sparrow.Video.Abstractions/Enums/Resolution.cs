@@ -1,4 +1,7 @@
-﻿namespace Sparrow.Video.Abstractions.Enums
+﻿using Sparrow.Video.Abstractions.Exceptions;
+using System.Reflection;
+
+namespace Sparrow.Video.Abstractions.Enums
 {
     /// <summary>
     ///     Video resolution
@@ -40,5 +43,24 @@
         ///     Display resoulution in 4K Ultra HD (2160p)
         /// </summary>
         public static readonly Resolution UHD = new Resolution("2160p", 2160, 3840);
+
+        public static Resolution ParseRequiredResolution(string name)
+        {
+            var resolution = ParseResolution(name);
+            return resolution ?? throw new InputResolutionNameNotRequiredException(
+                    $"Invalid input resolution '{name}'");
+        }
+
+        public static Resolution? ParseResolution(string name)
+        {
+            var fields = typeof(Resolution).GetFields();
+            var resolution = fields.FirstOrDefault(x => x.Name.ToLower() == name.ToLower());
+            if (resolution is not null)
+            {
+                var value = resolution.GetValue(null);
+                return (Resolution)value!;
+            }
+            return null;
+        }
     }
 }
