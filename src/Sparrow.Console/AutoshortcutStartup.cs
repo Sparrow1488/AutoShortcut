@@ -43,14 +43,14 @@ internal class AutoshortcutStartup : Startup
                         FilesDirectoryPath.Value, cancellationToken);
 
             Log.Information(
-                "Project serialize  {isSerialize}; Named: {name}; Resolution: {resolution}", 
+                "Project serialize {isSerialize}; Named: {name}; Resolution: {resolution}", 
                 Variables.IsSerialize(),
                 Variables.OutputFileName(),
                 Variables.GetOutputVideoQuality());
 
             ScaleFileRule outputVideoResolutionScale 
                 = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
-
+            
             var project = pipeline.Configure(options =>
             {
                 options.IsSerialize = Variables.IsSerialize();

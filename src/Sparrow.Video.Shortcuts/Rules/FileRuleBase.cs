@@ -2,25 +2,31 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Rules;
+using Sparrow.Video.Shortcuts.Factories;
 
-namespace Sparrow.Video.Shortcuts.Rules
+namespace Sparrow.Video.Shortcuts.Rules;
+
+public abstract class FileRuleBase : IFileRule
 {
-    public abstract class FileRuleBase : IFileRule
+    [JsonProperty]
+    public abstract RuleName RuleName { get; }
+    [JsonProperty]
+    public bool IsApplied { get; set; }
+    [JsonIgnore]
+    public abstract Func<IProjectFile, bool> Condition { get; }
+    
+    public virtual IFileRule Clone()
     {
-        [JsonProperty]
-        public abstract RuleName RuleName { get; }
-        [JsonIgnore]
-        public abstract Func<IProjectFile, bool> Condition { get; }
-        [JsonProperty]
-        public bool IsApplied { get; set; }
-
-        /// <summary>
-        ///     Default value is <see cref="RuleApply.Permanent"/>
-        /// </summary>
-        [JsonProperty]
-        public virtual RuleApply RuleApply => RuleApply.Permanent;
-
-        public void Applied() => IsApplied = true;
-        public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
+        var rule = (FileRuleBase)FileRuleFactory.CreateDefaultRule(GetType());
+        rule.IsApplied = IsApplied;
+        return rule;
     }
+
+    /// <summary>
+    ///     Default value is <see cref="RuleApply.Permanent"/>
+    /// </summary>
+    [JsonProperty]
+    public virtual RuleApply RuleApply => RuleApply.Permanent;
+    public void Applied() => IsApplied = true;
+    public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
 }

@@ -11,26 +11,18 @@ public class PipelineOptions : IPipelineOptions
     public ICollection<IFileRule> Rules { get; } = new List<IFileRule>();
     public IEnumerable<Type> RulesTypes => _rulesTypes;
 
+    public readonly List<RuleStore> _stores = new List<RuleStore>();
+    public IEnumerable<RuleStore> Stores => _stores;
+
     public void AddRule<TRule>() where TRule : IFileRule
     {
+        _stores.Add(new(typeof(TRule)));
         _rulesTypes.Add(typeof(TRule));
     }
 
     public void AddRule(IFileRule rule)
     {
+        _stores.Add(new(rule));
         Rules.Add(rule);
-    }
-
-    public struct RuleStore
-    {
-        public RuleStoreKind Kind { get; internal set; }
-        public Type RuleType { get; internal set; }
-        public IFileRule Instance { get; internal set; }
-    }
-
-    public enum RuleStoreKind
-    {
-        Type = 0,
-        Instance = 10
     }
 }
