@@ -31,9 +31,13 @@ public class ShortcutProjectCreator : IProjectCreator
 
     public IProject CreateProjectWithOptions(IEnumerable<IProjectFile> files, IProjectOptions options)
     {
-        var emptyProject = CreateEmptyProject(options);
-        emptyProject.Files = emptyProject.Options.Structure.GetStructuredFiles(files).ToArray();
-        return emptyProject;
+        var project = CreateEmptyProject(options);
+        project.Files = project.Options.Structure.GetStructuredFiles(files).ToArray();
+
+        var filesWithoutRules = files.Where(x => !x.RulesCollection.Any());
+        project.Options.RulesContainer.ApplyRules(filesWithoutRules);
+
+        return project;
     }
 
     private ShortcutProject CreateEmptyProject(IProjectOptions options = default)

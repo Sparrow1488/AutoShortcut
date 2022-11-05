@@ -3,6 +3,7 @@ using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
@@ -50,21 +51,22 @@ internal class AutoshortcutStartup : Startup
 
             ScaleFileRule outputVideoResolutionScale 
                 = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
-            
-            var project = pipeline.Configure(options =>
-            {
-                options.IsSerialize = Variables.IsSerialize();
-                options.AddRule(outputVideoResolutionScale);
-                options.AddRule<SilentFileRule>();
-                options.AddRule<EncodingFileRule>();
-                options.AddRule<LoopShortFileRule>();
-                options.AddRule<LoopMediumFileRule>();
 
-            }).CreateProject(options =>
-            {
-                options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
-                options.Named(Variables.OutputFileName());
-            });
+            var project = pipeline
+                .Configure(opt => opt.IsSerialize = Variables.IsSerialize())
+                .CreateProject(options =>
+                {
+                    options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
+                    options.Named(Variables.OutputFileName());
+                    options.WithRules(options =>
+                    {
+                        options.AddRule(outputVideoResolutionScale);
+                        options.AddRule<SilentFileRule>();
+                        options.AddRule<EncodingFileRule>();
+                        options.AddRule<LoopShortFileRule>();
+                        options.AddRule<LoopMediumFileRule>();
+                    });
+                });
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);

@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects.Options;
+using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
+using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Video.Shortcuts.Projects.Options;
 
@@ -13,9 +15,11 @@ public class ProjectOptions : IProjectOptions
     }
 
     [JsonConstructor]
-    public ProjectOptions(IFilesStructure structure, string projectName)
+    internal ProjectOptions(
+        IFilesStructure structure, IFileRulesContainer rulesContainer, string projectName)
     {
         Structure = structure;
+        RulesContainer = rulesContainer;
         ProjectName = projectName;
     }
 
@@ -23,6 +27,8 @@ public class ProjectOptions : IProjectOptions
     public IFilesStructure Structure { get; private set; }
     [JsonProperty]
     public string ProjectName { get; private set; } = $"Project_{DateTime.Now.Millisecond}";
+    [JsonProperty]
+    public IFileRulesContainer RulesContainer { get; } = new FileRulesContainer();
     [JsonIgnore]
     public IFilesStructure DefaultStructure { get; } = new NameStructure();
 
@@ -35,6 +41,12 @@ public class ProjectOptions : IProjectOptions
     public IProjectOptions StructureBy(IFilesStructure structure)
     {
         Structure = structure;
+        return this;
+    }
+
+    public IProjectOptions WithRules(Action<IFileRulesContainer> projectRules)
+    {
+        projectRules?.Invoke(RulesContainer);
         return this;
     }
 }

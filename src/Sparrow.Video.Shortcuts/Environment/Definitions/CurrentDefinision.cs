@@ -37,11 +37,6 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IUploadFilesService, UploadFilesService>();
         services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
         services.AddSingleton<IResourcesService, ResourcesService>();
-        //services.AddSingleton<ISaveService, SaveService>();
-        services.AddSingleton<ISaveService, CryptoSaveService>();
-        services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
-        //services.AddSingleton<IReadFileTextService, ReadFileTextService>();
-        services.AddSingleton<IReadFileTextService, ReadEncryptedTextFilesService>();
         services.AddSingleton<IStoreService, StoreService>();
         services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
         services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
@@ -50,6 +45,20 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
         services.AddSingleton<ITextFormatter, TextFormatter>();
         services.AddSingleton<AssemblyInfoLoader>();
+
+        services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
+
+        bool encryptSavingFiles = false;
+        if (encryptSavingFiles)
+        {
+            services.AddSingleton<ISaveService, CryptoSaveService>();
+            services.AddSingleton<IReadFileTextService, ReadEncryptedTextFilesService>();
+        }
+        else
+        {
+            services.AddSingleton<ISaveService, SaveService>();
+            services.AddSingleton<IReadFileTextService, ReadFileTextService>();
+        }
 
         services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
         services.AddSingleton<IEncodingProcess, EncodingProcess>();

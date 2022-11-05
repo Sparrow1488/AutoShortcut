@@ -52,6 +52,15 @@ public class RenderUtility : IRenderUtility
 
         var filesArray = project.Files.ToArray();
         foreach (var file in filesArray)
+        {
+            if (!file.RulesCollection.Any())
+            {
+                _logger.LogWarning(
+                    "File {file} no contains any processing rule",
+                    _textFormatter.GetPrintable(file.File.Name));
+                continue;
+            }
+                
             foreach (var rule in file.RulesCollection)
             {
                 CurrentProcessFile = file;
@@ -59,6 +68,7 @@ public class RenderUtility : IRenderUtility
                 FilesStatistic = new(filesArray.Length, Array.IndexOf(filesArray, file));
                 await ApplyFileRuleAsync();
             }
+        }
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
        
         var result = await _concatinateProcess.ConcatinateFilesAsync(concatinateFilesPaths, saveSettings);
