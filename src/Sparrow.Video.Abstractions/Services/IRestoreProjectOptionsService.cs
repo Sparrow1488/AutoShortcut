@@ -1,9 +1,8 @@
 ﻿using Sparrow.Video.Abstractions.Projects.Options;
 
-namespace Sparrow.Video.Abstractions.Services
+namespace Sparrow.Video.Abstractions.Services;
+
+public interface IRestoreProjectOptionsService
 {
-    public interface IRestoreProjectOptionsService
-    {
-        Task<IProjectOptions> RestoreOptionsAsync();
-    }
+    Task<IProjectOptions> RestoreOptionsAsync();
 }

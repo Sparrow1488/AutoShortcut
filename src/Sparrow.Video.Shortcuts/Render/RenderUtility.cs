@@ -8,7 +8,6 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Extensions;
-using System.Text;
 
 namespace Sparrow.Video.Shortcuts.Render;
 

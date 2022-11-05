@@ -2,7 +2,7 @@
   "profiles": {
     "Sparrow.Console": {
       "commandName": "Project",
-      "commandLineArgs": "env=dev serialize=true output=Compilation mode=restore quality=fhd"
+      "commandLineArgs": "env=dev serialize=true output=Compilation mode=restore quality=preview"
     }
   }
 }

@@ -2,7 +2,7 @@
 
 namespace Sparrow.Video.Abstractions.Pipelines.Options;
 
-public class RuleStore
+public struct RuleStore
 {
     public RuleStore(Type type)
     {

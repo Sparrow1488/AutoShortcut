@@ -17,7 +17,7 @@ internal class AutoshortcutStartup : Startup
     {
         base.OnConfigreDevelopmentVariables(variables);
         Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Test\Test");
+                             @"C:\Users\USER\Desktop\Main\Downloads\animech_3_downloads");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
@@ -62,7 +62,7 @@ internal class AutoshortcutStartup : Startup
 
             }).CreateProject(options =>
             {
-                options.StructureBy(new GroupStructure(logger).StructureFilesBy(new NameStructure()));
+                options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
                 options.Named(Variables.OutputFileName());
             });
 

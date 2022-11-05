@@ -29,13 +29,13 @@ namespace Sparrow.Video.Shortcuts.Services
         public async Task<ICollection<IRestoreFile>> RestoreFilesAsync(string restoreDirectoryPath)
         {
             var restoredFilesList = new List<IRestoreFile>();
-            _logger.LogInformation($"Starting restore files from \"{restoreDirectoryPath}\"");
+            _logger.LogInformation("Starting restore files from \"{path}\"", restoreDirectoryPath);
             var options = new UploadFilesOptions() {
                 OnUploadedIgnoreFile = file => UploadFileAction.NoAction
             };
             var directoryFiles = _uploadFilesService.GetFiles(restoreDirectoryPath, options);
             var restoreFiles = directoryFiles.Where(x => x.FileType == FileType.Restore);
-            _logger.LogInformation("Found restore files " + restoreFiles.Count());
+            _logger.LogInformation("Found restore files {count}", restoreFiles.Count());
 
             foreach (var restoreFile in restoreFiles)
             {
