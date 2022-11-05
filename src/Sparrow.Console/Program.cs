@@ -2,7 +2,6 @@
 using Sparrow.Console;
 using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
-using System.Security.Cryptography;
 
 Startup cli = new AutoshortcutStartup();
 CancellationToken token = new();

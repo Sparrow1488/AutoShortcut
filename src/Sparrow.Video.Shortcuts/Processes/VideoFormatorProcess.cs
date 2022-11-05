@@ -12,7 +12,7 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class VideoFormatorProcess : FFmpegProcess, IFormatorProcess
     {
         public VideoFormatorProcess(
-            ISaveService saveService,
+            IDefaultSaveService saveService,
             IPathsProvider pathsProvider,
             IConfiguration configuration,
             ILogger<FFmpegProcess> logger,

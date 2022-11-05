@@ -10,7 +10,7 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class MakeSilentProcess : FFmpegProcess, IMakeSilentProcess
     {
         public MakeSilentProcess(
-            ISaveService saveService,
+            IDefaultSaveService saveService,
             IPathsProvider pathsProvider,
             IConfiguration configuration,
             ILogger<FFmpegProcess> logger,

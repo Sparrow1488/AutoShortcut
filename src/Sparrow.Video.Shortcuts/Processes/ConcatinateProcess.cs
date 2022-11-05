@@ -12,7 +12,7 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
     {
         public ConcatinateProcess(
-            ISaveService saveService,
+            IDefaultSaveService saveService,
             IPathsProvider pathsProvider,
             IConfiguration configuration,
             ILogger<FFmpegProcess> logger,

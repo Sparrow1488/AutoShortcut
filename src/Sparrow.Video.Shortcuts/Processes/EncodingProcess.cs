@@ -15,7 +15,7 @@ namespace Sparrow.Video.Shortcuts.Processes
         private ISaveSettings _saveSettings;
 
         public EncodingProcess(
-            ISaveService saveService, 
+            IDefaultSaveService saveService, 
             IPathsProvider pathsProvider, 
             IConfiguration configuration, 
             ILogger<FFmpegProcess> logger, 

@@ -10,7 +10,7 @@ namespace Sparrow.Video.Shortcuts.Processes
     public class ScaleProcess : FFmpegProcess, IScaleProcess
     {
         public ScaleProcess(
-            ISaveService saveService,
+            IDefaultSaveService saveService,
             IPathsProvider pathsProvider,
             IConfiguration configuration,
             ILogger<FFmpegProcess> logger,

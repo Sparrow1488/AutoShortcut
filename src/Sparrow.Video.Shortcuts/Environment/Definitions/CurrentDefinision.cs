@@ -37,8 +37,11 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IUploadFilesService, UploadFilesService>();
         services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
         services.AddSingleton<IResourcesService, ResourcesService>();
-        services.AddSingleton<ISaveService, SaveService>();
-        services.AddSingleton<IReadFileTextService, ReadFileTextService>();
+        //services.AddSingleton<ISaveService, SaveService>();
+        services.AddSingleton<ISaveService, CryptoSaveService>();
+        services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
+        //services.AddSingleton<IReadFileTextService, ReadFileTextService>();
+        services.AddSingleton<IReadFileTextService, ReadEncryptedTextFilesService>();
         services.AddSingleton<IStoreService, StoreService>();
         services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
         services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
