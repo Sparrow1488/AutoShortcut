@@ -1,26 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
-using Sparrow.Video.Abstractions.Services;
-using System.Security.Cryptography;
+﻿using Sparrow.Video.Abstractions.Services;
 
 namespace Sparrow.Video.Shortcuts.Services;
 
 public class ReadEncryptedTextFilesService : ReadFileTextService, IReadEncryptedTextFilesService
 {
-    private readonly IConfiguration _configuration;
+    private readonly ICryptoService _cryptoService;
 
     public ReadEncryptedTextFilesService(
-        IConfiguration configuration)
+        ICryptoService cryptoService)
     {
-        _configuration = configuration;
+        _cryptoService = cryptoService;
     }
 
     public override byte[] OnReadFileBytes(byte[] readed)
-    {
-        using var aes = Aes.Create();
-        var aesKey = _configuration["Security:Keys:Aes256Key"];
-        var aesIV = _configuration["Security:Keys:Aes256IV"];
-        aes.Key = Convert.FromBase64String(aesKey);
-        aes.IV = Convert.FromBase64String(aesIV);
-        return aes.DecryptCbc(readed, aes.IV);
-    }
+        => _cryptoService.Decrypt(readed);
 }

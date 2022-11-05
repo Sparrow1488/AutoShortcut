@@ -25,6 +25,10 @@ namespace Sparrow.Video.Abstractions.Enums
         public int Width { get; }
 
         /// <summary>
+        ///     Display resoulution in 144p
+        /// </summary>
+        public static readonly Resolution VeryLow = new("144p", 144, 256);
+        /// <summary>
         ///     Display resoulution in 360p
         /// </summary>
         public static readonly Resolution Preview = new("360p", 360, 640);

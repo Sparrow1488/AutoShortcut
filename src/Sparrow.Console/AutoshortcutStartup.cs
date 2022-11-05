@@ -8,7 +8,6 @@ using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Console;
 

@@ -68,6 +68,8 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddScoped<IProjectSerializationService, ProjectSerializationService>();
         services.AddScoped<IRenderUtility, RenderUtility>();
 
+        services.AddScoped<ICryptoService, AesCryptoService>();
+
         return services;
     }
 }

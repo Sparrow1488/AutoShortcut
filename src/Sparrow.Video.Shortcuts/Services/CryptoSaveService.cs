@@ -1,29 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
-using Sparrow.Video.Abstractions.Services;
-using System.Security.Cryptography;
+﻿using Sparrow.Video.Abstractions.Services;
 
 namespace Sparrow.Video.Shortcuts.Services;
 
 public class CryptoSaveService : SaveService, ICryptoSaveService
 {
-    private readonly IConfiguration _configuration;
+    private readonly ICryptoService _cryptoService;
 
     public CryptoSaveService(
         IPathsProvider pathsProvider,
-        IConfiguration configuration) 
+        ICryptoService cryptoService) 
     : base(pathsProvider)
     {
-        _configuration = configuration;
+        _cryptoService = cryptoService;
     }
 
     protected override byte[] OnSaveBytes(byte[] toSave)
-    {
-        using var aes = Aes.Create();
-        var aesKey = _configuration["Security:Keys:Aes256Key"];
-        var aesIV = _configuration["Security:Keys:Aes256IV"];
-        aes.Key = Convert.FromBase64String(aesKey);
-        aes.IV = Convert.FromBase64String(aesIV);
-        toSave = aes.EncryptCbc(toSave, aes.IV);
-        return toSave;
-    }
+        => _cryptoService.Encrypt(toSave);
 }
