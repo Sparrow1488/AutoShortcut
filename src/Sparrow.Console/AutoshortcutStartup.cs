@@ -3,7 +3,6 @@ using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Factories;
-using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
@@ -18,7 +17,7 @@ internal class AutoshortcutStartup : Startup
     {
         base.OnConfigreDevelopmentVariables(variables);
         Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Test\Test2");
+                             @"C:\Users\USER\Desktop\Main\Downloads\animech_3_downloads");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
