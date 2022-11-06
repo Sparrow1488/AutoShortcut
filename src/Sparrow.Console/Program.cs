@@ -2,13 +2,12 @@
 using Sparrow.Console;
 using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
-using System.Runtime.InteropServices;
 
 Startup cli = new AutoshortcutStartup();
 CancellationTokenSource tokenSource = new();
 CancellationToken token = tokenSource.Token;
 
-ConsoleProcess.OnExit(tokenSource);
+new ConsoleProcess().OnExit(tokenSource);
 
 try
 {
