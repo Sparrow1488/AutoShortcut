@@ -26,7 +26,12 @@ public class RestoreProjectOptionsService : IRestoreProjectOptionsService
     public async Task<IProjectOptions> RestoreOptionsAsync()
     {
         var projectOptionsPath = _pathsProvider.GetPathFromSharedProject("ProjectOptions");
-        var fullPathToOptions = Path.Combine(projectOptionsPath, "project-options.json");
+        return await RestoreOptionsAsync(projectOptionsPath);
+    }
+
+    public async Task<IProjectOptions> RestoreOptionsAsync(string optionsFilePath)
+    {
+        var fullPathToOptions = Path.Combine(optionsFilePath, "project-options.json");
         var serializedOptions = await _readFileTextService.ReadTextAsync(fullPathToOptions);
         var options = _serializer.Deserialize<ProjectOptions>(serializedOptions);
         return options;

@@ -25,3 +25,8 @@ public class ProjectPaths : IProjectPaths
     public string GetFilesDirectory() => FilesDirectoryPath;
     public string GetRoot() => RootPath;
 }
+
+public struct FileStoreInfo
+{
+    public string Path { get; set; }
+}

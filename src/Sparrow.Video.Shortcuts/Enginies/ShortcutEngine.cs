@@ -14,6 +14,15 @@ namespace Sparrow.Video.Shortcuts.Enginies;
 
 public class ShortcutEngine : IShortcutEngine
 {
+    private readonly ILogger<ShortcutEngine> _logger;
+    private readonly IUploadFilesService _uploadFilesService;
+    private readonly IProjectFileCreator _projectFileCreator;
+    private readonly IRestoreProjectService _restoreService;
+    private readonly ITextFormatter _textFormatter;
+    private readonly IServiceProvider _services;
+    private readonly IPathsProvider _pathsProvider;
+    private readonly IRenderUtility _renderUtility;
+
     public ShortcutEngine(
         ILogger<ShortcutEngine> logger,
         IUploadFilesService uploadFilesService,
@@ -34,22 +43,13 @@ public class ShortcutEngine : IShortcutEngine
         _renderUtility = renderUtility;
     }
 
-    private readonly ILogger<ShortcutEngine> _logger;
-    private readonly IUploadFilesService _uploadFilesService;
-    private readonly IProjectFileCreator _projectFileCreator;
-    private readonly IRestoreProjectService _restoreService;
-    private readonly ITextFormatter _textFormatter;
-    private readonly IServiceProvider _services;
-    private readonly IPathsProvider _pathsProvider;
-    private readonly IRenderUtility _renderUtility;
-
     public async Task<IShortcutPipeline> CreatePipelineAsync(
         string filesDirectory, CancellationToken cancellationToken = default)
     {
         var uploadFilesSettings = new UploadFilesOptions()
         {
             OnUploadedIgnoreFile = file => UploadFileAction.Skip
-        }.Ignore(FileType.Restore).Ignore(FileType.Undefined);
+        }.Ignore(FileType.Restore).Ignore(FileType.Undefined); // TODO: брать из настроек
 
         var files = await _uploadFilesService.GetFilesAsync(filesDirectory, uploadFilesSettings, cancellationToken);
         _logger.LogInformation("Starting analyse files");
