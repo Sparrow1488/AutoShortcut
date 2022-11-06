@@ -43,7 +43,7 @@ internal abstract class Startup
                 .WriteTo.Console())
             .ConfigureServices(services =>
             {
-                services.AddShortcutDefinision();
+                services.AddShortcutDefinision(services.BuildServiceProvider());
             })
             .Build().Services;
 

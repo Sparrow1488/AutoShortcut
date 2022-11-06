@@ -37,7 +37,7 @@ public abstract class ExecutionProcessBase : IExecutionProcess
         startInfo.Arguments = settings.Argument;
         using (var process = new Process() { StartInfo = startInfo })
         {
-            cancellationToken.Register(() =>
+            using var registration = cancellationToken.Register(() =>
             {
                 Logger.LogInformation("CANCELLATION TOKEN KILLED THE TASK");
                 process.Kill();
@@ -53,6 +53,7 @@ public abstract class ExecutionProcessBase : IExecutionProcess
                 process.Start();
             }
             await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
+            registration.Unregister();
         }
         TextProcessResult = new TextProcessResult(settings, result);
     }

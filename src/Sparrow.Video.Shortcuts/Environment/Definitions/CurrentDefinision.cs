@@ -9,6 +9,7 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enginies;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Factories;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
@@ -24,7 +25,8 @@ public class CurrentDefinision : ApplicationDefinition
 {
     public override IServiceCollection OnConfigureServices(IServiceCollection services)
     {
-        services.AddScoped<IConfiguration>(x => new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build());
+        var projectConfiguration = new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build();
+        services.AddScoped<IConfiguration>(x => projectConfiguration);
 
         services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
         services.AddSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();
@@ -48,13 +50,14 @@ public class CurrentDefinision : ApplicationDefinition
 
         services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
 
-        bool encryptSavingFiles = true;
-        if (encryptSavingFiles)
+        var saveServiceSection = projectConfiguration.GetRequiredSection("Environment:Services:SaveService");
+        var protectData = saveServiceSection["ProtectData"];
+        if (protectData == ProtectDataTypes.Aes256)
         {
             services.AddSingleton<ISaveService, CryptoSaveService>();
             services.AddSingleton<IReadFileTextService, ReadEncryptedTextFilesService>();
         }
-        else
+        if (protectData == ProtectDataTypes.None)
         {
             services.AddSingleton<ISaveService, SaveService>();
             services.AddSingleton<IReadFileTextService, ReadFileTextService>();
