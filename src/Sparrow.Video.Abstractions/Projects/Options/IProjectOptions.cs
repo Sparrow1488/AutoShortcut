@@ -9,8 +9,10 @@ public interface IProjectOptions
     IFilesStructure DefaultStructure { get; }
     IFilesStructure Structure { get; }
     IFileRulesContainer RulesContainer { get; }
+    IProjectRoot Root { get; }
 
     IProjectOptions WithRules(Action<IFileRulesContainer> projectRules);
     IProjectOptions StructureBy(IFilesStructure structure);
     IProjectOptions Named(string name);
+    IProjectOptions SetRootDirectory(string path);
 }

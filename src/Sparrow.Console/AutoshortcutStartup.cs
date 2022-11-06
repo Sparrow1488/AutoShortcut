@@ -66,6 +66,7 @@ internal class AutoshortcutStartup : Startup
                         rulesContainer.AddRule<LoopShortFileRule>();
                         rulesContainer.AddRule<LoopMediumFileRule>();
                     });
+                    options.SetRootDirectory("./Compilations-Project");
                 });
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
