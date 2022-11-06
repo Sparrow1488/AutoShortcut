@@ -2,12 +2,14 @@
 using Sparrow.Console;
 using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
+using System.Runtime.InteropServices;
 
-Startup cli = new AutoshortcutStartup();
 CancellationTokenSource tokenSource = new();
+Startup cli = new AutoshortcutStartup();
 CancellationToken token = tokenSource.Token;
 
-new ConsoleProcess().OnExit(tokenSource);
+ChangeConsoleExitStatusCode();
+AppDomain.CurrentDomain.ProcessExit += (sender, e) => tokenSource.Cancel();
 
 try
 {
@@ -21,3 +23,16 @@ catch (InputResolutionNameNotRequiredException ex)
 {
     Log.Error(ex.Message);
 }
+
+void ChangeConsoleExitStatusCode()
+{
+    SetConsoleCtrlHandler(type =>
+    {
+        Environment.Exit(-1);
+        return true;
+    }, add: true);
+}
+
+[DllImport("kernel32.dll", SetLastError = true)]
+static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
+delegate bool ConsoleEventDelegate(int eventType);

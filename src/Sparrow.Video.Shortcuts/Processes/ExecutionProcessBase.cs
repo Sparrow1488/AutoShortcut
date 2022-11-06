@@ -39,7 +39,7 @@ public abstract class ExecutionProcessBase : IExecutionProcess
         {
             cancellationToken.Register(() =>
             {
-                Console.WriteLine("CANCELLATION TOKEN KILLED THE TASK");
+                Logger.LogInformation("CANCELLATION TOKEN KILLED THE TASK");
                 process.Kill();
             });
 

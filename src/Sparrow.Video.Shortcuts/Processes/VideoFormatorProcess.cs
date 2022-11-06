@@ -15,7 +15,7 @@ public class VideoFormatorProcess : FFmpegProcess, IFormatorProcess
         IDefaultSaveService saveService,
         IPathsProvider pathsProvider,
         IConfiguration configuration,
-        ILogger<FFmpegProcess> logger,
+        ILogger<VideoFormatorProcess> logger,
         IResourcesService resourcesService,
         IUploadFilesService uploadFilesService,
         IEnvironmentSettingsProvider environmentSettingsProvider)

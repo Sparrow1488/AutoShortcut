@@ -13,7 +13,7 @@ public class MakeSilentProcess : FFmpegProcess, IMakeSilentProcess
         IDefaultSaveService saveService,
         IPathsProvider pathsProvider,
         IConfiguration configuration,
-        ILogger<FFmpegProcess> logger,
+        ILogger<MakeSilentProcess> logger,
         IUploadFilesService uploadFilesService,
         IEnvironmentSettingsProvider environmentSettingsProvider)
     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)

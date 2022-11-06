@@ -17,7 +17,7 @@ public abstract class FFmpegProcess : ExecutionProcessBase
         IConfiguration configuration,
         IUploadFilesService uploadFilesService,
         IEnvironmentSettingsProvider environmentSettingsProvider,
-        ILogger<ExecutionProcessBase> logger)
+        ILogger<FFmpegProcess> logger)
     : base(configuration, logger)
     {
         _saveService = saveService;

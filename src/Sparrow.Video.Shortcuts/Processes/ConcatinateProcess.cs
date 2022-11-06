@@ -14,16 +14,16 @@ public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
     private ISaveSettings _saveSettings;
     private readonly IScriptFormatsProvider _scriptFormatsProvider;
     private IEnumerable<string> _concatinateFilesPaths;
-    
+
     public ConcatinateProcess(
-        IDefaultSaveService saveService, 
-        IPathsProvider pathsProvider, 
+        IDefaultSaveService saveService,
+        IPathsProvider pathsProvider,
         IConfiguration configuration,
         IUploadFilesService uploadFilesService,
         IScriptFormatsProvider scriptFormatsProvider,
-        IEnvironmentSettingsProvider environmentSettingsProvider, 
-        ILogger<ExecutionProcessBase> logger) 
-    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
+        IEnvironmentSettingsProvider environmentSettingsProvider,
+        ILogger<ConcatinateProcess> logger)
+     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
     {
         _scriptFormatsProvider = scriptFormatsProvider;
     }

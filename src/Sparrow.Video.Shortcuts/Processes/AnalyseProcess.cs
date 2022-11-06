@@ -14,7 +14,7 @@ public class AnalyseProcess : ExecutionProcessBase, IAnalyseProcess
     public AnalyseProcess(
         IConfiguration configuration,
         IJsonFileAnalyseService analyseService,
-        ILogger<ExecutionProcessBase> logger) 
+        ILogger<AnalyseProcess> logger) 
     : base(configuration, logger)
     {
         AnalyseService = analyseService;

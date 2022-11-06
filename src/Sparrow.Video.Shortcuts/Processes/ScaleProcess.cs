@@ -13,7 +13,7 @@ public class ScaleProcess : FFmpegProcess, IScaleProcess
         IDefaultSaveService saveService,
         IPathsProvider pathsProvider,
         IConfiguration configuration,
-        ILogger<FFmpegProcess> logger,
+        ILogger<ScaleProcess> logger,
         IUploadFilesService uploadFilesService,
         IEnvironmentSettingsProvider environmentSettingsProvider)
     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)

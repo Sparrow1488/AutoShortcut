@@ -17,7 +17,7 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
         IDefaultSaveService saveService, 
         IPathsProvider pathsProvider, 
         IConfiguration configuration, 
-        ILogger<FFmpegProcess> logger, 
+        ILogger<TakeSnapshotProcess> logger, 
         IUploadFilesService uploadFilesService, 
         IEnvironmentSettingsProvider environmentSettingsProvider)
     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)

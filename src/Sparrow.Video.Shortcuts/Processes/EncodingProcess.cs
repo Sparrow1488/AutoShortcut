@@ -18,7 +18,7 @@ public class EncodingProcess : FFmpegProcess, IEncodingProcess
         IDefaultSaveService saveService, 
         IPathsProvider pathsProvider, 
         IConfiguration configuration, 
-        ILogger<FFmpegProcess> logger, 
+        ILogger<EncodingProcess> logger, 
         IUploadFilesService uploadFilesService, 
         IEnvironmentSettingsProvider environmentSettingsProvider)
     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)

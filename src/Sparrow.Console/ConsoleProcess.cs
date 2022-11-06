@@ -4,14 +4,22 @@ namespace Sparrow.Console;
 
 public class ConsoleProcess
 {
-    [DllImport("Kernel32")]
-    private static extern bool SetConsoleCtrlHandler(EventHandler handler, bool add);
+    public static bool ConsoleEventCallback(int eventType)
+    {
+        if (eventType == 2)
+        {
+            System.Console.WriteLine("Console window closing, death imminent");
+        }
+        return false;
+    }
 
-    private delegate bool EventHandler(int sig);
+    public delegate bool ConsoleEventDelegate(int eventType);
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
 
     public void OnExit(CancellationTokenSource cancellationTokenSource)
     {
-        var handler = new EventHandler(Handler);
+        var handler = new ConsoleEventDelegate(Handler);
         SetConsoleCtrlHandler(handler, true);
     }
 
