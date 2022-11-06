@@ -17,7 +17,7 @@ internal class AutoshortcutStartup : Startup
     {
         base.OnConfigreDevelopmentVariables(variables);
         Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Main\Downloads\animech_3_downloads");
+                             @"C:\Users\USER\Desktop\Test\Test2");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
@@ -55,15 +55,16 @@ internal class AutoshortcutStartup : Startup
                 .Configure(opt => opt.IsSerialize = Variables.IsSerialize())
                 .CreateProject(options =>
                 {
-                    options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
                     options.Named(Variables.OutputFileName());
-                    options.WithRules(options =>
+                    options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
+                    options.WithRules(rulesContainer =>
                     {
-                        options.AddRule(outputVideoResolutionScale);
-                        options.AddRule<SilentFileRule>();
-                        options.AddRule<EncodingFileRule>();
-                        options.AddRule<LoopShortFileRule>();
-                        options.AddRule<LoopMediumFileRule>();
+                        rulesContainer.AddRule(outputVideoResolutionScale);
+                        rulesContainer.AddRule<SnapshotsFileRule>();
+                        rulesContainer.AddRule<SilentFileRule>();
+                        rulesContainer.AddRule<EncodingFileRule>();
+                        rulesContainer.AddRule<LoopShortFileRule>();
+                        rulesContainer.AddRule<LoopMediumFileRule>();
                     });
                 });
 

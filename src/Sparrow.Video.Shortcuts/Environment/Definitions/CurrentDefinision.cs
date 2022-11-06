@@ -48,7 +48,7 @@ public class CurrentDefinision : ApplicationDefinition
 
         services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
 
-        bool encryptSavingFiles = false;
+        bool encryptSavingFiles = true;
         if (encryptSavingFiles)
         {
             services.AddSingleton<ISaveService, CryptoSaveService>();
@@ -66,6 +66,7 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
         services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
         services.AddSingleton<IScaleProcess, ScaleProcess>();
+        services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
 
         services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
 

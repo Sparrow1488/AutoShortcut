@@ -3,7 +3,6 @@ using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
 
@@ -15,13 +14,12 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
         IUploadFilesService uploadFilesService,
         IPathsProvider pathsProvider,
         IEncodingProcess encodingProcess)
+    : base(uploadFilesService)
     {
-        _uploadFilesService = uploadFilesService;
         _pathsProvider = pathsProvider;
         _encodingProcess = encodingProcess;
     }
 
-    private readonly IUploadFilesService _uploadFilesService;
     private readonly IPathsProvider _pathsProvider;
     private readonly IEncodingProcess _encodingProcess;
 
@@ -29,9 +27,7 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
 
     public override async Task<IFile> ProcessAsync(IProjectFile file, EncodingFileRule rule)
     {
-        var encodeActualFilePath = file.References.GetActual().FileFullPath;
-        var encodeFile = _uploadFilesService.GetFile(encodeActualFilePath); // TODO: вынести в абстрактный метод
-
+        var encodeFile = GetActualFile(file);
         var processedFileDirPath = _pathsProvider.GetPathFromCurrent("EncodedFiles");
         var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
         var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };

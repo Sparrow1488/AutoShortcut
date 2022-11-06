@@ -18,6 +18,7 @@ public class RuleName
     public static readonly RuleName Formating = new(nameof(Formating));
     public static readonly RuleName Encoding = new(nameof(Encoding));
     public static readonly RuleName Silent = new(nameof(Silent));
+    public static readonly RuleName Snapshot = new(nameof(Snapshot));
 
     public static RuleName New(string name)
     {

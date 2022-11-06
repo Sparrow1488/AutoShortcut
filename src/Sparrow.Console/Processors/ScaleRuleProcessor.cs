@@ -15,13 +15,12 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
         IUploadFilesService uploadFilesService,
         IPathsProvider pathsProvider,
         IScaleProcess scaleProcess)
+    : base(uploadFilesService)
     {
-        _uploadFilesService = uploadFilesService;
         _pathsProvider = pathsProvider;
         _scaleProcess = scaleProcess;
     }
 
-    private readonly IUploadFilesService _uploadFilesService;
     private readonly IPathsProvider _pathsProvider;
     private readonly IScaleProcess _scaleProcess;
 
@@ -29,12 +28,11 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
 
     public override async Task<IFile> ProcessAsync(IProjectFile file, ScaleFileRule rule)
     {
-        var actualFileRef = file.References.GetActual();
-        var actualFile = _uploadFilesService.GetFile(actualFileRef.FileFullPath);
+        var toScaleFile = GetActualFile(file);
         var saveDirPath = _pathsProvider.GetPathFromCurrent("ScaledFiles");
         var saveSettings = new SaveSettings() {
             SaveFullPath = Path.Combine(saveDirPath, file.File.Name + file.File.Extension)
         };
-        return await _scaleProcess.ScaleVideoAsync(actualFile, rule.Scale, saveSettings);
+        return await _scaleProcess.ScaleVideoAsync(toScaleFile, rule.Scale, saveSettings);
     }
 }

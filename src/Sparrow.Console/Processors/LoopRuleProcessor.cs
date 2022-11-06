@@ -9,17 +9,17 @@ namespace Sparrow.Console.Processors;
 
 public class LoopRuleProcessor : RuleProcessorBase<LoopFileRuleBase>
 {
-    private readonly IUploadFilesService _uploadFilesService;
-
-    public LoopRuleProcessor(IUploadFilesService uploadFilesService)
-        => _uploadFilesService = uploadFilesService;
+    public LoopRuleProcessor(
+        IUploadFilesService uploadFilesService) 
+    : base(uploadFilesService)
+    {
+    }
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.RenderReady;
 
     public override Task<IFile> ProcessAsync(IProjectFile file, LoopFileRuleBase rule)
     {
-        var processFileReference = file.References.GetActual();
-        var processFile = _uploadFilesService.GetFile(processFileReference.FileFullPath);
+        var processFile = GetActualFile(file);
         #region NOTE
         // NOTE: тут небольшой архитектурный прикол, я цепляю на файл ссылки, которые в будущем будут
         //       обрабатываться ffmpeg как "зацикливание". rule.LoopCount - это число зацикливаний
