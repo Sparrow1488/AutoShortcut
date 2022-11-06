@@ -25,13 +25,14 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(IProjectFile file, EncodingFileRule rule)
+    public override async Task<IFile> ProcessAsync(
+        IProjectFile file, EncodingFileRule rule, CancellationToken cancellationToken = default)
     {
         var encodeFile = GetActualFile(file);
         var processedFileDirPath = _pathsProvider.GetPathFromCurrent("EncodedFiles");
         var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
         var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };
         var encodingSettings = new EncodingSettings() { EncodingType = rule.EncodingType };
-        return await _encodingProcess.StartEncodingAsync(encodeFile, encodingSettings, saveSettings);
+        return await _encodingProcess.StartEncodingAsync(encodeFile, encodingSettings, saveSettings, cancellationToken);
     }
 }

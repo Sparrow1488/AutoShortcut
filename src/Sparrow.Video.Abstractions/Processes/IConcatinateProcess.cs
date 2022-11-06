@@ -6,6 +6,6 @@ namespace Sparrow.Video.Abstractions.Processes
     public interface IConcatinateProcess
     {
         Task<IFile> ConcatinateFilesAsync(
-            IEnumerable<string> filesPaths, ISaveSettings saveSettings);
+            IEnumerable<string> filesPaths, ISaveSettings saveSettings, CancellationToken cancellationToken = default);
     }
 }

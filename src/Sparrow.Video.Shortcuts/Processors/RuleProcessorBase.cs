@@ -21,7 +21,7 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
     public abstract ReferenceType ResultFileReferenceType { get; }
     public IUploadFilesService UploadFilesService { get; }
 
-    public abstract Task<IFile> ProcessAsync(IProjectFile file, TRule rule);
+    public abstract Task<IFile> ProcessAsync(IProjectFile file, TRule rule, CancellationToken cancellationToken = default);
 
     /// <summary>
     ///     Apply specific processing file rule to <paramref name="file"/>. 
@@ -30,12 +30,12 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
     /// <param name="file">File being processed</param>
     /// <param name="rule">Special rule handler</param>
     /// <returns>Processed file result</returns>
-    public async Task<IFile> ProcessAsync(IProjectFile file, IFileRule rule)
+    public async Task<IFile> ProcessAsync(IProjectFile file, IFileRule rule, CancellationToken cancellationToken = default)
     {
         if (!IsInputAndCurrentRulesAreTheSame(input: rule))
             throw new FailedProcessRuleException("Processor can't handle current rule type " + rule.RuleName.Value);
 
-        var processedResultFile = await ProcessAsync(file, (TRule)rule);
+        var processedResultFile = await ProcessAsync(file, (TRule)rule, cancellationToken);
         AddReference(
             toFile: file,
             appliedRule: rule,

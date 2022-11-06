@@ -16,7 +16,7 @@ public class ScaleProcess : FFmpegProcess, IScaleProcess
         ILogger<FFmpegProcess> logger,
         IUploadFilesService uploadFilesService,
         IEnvironmentSettingsProvider environmentSettingsProvider)
-    : base(saveService, pathsProvider, configuration, logger, uploadFilesService, environmentSettingsProvider)
+    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
     {
     }
 
@@ -34,7 +34,7 @@ public class ScaleProcess : FFmpegProcess, IScaleProcess
         _scaleSettings = scaleSettings;
         _file = file;
         ThrowIfScaleSettingsInvalid();
-        return await StartFFmpegAsync();
+        return await StartFFmpegAsync(cancellationToken);
     }
 
     protected void ThrowIfScaleSettingsInvalid()

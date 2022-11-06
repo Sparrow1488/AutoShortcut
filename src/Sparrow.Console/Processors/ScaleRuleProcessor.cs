@@ -26,13 +26,14 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(IProjectFile file, ScaleFileRule rule)
+    public override async Task<IFile> ProcessAsync(
+        IProjectFile file, ScaleFileRule rule, CancellationToken cancellationToken = default)
     {
         var toScaleFile = GetActualFile(file);
         var saveDirPath = _pathsProvider.GetPathFromCurrent("ScaledFiles");
         var saveSettings = new SaveSettings() {
             SaveFullPath = Path.Combine(saveDirPath, file.File.Name + file.File.Extension)
         };
-        return await _scaleProcess.ScaleVideoAsync(toScaleFile, rule.Scale, saveSettings);
+        return await _scaleProcess.ScaleVideoAsync(toScaleFile, rule.Scale, saveSettings, cancellationToken);
     }
 }

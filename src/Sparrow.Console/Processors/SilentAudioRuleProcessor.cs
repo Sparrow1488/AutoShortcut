@@ -28,11 +28,14 @@ public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(IProjectFile file, SilentFileRule rule)
+    public override async Task<IFile> ProcessAsync(
+        IProjectFile file, SilentFileRule rule, CancellationToken cancellationToken = default)
     {
         var processFile = GetActualFile(file);
         return await _makeSilentProcess.MakeSilentAsync(
-                            processFile, GetSaveSettings(file.File.Name + file.File.Extension));
+                            processFile, 
+                            GetSaveSettings(file.File.Name + file.File.Extension), 
+                            cancellationToken);
     }
 
     private ISaveSettings GetSaveSettings(string fileNameWithExtenion)

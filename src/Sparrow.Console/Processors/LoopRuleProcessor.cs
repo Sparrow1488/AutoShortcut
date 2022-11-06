@@ -2,7 +2,6 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors;
@@ -17,7 +16,8 @@ public class LoopRuleProcessor : RuleProcessorBase<LoopFileRuleBase>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.RenderReady;
 
-    public override Task<IFile> ProcessAsync(IProjectFile file, LoopFileRuleBase rule)
+    public override Task<IFile> ProcessAsync(
+        IProjectFile file, LoopFileRuleBase rule, CancellationToken cancellationToken = default)
     {
         var processFile = GetActualFile(file);
         #region NOTE

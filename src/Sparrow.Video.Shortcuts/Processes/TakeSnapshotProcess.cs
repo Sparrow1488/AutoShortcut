@@ -19,8 +19,8 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
         IConfiguration configuration, 
         ILogger<FFmpegProcess> logger, 
         IUploadFilesService uploadFilesService, 
-        IEnvironmentSettingsProvider environmentSettingsProvider) 
-    : base(saveService, pathsProvider, configuration, logger, uploadFilesService, environmentSettingsProvider)
+        IEnvironmentSettingsProvider environmentSettingsProvider)
+    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
     {
     }
 
@@ -29,7 +29,7 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
     {
         _snapshotSettings = snapshotSettings;
         _saveSettings = saveSettings;
-        var snapshot = await StartFFmpegAsync();
+        var snapshot = await StartFFmpegAsync(token);
         return new Snapshot() { File = snapshot };
     }
 

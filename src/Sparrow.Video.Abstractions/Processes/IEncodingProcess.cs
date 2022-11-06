@@ -2,17 +2,16 @@
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes.Settings;
 
-namespace Sparrow.Video.Abstractions.Processes
+namespace Sparrow.Video.Abstractions.Processes;
+
+public interface IEncodingProcess : IExecutionProcess
 {
-    public interface IEncodingProcess : IExecutionProcess
-    {
-        /// <summary>
-        ///     Reencode file to <see cref="EncodingType"/>
-        /// </summary>
-        /// <param name="encodable">Convertable file</param>
-        /// <param name="settings">Configure process</param>
-        /// <returns>Reencoded file</returns>
-        Task<IFile> StartEncodingAsync(
-            IFile encodable, IEncodingSettings settings, ISaveSettings saveSettings);
-    }
+    /// <summary>
+    ///     Reencode file to <see cref="EncodingType"/>
+    /// </summary>
+    /// <param name="encodable">Convertable file</param>
+    /// <param name="settings">Configure process</param>
+    /// <returns>Reencoded file</returns>
+    Task<IFile> StartEncodingAsync(
+        IFile encodable, IEncodingSettings settings, ISaveSettings saveSettings, CancellationToken cancellationToken = default);
 }

@@ -4,13 +4,11 @@ using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
 
 Startup cli = new AutoshortcutStartup();
-CancellationToken token = new();
+CancellationTokenSource tokenSource = new();
+CancellationToken token = tokenSource.Token;
 
-// TODO: сохраняем и читаем все сохраненные сериализованные файлы используя шифрование (а если пользакам захочется поиграться????)
-//using var aes = Aes.Create();
-//aes.GenerateKey();
-//var s = aes.KeySize;
-//var keyBase64 = Convert.ToBase64String(aes.Key);
+//ConsoleProcess.CancelSourceOnExit(tokenSource);
+ConsoleProcess.OnExit(tokenSource);
 
 try
 {
@@ -24,3 +22,18 @@ catch (InputResolutionNameNotRequiredException ex)
 {
     Log.Error(ex.Message);
 }
+
+//internal delegate bool ConsoleEventDelegate(int eventType);
+
+//[DllImport("kernel32.dll", SetLastError = true)]
+//extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
+
+//void CancelSourceOnExit(CancellationTokenSource cancellationTokenSource)
+//{
+//    SetConsoleCtrlHandler((eventType) =>
+//    {
+//        cancellationTokenSource.Cancel();
+//        Environment.Exit(-1);
+//        return true;
+//    }, add: true);
+//}

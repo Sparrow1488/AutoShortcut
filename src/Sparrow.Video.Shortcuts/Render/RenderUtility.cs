@@ -66,7 +66,7 @@ public class RenderUtility : IRenderUtility
                 CurrentProcessFile = file;
                 CurrentApplyingRule = rule;
                 FilesStatistic = new(filesArray.Length, Array.IndexOf(filesArray, file));
-                await ApplyFileRuleAsync();
+                await ApplyFileRuleAsync(cancellationToken);
             }
         }
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
@@ -75,13 +75,13 @@ public class RenderUtility : IRenderUtility
         return result;
     }
 
-    private async Task ApplyFileRuleAsync()
+    private async Task ApplyFileRuleAsync(CancellationToken cancellationToken = default)
     {
         PrintCurrentApplyingRuleLog();
         if (IsCurrentFileRuleNotAppliedOrRuntimeProcessing())
         {
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(CurrentApplyingRule.GetType());
-            await processor.ProcessAsync(CurrentProcessFile, CurrentApplyingRule);
+            await processor.ProcessAsync(CurrentProcessFile, CurrentApplyingRule, cancellationToken);
             CurrentApplyingRule.Applied();
             await _projectSerialization.SaveProjectFileAsync(CurrentProcessFile);
         }

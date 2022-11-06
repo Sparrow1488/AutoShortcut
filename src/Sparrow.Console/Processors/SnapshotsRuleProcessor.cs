@@ -25,7 +25,8 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.Ignore;
 
-    public override async Task<IFile> ProcessAsync(IProjectFile file, SnapshotsFileRule rule)
+    public override async Task<IFile> ProcessAsync(
+        IProjectFile file, SnapshotsFileRule rule, CancellationToken cancellationToken = default)
     {
         IFile lastSnapshotImage = null!;
         for (int i = 0; i < rule.Count; i++)
@@ -37,7 +38,7 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
             };
             var savePath = Path.Combine(_pathsProvider.GetPathFromCurrent("Snapshots"), $"snapshot_{DateTime.Now.Ticks}.png");
             var saveSettings = new SaveSettings() { SaveFullPath = savePath };
-            var snapshot = await _takeSnapshotProcess.TakeSnapshotAsync(snapshotSettings, saveSettings);
+            var snapshot = await _takeSnapshotProcess.TakeSnapshotAsync(snapshotSettings, saveSettings, cancellationToken);
             lastSnapshotImage = snapshot.File;
         }
         return lastSnapshotImage;

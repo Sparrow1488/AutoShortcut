@@ -15,50 +15,48 @@ public abstract class FFmpegProcess : ExecutionProcessBase
         IDefaultSaveService saveService,
         IPathsProvider pathsProvider,
         IConfiguration configuration,
-        ILogger<FFmpegProcess> logger,
         IUploadFilesService uploadFilesService,
-        IEnvironmentSettingsProvider environmentSettingsProvider) 
-    : base(configuration)
+        IEnvironmentSettingsProvider environmentSettingsProvider,
+        ILogger<ExecutionProcessBase> logger)
+    : base(configuration, logger)
     {
         _saveService = saveService;
         _pathsProvider = pathsProvider;
-        _logger = logger;
         _uploadFilesService = uploadFilesService;
         _environmentSettingsProvider = environmentSettingsProvider;
     }
 
     private readonly IDefaultSaveService _saveService;
     private readonly IPathsProvider _pathsProvider;
-    private readonly ILogger<FFmpegProcess> _logger;
     private readonly IUploadFilesService _uploadFilesService;
     private readonly IEnvironmentSettingsProvider _environmentSettingsProvider;
     private ISaveSettings _saveSettings;
 
-    protected async Task<IFile> StartFFmpegAsync()
+    protected async Task<IFile> StartFFmpegAsync(CancellationToken cancellationToken = default)
     {
-        await StartAsync();
+        await StartAsync(cancellationToken);
         return _uploadFilesService.GetFile(_saveSettings.SaveFullPath);
     }
 
-    public override async Task StartAsync()
+    public override async Task StartAsync(CancellationToken cancellationToken = default)
     {
         _saveSettings = OnConfigureSaveSettings();
         var outputFileDirectoryPath = Path.GetDirectoryName(_saveSettings.SaveFullPath);
         Directory.CreateDirectory(outputFileDirectoryPath);
-        await base.StartAsync();
+        await base.StartAsync(cancellationToken);
     }
 
     protected override async Task OnStartingProcessAsync(ProcessSettings processSettings, CancellationToken cancellationToken = default)
     {
         if (_environmentSettingsProvider.IsFFmpegScriptsLoggingEnabled())
         {
-            _logger.LogDebug("FFmpegScriptsLogging is {status}. Saving executable script", EnvironmentSettings.FFmpegLogging.Enable);
+            Logger.LogDebug("FFmpegScriptsLogging is {status}. Saving executable script", EnvironmentSettings.FFmpegLogging.Enable);
             var saveScriptsPath = _pathsProvider.GetPathFromCurrent("Scripts");
             var logFileName = GetType().Name + "_FFmpeg_" + DateTime.Now.ToString("hh.mm.ss-yyyy.MM.dd") + ".txt";
             var saveScriptSettings = new SaveSettings() { SaveFullPath = Path.Combine(saveScriptsPath, logFileName) };
-            _logger.LogDebug($"Saving to \"{saveScriptSettings.SaveFullPath}\""); // TODO: сделать папку в папке со скриптами типа gen1, gen2 - чтобы понимать в каком поколении Restore проекта эти скрипты выполнялись
+            Logger.LogDebug($"Saving to \"{saveScriptSettings.SaveFullPath}\""); // TODO: сделать папку в папке со скриптами типа gen1, gen2 - чтобы понимать в каком поколении Restore проекта эти скрипты выполнялись
             await _saveService.SaveAsync(processSettings.Argument, saveScriptSettings, cancellationToken);
-            _logger.LogDebug("Saved success");
+            Logger.LogDebug("Saved success");
         }
     }
 
