@@ -6,6 +6,11 @@ namespace Sparrow.Video.Shortcuts.Services;
 
 public class RestoreProjectService : IRestoreProjectService
 {
+    private readonly ILogger<RestoreProjectService> _logger;
+    private readonly IRestoreProjectOptionsService _restoreOptionsService;
+    private readonly IRestoreFilesService _restoreFilesService;
+    private readonly IProjectCreator _creator;
+
     public RestoreProjectService(
         IProjectCreator creator,
         ILogger<RestoreProjectService> logger,
@@ -17,11 +22,6 @@ public class RestoreProjectService : IRestoreProjectService
         _restoreFilesService = restoreFilesService;
         _creator = creator;
     }
-
-    private readonly ILogger<RestoreProjectService> _logger;
-    private readonly IRestoreProjectOptionsService _restoreOptionsService;
-    private readonly IRestoreFilesService _restoreFilesService;
-    private readonly IProjectCreator _creator;
 
     public async Task<IProject> RestoreAsync(string restoreFilesDirectoryPath, CancellationToken cancellationToken = default)
     {

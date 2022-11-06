@@ -28,6 +28,8 @@ public class CurrentDefinision : ApplicationDefinition
         var projectConfiguration = new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build();
         services.AddScoped<IConfiguration>(x => projectConfiguration);
 
+        services.AddSingleton<ISharedProject, SharedProject>();
+
         services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
         services.AddSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();
         services.AddSingleton<IPathsProvider, PathsProvider>();

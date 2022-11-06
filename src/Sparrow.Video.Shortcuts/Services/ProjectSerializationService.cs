@@ -56,7 +56,7 @@ public class ProjectSerializationService : IProjectSerializationService
         await OnEnableExecuteAsync(async () =>
         {
             var serializedOptions = _serializer.Serialize(project.Options);
-            var saveProjectOptionsPath = _pathsProvider.GetPathFromCurrent("ProjectOptions");
+            var saveProjectOptionsPath = _pathsProvider.GetPathFromSharedProject("ProjectOptions");
             var saveSettings = new SaveSettings()
             {
                 SaveFullPath = Path.Combine(saveProjectOptionsPath, "project-options.json")

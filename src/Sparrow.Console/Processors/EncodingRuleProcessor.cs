@@ -29,7 +29,7 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
         IProjectFile file, EncodingFileRule rule, CancellationToken cancellationToken = default)
     {
         var encodeFile = GetActualFile(file);
-        var processedFileDirPath = _pathsProvider.GetPathFromCurrent("EncodedFiles");
+        var processedFileDirPath = _pathsProvider.GetPathFromSharedProject("EncodedFiles");
         var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
         var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };
         var encodingSettings = new EncodingSettings() { EncodingType = rule.EncodingType };

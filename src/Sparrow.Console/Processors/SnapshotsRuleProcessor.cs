@@ -36,7 +36,7 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
                 Time = TimeSpan.FromSeconds(file.Analyse.StreamAnalyses.Video().Duration / (i + 1)),
                 FromFile = file.File
             };
-            var savePath = Path.Combine(_pathsProvider.GetPathFromCurrent("Snapshots"), $"snapshot_{DateTime.Now.Ticks}.png");
+            var savePath = Path.Combine(_pathsProvider.GetPathFromSharedProject("Snapshots"), $"snapshot_{DateTime.Now.Ticks}.png");
             var saveSettings = new SaveSettings() { SaveFullPath = savePath };
             var snapshot = await _takeSnapshotProcess.TakeSnapshotAsync(snapshotSettings, saveSettings, cancellationToken);
             lastSnapshotImage = snapshot.File;

@@ -35,7 +35,7 @@ namespace Sparrow.Video.Shortcuts.Builders.Formats
 
         private async Task SaveConcatedSourcesFileAsync(IEnumerable<string> filesPaths)
         {
-            var storeFilePath = _pathsProvider.GetPathFromCurrent("Scripts");
+            var storeFilePath = _pathsProvider.GetPathFromSharedProject("Scripts");
             _savedConcatedFilesPath = Path.Combine(storeFilePath, "concated.txt");
             var saveSettings = new SaveSettings()
             {

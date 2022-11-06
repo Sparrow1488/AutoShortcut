@@ -33,7 +33,10 @@ internal class AutoshortcutStartup : Startup
 
         if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
         {
-            var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
+            var restoredCompilation = 
+                await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
+            // TODO: нужно закидывать не путь до директории с файлами, а до корня проекта
+            // (где лежать Options/options.json и все обработанные файлы)
             return;
         }
 
@@ -66,7 +69,7 @@ internal class AutoshortcutStartup : Startup
                         rulesContainer.AddRule<LoopShortFileRule>();
                         rulesContainer.AddRule<LoopMediumFileRule>();
                     });
-                    options.SetRootDirectory("./Compilations-Project");
+                    options.SetRootDirectory("./[AutoShortcuts]Projects/Compilation-1.ash");
                 });
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);

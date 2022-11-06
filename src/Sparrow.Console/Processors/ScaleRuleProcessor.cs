@@ -30,7 +30,7 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
         IProjectFile file, ScaleFileRule rule, CancellationToken cancellationToken = default)
     {
         var toScaleFile = GetActualFile(file);
-        var saveDirPath = _pathsProvider.GetPathFromCurrent("ScaledFiles");
+        var saveDirPath = _pathsProvider.GetPathFromSharedProject("ScaledFiles");
         var saveSettings = new SaveSettings() {
             SaveFullPath = Path.Combine(saveDirPath, file.File.Name + file.File.Extension)
         };

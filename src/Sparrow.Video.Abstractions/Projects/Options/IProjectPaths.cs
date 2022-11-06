@@ -5,4 +5,5 @@ public interface IProjectPaths
     string Get(string name);
     string GetRequired(string name);
     string GetRoot();
+    string GetFilesDirectory();
 }

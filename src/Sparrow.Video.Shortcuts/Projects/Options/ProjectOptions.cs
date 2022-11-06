@@ -51,8 +51,10 @@ public class ProjectOptions : IProjectOptions
     {
         var paths = new ProjectPaths
         {
-            RootPath = StringPath.Create(path).Value
+            RootPath = StringPath.Create(path).Value,
+            //FilesDirectoryPath = StringPath.CreateExists()
         };
+        Directory.CreateDirectory(paths.RootPath);
         Root = ShortcutProjectRoot.Default.WithPaths(paths);
         return this;
     }

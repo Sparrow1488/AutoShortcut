@@ -6,12 +6,16 @@ namespace Sparrow.Video.Shortcuts.Services;
 
 public class PathsProvider : IPathsProvider
 {
-    public PathsProvider(IConfiguration configration)
+    public PathsProvider(
+        IConfiguration configration,
+        ISharedProject sharedProject)
     {
         Configration = configration;
+        SharedProject = sharedProject;
     }
 
     public IConfiguration Configration { get; }
+    public ISharedProject SharedProject { get; }
 
     public string GetPathFromCurrent(string name)
     {
@@ -24,6 +28,13 @@ public class PathsProvider : IPathsProvider
     {
         var pathValue = GetPath(name);
         return Path.Combine(projectRoot.ProjectPaths.GetRoot(), pathValue);
+    }
+
+    public string GetPathFromSharedProject(string name)
+    {
+        var pathValue = GetPath(name);
+        SharedProject.Assert();
+        return Path.Combine(SharedProject.Project.Options.Root.ProjectPaths.GetRoot(), pathValue);
     }
 
     public string GetPath(string name)

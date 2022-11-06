@@ -84,7 +84,7 @@ public class ShortcutEngine : IShortcutEngine
     {
         var resultSaveSettings = new SaveSettings() {
             SaveFullPath = Path.Combine(
-                _pathsProvider.GetPathFromCurrent("ResultFiles"), $"{project.Name}.mp4")
+                _pathsProvider.GetPathFromSharedProject("ResultFiles"), $"{project.Name}.mp4")
         };
         return await _renderUtility.StartRenderAsync(project, resultSaveSettings, cancellationToken);
     }

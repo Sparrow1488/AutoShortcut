@@ -40,7 +40,7 @@ public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
 
     private ISaveSettings GetSaveSettings(string fileNameWithExtenion)
     {
-        var silentPath = _pathProvider.GetPathFromCurrent("SilentFiles");
+        var silentPath = _pathProvider.GetPathFromSharedProject("SilentFiles");
         var settings = new SaveSettings()
         {
             SaveFullPath = Path.Combine(silentPath, fileNameWithExtenion)

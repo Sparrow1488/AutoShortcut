@@ -9,6 +9,8 @@ public class ProjectPaths : IProjectPaths
 {
     [JsonProperty]
     public string RootPath { get; internal set; }
+    [JsonProperty]
+    public string FilesDirectoryPath { get; internal set; }
 
     public string Get(string name)
     {
@@ -20,5 +22,6 @@ public class ProjectPaths : IProjectPaths
         throw new NotImplementedException();
     }
 
+    public string GetFilesDirectory() => FilesDirectoryPath;
     public string GetRoot() => RootPath;
 }

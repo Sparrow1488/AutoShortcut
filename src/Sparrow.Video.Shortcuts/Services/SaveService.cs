@@ -41,7 +41,7 @@ public class SaveService : ISaveService
             DirectoryPath = saveOptions.DirectoryPath,
             OriginalFilePath = fullFilePathWithExtension
         };
-        var metaFilesPath = _pathsProvider.GetPathFromCurrent(PathName.FilesMeta);
+        var metaFilesPath = _pathsProvider.GetPathFromSharedProject(PathName.FilesMeta);
         var fileMeta = JsonConvert.SerializeObject(metaMemento, _jsonSettings);
         var metaFileFullName = Path.Combine(metaFilesPath, $"{fileName}.meta.json");
         await SaveTextAsync(metaFileFullName, fileMeta, cancellationToken);

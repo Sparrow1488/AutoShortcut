@@ -12,11 +12,15 @@ public class ShortcutProjectCreator : IProjectCreator
 
     public ShortcutProjectCreator(
         IProjectOptions projectOptions,
-        IServiceProvider services)
+        IServiceProvider services,
+        ISharedProject sharedProject)
     {
         _projectOptions = projectOptions;
         _services = services;
+        SharedProject = sharedProject;
     }
+
+    public ISharedProject SharedProject { get; }
 
     public IProject CreateProject(IEnumerable<IProjectFile> files)
     {
@@ -36,6 +40,8 @@ public class ShortcutProjectCreator : IProjectCreator
 
         var filesWithoutRules = files.Where(x => !x.RulesCollection.Any());
         project.Options.RulesContainer.ApplyRules(filesWithoutRules);
+
+        SharedProject.Project = project;
 
         return project;
     }
