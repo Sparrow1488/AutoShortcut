@@ -50,8 +50,7 @@ internal class AutoshortcutStartup : Startup
 
         if (Variables.CurrentProjectOpenMode() == ProjectModes.New)
         {
-            var pipeline = await engine.CreatePipelineAsync(
-                        FilesDirectoryPath.Value, cancellationToken);
+            var pipeline = await engine.CreatePipelineAsync(FilesDirectoryPath.Value, cancellationToken);
 
             Log.Information(
                 "Project serialize {isSerialize}; Named: {name}; Resolution: {resolution}", 

@@ -12,9 +12,16 @@ namespace Sparrow.Video.Shortcuts.Projects.Options;
 [Serializable]
 public class ProjectOptions : IProjectOptions
 {
+    private readonly ShortcutProjectRoot _projectRoot = ShortcutProjectRoot.Default;
+    private readonly ProjectPaths _projectPaths = new();
+
     public ProjectOptions()
     {
         Structure = DefaultStructure;
+        _projectPaths = new();
+        _projectRoot = ShortcutProjectRoot.Default;
+        _projectRoot.WithPaths(_projectPaths);
+        Root = _projectRoot;
     }
 
     [JsonConstructor]
@@ -49,13 +56,8 @@ public class ProjectOptions : IProjectOptions
 
     public IProjectOptions SetRootDirectory(string path)
     {
-        var paths = new ProjectPaths
-        {
-            RootPath = StringPath.Create(path).Value,
-            //FilesDirectoryPath = StringPath.CreateExists()
-        };
-        Directory.CreateDirectory(paths.RootPath);
-        Root = ShortcutProjectRoot.Default.WithPaths(paths);
+        _projectPaths.RootPath = StringPath.Create(path).Value;
+        Directory.CreateDirectory(_projectPaths.RootPath);
         return this;
     }
 

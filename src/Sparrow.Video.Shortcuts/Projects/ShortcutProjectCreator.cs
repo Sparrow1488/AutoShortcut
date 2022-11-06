@@ -2,6 +2,8 @@
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
+using Sparrow.Video.Abstractions.Rules;
+using Sparrow.Video.Shortcuts.Projects.Options;
 
 namespace Sparrow.Video.Shortcuts.Projects;
 
@@ -38,8 +40,7 @@ public class ShortcutProjectCreator : IProjectCreator
         var project = CreateEmptyProject(options);
         project.Files = project.Options.Structure.GetStructuredFiles(files).ToArray();
 
-        var filesWithoutRules = files.Where(x => !x.RulesCollection.Any());
-        project.Options.RulesContainer.ApplyRules(filesWithoutRules);
+        SetRulesToNewFiles(project.Options.RulesContainer, files);
 
         SharedProject.Project = project;
 
@@ -51,5 +52,12 @@ public class ShortcutProjectCreator : IProjectCreator
         var project = ActivatorUtilities.CreateInstance<ShortcutProject>(_services);
         project.Options = options ?? project.Options;
         return project;
+    }
+
+    private void SetRulesToNewFiles(
+        IFileRulesContainer rules, IEnumerable<IProjectFile> projectFiles)
+    {
+        var filesWithoutRules = projectFiles.Where(x => !x.RulesCollection.Any());
+        rules.ApplyRules(filesWithoutRules);
     }
 }

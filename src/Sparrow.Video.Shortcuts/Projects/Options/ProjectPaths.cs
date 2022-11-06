@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Sparrow.Video.Abstractions.Projects.Options;
 
 namespace Sparrow.Video.Shortcuts.Projects.Options;
@@ -11,6 +10,8 @@ public class ProjectPaths : IProjectPaths
     public string RootPath { get; internal set; }
     [JsonProperty]
     public string FilesDirectoryPath { get; internal set; }
+    [JsonProperty]
+    public List<FileStoreInfo> FileStoreInfos { get; internal set; } = new();
 
     public string Get(string name)
     {
@@ -24,6 +25,7 @@ public class ProjectPaths : IProjectPaths
 
     public string GetFilesDirectory() => FilesDirectoryPath;
     public string GetRoot() => RootPath;
+    public IEnumerable<string> GetFilesPaths() => FileStoreInfos.Select(x => x.Path);
 }
 
 public struct FileStoreInfo
