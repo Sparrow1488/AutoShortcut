@@ -17,7 +17,7 @@ internal class AutoshortcutStartup : Startup
     {
         base.OnConfigreDevelopmentVariables(variables);
         Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Test\Test2");
+                             @"C:\Users\USER\Desktop\New");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
