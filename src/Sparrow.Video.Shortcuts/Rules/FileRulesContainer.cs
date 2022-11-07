@@ -4,6 +4,7 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Factories;
+using System.Collections;
 
 namespace Sparrow.Video.Shortcuts.Rules;
 
@@ -55,12 +56,28 @@ public class FileRulesContainer : IFileRulesContainer
         foreach (var file in projectFiles)
             foreach (var rule in ProcessingRules)
                 if (rule.IsInRule(file))
-                    file.RulesCollection.Add((IFileRule)rule.Clone());
+                    file.RulesContainer.AddRule((IFileRule)rule.Clone());
     }
 
     public void ApplyRules(IProjectFile projectFile)
     {
-        throw new NotImplementedException();
+        var newProjectRules = new FileRulesContainer();
+        foreach (var rule in projectFile.RulesContainer)
+        {
+            var ruleType = rule.GetType();
+            if (Contains(ruleType))
+            {
+                var currentRule = GetRule(ruleType);
+                if (!currentRule.Equals(rule))
+                {
+                    newProjectRules.AddRule(currentRule.Clone());
+                }
+                else
+                {
+                    newProjectRules.AddRule(rule);
+                }
+            }
+        }
     }
 
     public void DeleteRule<TRule>() 
@@ -87,19 +104,50 @@ public class FileRulesContainer : IFileRulesContainer
     public void Replace<TRule>(TRule @new) 
         where TRule : IFileRule
     {
-        var replacedFileRules = new List<IFileRule>();
-        foreach (var rule in fileRules)
+        for (int i = 0; i < fileRules.Count; i++)
         {
-            if (rule.GetType() == typeof(TRule))
-                replacedFileRules.Add(@new);
-            else replacedFileRules.Add(rule);
+            var currentRule = fileRules[i];
+            if (currentRule.GetType() == typeof(TRule))
+                fileRules[i] = @new;
+            else fileRules[i] = currentRule;
         }
-        fileRules = replacedFileRules;
     }
 
     public TRule GetRule<TRule>() 
         where TRule : IFileRule
     {
         return (TRule)fileRules.Single(x => x.GetType() == typeof(TRule));
+    }
+
+    public IFileRule GetRule(Type type)
+    {
+        return fileRules.Single(x => x.GetType() == type);
+    }
+
+    public IEnumerator<IFileRule> GetEnumerator() => fileRules.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public IFileRulesContainer Merge(IFileRulesContainer container)
+    {
+        // Сливаем полученный с текущим
+        // 1. Одинаковая длинна (пока что)
+        // 2. 
+        // 3. 
+        var rulesArray = container.ToArray();
+        var selectedRules = fileRules.Where(x => container.Contains(x.GetType())).ToArray();
+        var merged = new FileRulesContainer();
+        for (int i = 0; i < rulesArray.Length; i++)
+        {
+            var currentRule = selectedRules[i];
+            var outsideRule = rulesArray[i];
+
+            if (currentRule.GetType() != outsideRule.GetType())
+                throw new Exception("Merge failed: different types on same index");
+
+            if (!currentRule.Equals(outsideRule))
+                merged.AddRule(currentRule.Clone());
+            else merged.AddRule(outsideRule.Clone());
+        }
+        return merged;
     }
 }

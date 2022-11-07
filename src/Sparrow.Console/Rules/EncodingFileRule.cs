@@ -10,4 +10,13 @@ public class EncodingFileRule : FileRuleBase
     public string EncodingType => Video.Abstractions.Enums.EncodingType.Mpegts;
 
     public override RuleName RuleName => RuleName.New("Encoding");
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is EncodingFileRule encodingRule)
+        {
+            return encodingRule.EncodingType == EncodingType;
+        }
+        return false;
+    }
 }

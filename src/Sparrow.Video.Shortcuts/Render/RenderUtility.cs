@@ -53,7 +53,7 @@ public class RenderUtility : IRenderUtility
         var filesArray = project.Files.ToArray();
         foreach (var file in filesArray)
         {
-            if (!file.RulesCollection.Any())
+            if (!file.RulesContainer.Any())
             {
                 _logger.LogWarning(
                     "File {file} no contains any processing rule",
@@ -61,7 +61,7 @@ public class RenderUtility : IRenderUtility
                 continue;
             }
                 
-            foreach (var rule in file.RulesCollection)
+            foreach (var rule in file.RulesContainer)
             {
                 CurrentProcessFile = file;
                 CurrentApplyingRule = rule;

@@ -29,4 +29,13 @@ public class ScaleFileRule : FileRuleBase
     {
         return new ScaleFileRule(resolution);
     }
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is ScaleFileRule scaleRule)
+        {
+            return scaleRule.Scale.Width == Scale.Width && scaleRule.Scale.Heigth == Scale.Heigth;
+        }
+        return false;
+    }
 }
