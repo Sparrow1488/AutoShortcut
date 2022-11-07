@@ -6,13 +6,20 @@ namespace Sparrow.Video.Shortcuts.Projects;
 
 public class ShortcutProject : IProject
 {
-    public ShortcutProject(IProjectOptions options)
+    private ShortcutProject() { }
+
+    private ShortcutProject(IProjectOptions options) 
+        => Options = options;
+
+    private ShortcutProject(
+        IProjectOptions options,
+        IEnumerable<IProjectFile> files)
     {
         Options = options;
+        Files = files;
     }
 
-    public string Name => Options.ProjectName;
-    public IEnumerable<IProjectFile> Files { get; set; }
+    public IEnumerable<IProjectFile> Files { get; internal set; }
     public IProjectOptions Options { get; internal set; }
 
     public IProject ConfigureOptions(Action<IProjectOptions> configureOptions)
@@ -20,4 +27,13 @@ public class ShortcutProject : IProject
         configureOptions.Invoke(Options);
         return this;
     }
+
+    public static ShortcutProject Create() => new();
+
+    public static ShortcutProject Create(IProjectOptions options) 
+        => new(options);
+
+    public static ShortcutProject Create(
+        IProjectOptions options, IEnumerable<IProjectFile> files) 
+            => new(options, files);
 }

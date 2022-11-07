@@ -10,14 +10,10 @@ namespace Sparrow.Video.Shortcuts.Projects;
 public class ShortcutProjectCreator : IProjectCreator
 {
     private readonly ProjectOptions _projectOptions;
-    private readonly IServiceProvider _services;
 
-    public ShortcutProjectCreator(
-        IServiceProvider services,
-        ISharedProject sharedProject)
+    public ShortcutProjectCreator(ISharedProject sharedProject)
     {
         _projectOptions = ProjectOptions.Create();
-        _services = services;
         SharedProject = sharedProject;
     }
 
@@ -39,8 +35,8 @@ public class ShortcutProjectCreator : IProjectCreator
         IEnumerable<IProjectFile> files, 
         IProjectOptions options)
     {
-        var project = CreateEmptyProject(options);
-        project.Files = project.Options.Structure.GetStructuredFiles(files).ToArray();
+        var structuredFiles = options.Structure.GetStructuredFiles(files);
+        var project = ShortcutProject.Create(options, structuredFiles);
 
         SetRulesToNewFiles(project.Options.RulesContainer, files);
 
@@ -49,15 +45,7 @@ public class ShortcutProjectCreator : IProjectCreator
         return project;
     }
 
-    private ShortcutProject CreateEmptyProject(
-        IProjectOptions options = default)
-    {
-        var project = ActivatorUtilities.CreateInstance<ShortcutProject>(_services);
-        project.Options = options ?? project.Options;
-        return project;
-    }
-
-    private void SetRulesToNewFiles(
+    private static void SetRulesToNewFiles(
         IFileRulesContainer rules, IEnumerable<IProjectFile> projectFiles)
     {
         var filesWithoutRules = projectFiles.Where(x => !x.RulesCollection.Any());

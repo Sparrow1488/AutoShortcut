@@ -8,6 +8,7 @@ using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
+using Sparrow.Video.Shortcuts.Services.Options;
 
 namespace Sparrow.Console;
 
@@ -38,40 +39,41 @@ internal class AutoshortcutStartup : Startup
             var restoreService = ServiceProvider.GetRequiredService<IRestoreProjectService>();
             var project = await restoreService.RestoreExistsAsync(projectRootDirectory, cancellationToken);
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
-
+            Log.Information("Finally video: " + compilation.Path);
             return;
         }
 
         if (Variables.CurrentProjectOpenMode() == ProjectModes.New)
         {
-            var pipeline = await engine.CreatePipelineAsync(FilesDirectoryPath.Value, cancellationToken);
-
             Log.Information(
                 "Project serialize {isSerialize}; Named: {name}; Resolution: {resolution}", 
                 Variables.IsSerialize(),
                 Variables.OutputFileName(),
                 Variables.GetOutputVideoQuality());
 
-            ScaleFileRule outputVideoResolutionScale 
-                = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
+            var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
+            var files = await uploadService.GetFilesAsync(
+                                FilesDirectoryPath.Value, 
+                                GetUploadOptions(),
+                                cancellationToken);
 
-            var project = pipeline
-                .Configure(opt => opt.IsSerialize = Variables.IsSerialize())
-                .CreateProject(options =>
+            var project = await engine.CreateProjectAsync(options =>
+            {
+                options.Named(Variables.OutputFileName());
+                options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
+                options.WithRules(rulesContainer =>
                 {
-                    options.Named(Variables.OutputFileName());
-                    options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
-                    options.WithRules(rulesContainer =>
-                    {
-                        rulesContainer.AddRule(outputVideoResolutionScale);
-                        //rulesContainer.AddRule<SnapshotsFileRule>();
-                        rulesContainer.AddRule<SilentFileRule>();
-                        rulesContainer.AddRule<EncodingFileRule>();
-                        rulesContainer.AddRule<LoopShortFileRule>();
-                        rulesContainer.AddRule<LoopMediumFileRule>();
-                    });
-                    options.SetRootDirectory(projectRootDirectory);
+                    ScaleFileRule outputVideoResolutionScale = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
+
+                    rulesContainer.AddRule(outputVideoResolutionScale);
+                    rulesContainer.AddRule<SnapshotsFileRule>();
+                    rulesContainer.AddRule<SilentFileRule>();
+                    rulesContainer.AddRule<EncodingFileRule>();
+                    rulesContainer.AddRule<LoopShortFileRule>();
+                    rulesContainer.AddRule<LoopMediumFileRule>();
                 });
+                options.SetRootDirectory(projectRootDirectory);
+            }, files, cancellationToken);
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);
@@ -80,5 +82,18 @@ internal class AutoshortcutStartup : Startup
 
         throw new InvalidEnvironmentVariableException(
             $"Invalid input variable '{EnvironmentVariableNames.ProjectOpenMode}' is invalid");
+    }
+
+    private static UploadFilesOptions GetUploadOptions()
+    {
+        UploadFilesOptions options = new()
+        {
+            OnUploadedIgnoreFile = (file) => UploadFileAction.Skip
+        };
+        options.Ignore(FileType.Undefined)
+               .Ignore(FileType.Restore)
+               .Ignore(FileType.Image)
+               .Ignore(FileType.Audio);
+        return options;
     }
 }

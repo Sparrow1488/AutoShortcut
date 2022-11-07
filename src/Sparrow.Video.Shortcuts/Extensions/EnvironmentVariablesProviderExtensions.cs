@@ -11,7 +11,6 @@ public static class EnvironmentVariablesProviderExtensions
 
     public static bool IsSerialize(this IEnvironmentVariablesProvider environment, bool @default = false)
     {
-        var all = System.Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User);
         var isSerialize = environment.GetVariable(EnvironmentVariableNames.Serialize);
         return bool.Parse(isSerialize ?? @default.ToString());
     }
