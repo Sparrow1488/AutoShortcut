@@ -7,6 +7,7 @@ using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
+using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enginies;
 using Sparrow.Video.Shortcuts.Enums;
@@ -17,6 +18,7 @@ using Sparrow.Video.Shortcuts.Processes;
 using Sparrow.Video.Shortcuts.Projects;
 using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
+using Sparrow.Video.Shortcuts.Runtime;
 using Sparrow.Video.Shortcuts.Services;
 
 namespace Sparrow.Video.Shortcuts.Environment.Definitions;
@@ -29,6 +31,7 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddScoped<IConfiguration>(x => projectConfiguration);
 
         services.AddSingleton<ISharedProject, SharedProject>();
+        services.AddSingleton<IRuntimeProjectLoader, RuntimeProjectLoader>();
 
         services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
         services.AddSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();

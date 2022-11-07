@@ -6,11 +6,9 @@ namespace Sparrow.Video.Abstractions.Projects.Options;
 public interface IProjectOptions
 {
     string ProjectName { get; }
-    IFilesStructure DefaultStructure { get; }
     IFilesStructure Structure { get; }
     IFileRulesContainer RulesContainer { get; }
     IProjectRoot Root { get; }
-
     IEnumerable<string> ProjectFilesPaths { get; }
 
     IProjectOptions WithRules(Action<IFileRulesContainer> projectRules);

@@ -28,7 +28,7 @@ public class ShortcutProject : IProject
         return this;
     }
 
-    public static ShortcutProject Create() => new();
+    internal static ShortcutProject Create() => new();
 
     public static ShortcutProject Create(IProjectOptions options) 
         => new(options);

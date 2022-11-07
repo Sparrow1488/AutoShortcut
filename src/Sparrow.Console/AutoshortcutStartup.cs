@@ -3,6 +3,7 @@ using Serilog;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Exceptions;
@@ -32,12 +33,19 @@ internal class AutoshortcutStartup : Startup
         Log.Information("Project Mode '{mode}'", Variables.CurrentProjectOpenMode());
         Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
 
-        const string projectRootDirectory = "./[AutoShortcuts]Projects/Compilation-1.ash";
+        const string projectRootDirectory = "./[AutoShortcuts]Projects/Compilation-2.ash";
 
         if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
         {
-            var restoreService = ServiceProvider.GetRequiredService<IRestoreProjectService>();
-            var project = await restoreService.RestoreExistsAsync(projectRootDirectory, cancellationToken);
+            var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
+            await loader.LoadAsync(projectRootDirectory);
+
+            var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
+            var newFile = uploadService.GetFile(@"C:\Users\USER\Desktop\Test\Test\InaNew_H_Animation456251429.mp4");
+
+            await loader.AddFileAsync(newFile, cancellationToken);
+            var project = loader.CreateProject();
+
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);
             return;

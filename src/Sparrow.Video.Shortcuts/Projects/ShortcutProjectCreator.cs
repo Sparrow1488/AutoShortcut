@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Rules;
@@ -13,15 +12,15 @@ public class ShortcutProjectCreator : IProjectCreator
 
     public ShortcutProjectCreator(ISharedProject sharedProject)
     {
-        _projectOptions = ProjectOptions.Create();
         SharedProject = sharedProject;
+        _projectOptions = ProjectOptions.Create();
     }
 
     public ISharedProject SharedProject { get; }
 
     public IProject CreateProject(IEnumerable<IProjectFile> files)
     {
-        return CreateProject(files, options => options.StructureBy(options.DefaultStructure));
+        return CreateProject(files, options => options.StructureBy(ProjectOptions.DefaultStructure));
     }
 
     public IProject CreateProject(IEnumerable<IProjectFile> files, Action<IProjectOptions> options)

@@ -49,8 +49,8 @@ public class ProjectOptions : IProjectOptions
     public IProjectRoot Root { get; private set; }
     [JsonProperty]
     public IEnumerable<string> ProjectFilesPaths { get; internal set; }
-    [JsonIgnore]
-    public IFilesStructure DefaultStructure { get; } = new NameStructure();
+
+    public static IFilesStructure DefaultStructure => new NameStructure();
 
     public static ProjectOptions Create() => new();
 

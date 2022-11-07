@@ -71,7 +71,8 @@ public class RenderUtility : IRenderUtility
         }
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
        
-        var result = await _concatinateProcess.ConcatinateFilesAsync(concatinateFilesPaths, saveSettings);
+        var result = await _concatinateProcess.ConcatinateFilesAsync(
+                        concatinateFilesPaths, saveSettings, cancellationToken);
         return result;
     }
 
