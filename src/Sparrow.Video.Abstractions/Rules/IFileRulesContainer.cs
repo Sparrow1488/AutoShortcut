@@ -11,4 +11,5 @@ public interface IFileRulesContainer
     void Replace<TRule>(TRule @new) where TRule : IFileRule;
     TRule GetRule<TRule>() where TRule : IFileRule;
     void ApplyRules(IEnumerable<IProjectFile> projectFiles);
+    void ApplyRules(IProjectFile projectFile);
 }

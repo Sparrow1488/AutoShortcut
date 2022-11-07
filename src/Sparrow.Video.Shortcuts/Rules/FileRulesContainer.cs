@@ -58,6 +58,11 @@ public class FileRulesContainer : IFileRulesContainer
                     file.RulesCollection.Add((IFileRule)rule.Clone());
     }
 
+    public void ApplyRules(IProjectFile projectFile)
+    {
+        throw new NotImplementedException();
+    }
+
     public void DeleteRule<TRule>() 
         where TRule : IFileRule
     {

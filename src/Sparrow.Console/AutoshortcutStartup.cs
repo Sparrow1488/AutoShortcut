@@ -25,10 +25,10 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
     {
         loader.ConfigureProjectOptions(options =>
         {
-            options.Named("Loaded Compilation 2");
+            options.Named("Loaded Compilation");
             options.StructureBy(new DurationStructure().LongFirst());
             // TODO:
-            // 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
+            // + 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
             // ~  2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
             // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
             // +  4. AutoshortcutStartupBase

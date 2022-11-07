@@ -47,6 +47,14 @@ public class ShortcutProjectCreator : IProjectCreator
     private static void SetRulesToNewFiles(
         IFileRulesContainer rules, IEnumerable<IProjectFile> projectFiles)
     {
+        //foreach (var projectFile in projectFiles)
+        //{
+        //    foreach (var projectFileRule in projectFile.RulesCollection)
+        //    {
+        //        rules.ApplyRules(projectFile);
+        //    }
+        //}
+
         var filesWithoutRules = projectFiles.Where(x => !x.RulesCollection.Any());
         rules.ApplyRules(filesWithoutRules);
     }
