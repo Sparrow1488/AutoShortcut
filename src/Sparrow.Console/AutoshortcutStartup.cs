@@ -1,19 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Serilog;
-using Sparrow.Console.Rules;
+﻿using Sparrow.Console.Rules;
+using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
-using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
-using Sparrow.Video.Shortcuts.Services.Options;
 
 namespace Sparrow.Console;
 
-internal class AutoshortcutStartup : Startup
+internal class AutoshortcutStartup : AutoshortcutStartupBase
 {
     public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
     {
@@ -22,107 +20,54 @@ internal class AutoshortcutStartup : Startup
                              @"C:\Users\USER\Desktop\Test\Test2");
     }
 
-    public override async Task OnStart(CancellationToken cancellationToken = default)
+    public override Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
-        Log.Information(">> Starting {library}", "Autoshortcut");
-
-        var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
-        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-        var engine = factory.CreateEngine();
-
-        Log.Information("Project Mode '{mode}'", Variables.CurrentProjectOpenMode());
-        Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
-
-        const string projectRootDirectory = "./[AutoShortcuts]Projects/Compilation-2.ash";
-
-        if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
+        loader.ConfigureProjectOptions(options =>
         {
-            var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
-            var newFile = uploadService.GetFile(@"C:\Users\USER\Desktop\Test\Test\InaNew_H_Animation456251429.mp4");
+            options.Named("Loaded Compilation 2");
+            options.StructureBy(new DurationStructure().LongFirst());
+            // TODO:
+            // 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
+            // 2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
+            // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
+            // 4. AutoshortcutStartupBase
+            //options.WithRules(rulesContainer =>
+            //{
+            //    ScaleFileRule outputVideoResolutionScale = new(Resolution.HD);
 
-            var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
-            await loader.LoadAsync(projectRootDirectory);
-
-            await loader.AddFileAsync(newFile, cancellationToken);
-            loader.ConfigureProjectOptions(options =>
-            {
-                options.Named("Loaded Compilation 2");
-                options.StructureBy(new DurationStructure());
-                // TODO:
-                // 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
-                // 2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
-                // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
-                // 4. AutoshortcutStartupBase
-                options.WithRules(rulesContainer =>
-                {
-                    ScaleFileRule outputVideoResolutionScale = new(Resolution.HD);
-
-                    rulesContainer.AddRule(outputVideoResolutionScale);
-                    rulesContainer.AddRule<SnapshotsFileRule>();
-                    rulesContainer.AddRule<SilentFileRule>();
-                    rulesContainer.AddRule<EncodingFileRule>();
-                    rulesContainer.AddRule<LoopShortFileRule>();
-                    rulesContainer.AddRule<LoopMediumFileRule>();
-                });
-            });
-            var project = loader.CreateProject();
-
-            var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            Log.Information("Finally video: " + compilation.Path);
-            return;
-        }
-
-        if (Variables.CurrentProjectOpenMode() == ProjectModes.New)
-        {
-            Log.Information(
-                "Project serialize {isSerialize}; Named: {name}; Resolution: {resolution}", 
-                Variables.IsSerialize(),
-                Variables.OutputFileName(),
-                Variables.GetOutputVideoQuality());
-
-            var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
-            var files = await uploadService.GetFilesAsync(
-                                FilesDirectoryPath.Value, 
-                                GetUploadOptions(),
-                                cancellationToken);
-
-            var project = await engine.CreateProjectAsync(options =>
-            {
-                options.Named(Variables.OutputFileName());
-                options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
-                options.WithRules(rulesContainer =>
-                {
-                    ScaleFileRule outputVideoResolutionScale = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
-
-                    rulesContainer.AddRule(outputVideoResolutionScale);
-                    rulesContainer.AddRule<SnapshotsFileRule>();
-                    rulesContainer.AddRule<SilentFileRule>();
-                    rulesContainer.AddRule<EncodingFileRule>();
-                    rulesContainer.AddRule<LoopShortFileRule>();
-                    rulesContainer.AddRule<LoopMediumFileRule>();
-                });
-                options.SetRootDirectory(projectRootDirectory);
-            }, files, cancellationToken);
-
-            var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            Log.Information("Finally video: " + compilation.Path);
-            return;
-        }
-
-        throw new InvalidEnvironmentVariableException(
-            $"Invalid input variable '{EnvironmentVariableNames.ProjectOpenMode}' is invalid");
+            //    rulesContainer.AddRule(outputVideoResolutionScale);
+            //    rulesContainer.AddRule<SnapshotsFileRule>();
+            //    rulesContainer.AddRule<SilentFileRule>();
+            //    rulesContainer.AddRule<EncodingFileRule>();
+            //    rulesContainer.AddRule<LoopShortFileRule>();
+            //    rulesContainer.AddRule<LoopMediumFileRule>();
+            //});
+        });
+        var project = loader.CreateProject();
+        return Task.FromResult(project);
     }
 
-    private static UploadFilesOptions GetUploadOptions()
+    public override async Task<IProject> OnCreateProjectAsync(
+        IShortcutEngine engine, IEnumerable<IFile> files, string projectPath)
     {
-        UploadFilesOptions options = new()
+        var project = await engine.CreateProjectAsync(options =>
         {
-            OnUploadedIgnoreFile = (file) => UploadFileAction.Skip
-        };
-        options.Ignore(FileType.Undefined)
-               .Ignore(FileType.Restore)
-               .Ignore(FileType.Image)
-               .Ignore(FileType.Audio);
-        return options;
+            options.Named(Variables.OutputFileName());
+            options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
+            options.WithRules(rulesContainer =>
+            {
+                ScaleFileRule outputVideoResolutionScale = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
+
+                rulesContainer.AddRule(outputVideoResolutionScale);
+                rulesContainer.AddRule<SnapshotsFileRule>();
+                rulesContainer.AddRule<SilentFileRule>();
+                rulesContainer.AddRule<EncodingFileRule>();
+                rulesContainer.AddRule<LoopShortFileRule>();
+                rulesContainer.AddRule<LoopMediumFileRule>();
+            });
+            options.SetRootDirectory(projectPath);
+        }, files, CancellationToken);
+
+        return project;
     }
 }
