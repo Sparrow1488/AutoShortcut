@@ -43,6 +43,11 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
         }
     }
 
+    public void ConfigureProjectOptions(Action<IProjectOptions> options)
+    {
+        options?.Invoke(_projectOptions);
+    }
+
     public IProject CreateProject()
     {
         if (_projectFiles is null || _projectFiles.Count == 0)

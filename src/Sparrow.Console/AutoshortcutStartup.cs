@@ -37,13 +37,34 @@ internal class AutoshortcutStartup : Startup
 
         if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
         {
-            var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
-            await loader.LoadAsync(projectRootDirectory);
-
             var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
             var newFile = uploadService.GetFile(@"C:\Users\USER\Desktop\Test\Test\InaNew_H_Animation456251429.mp4");
 
+            var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
+            await loader.LoadAsync(projectRootDirectory);
+
             await loader.AddFileAsync(newFile, cancellationToken);
+            loader.ConfigureProjectOptions(options =>
+            {
+                options.Named("Loaded Compilation 2");
+                options.StructureBy(new DurationStructure());
+                // TODO:
+                // 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
+                // 2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
+                // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
+                // 4. AutoshortcutStartupBase
+                options.WithRules(rulesContainer =>
+                {
+                    ScaleFileRule outputVideoResolutionScale = new(Resolution.HD);
+
+                    rulesContainer.AddRule(outputVideoResolutionScale);
+                    rulesContainer.AddRule<SnapshotsFileRule>();
+                    rulesContainer.AddRule<SilentFileRule>();
+                    rulesContainer.AddRule<EncodingFileRule>();
+                    rulesContainer.AddRule<LoopShortFileRule>();
+                    rulesContainer.AddRule<LoopMediumFileRule>();
+                });
+            });
             var project = loader.CreateProject();
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
