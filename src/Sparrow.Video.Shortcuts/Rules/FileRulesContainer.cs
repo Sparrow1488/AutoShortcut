@@ -11,7 +11,7 @@ namespace Sparrow.Video.Shortcuts.Rules;
 public class FileRulesContainer : IFileRulesContainer
 {
     [JsonProperty]
-    private readonly List<IFileRule> fileRules = new();
+    private List<IFileRule> fileRules = new();
 
     public FileRulesContainer() { }
 
@@ -36,7 +36,7 @@ public class FileRulesContainer : IFileRulesContainer
         fileRules.Add(CreateFileRule(new(typeof(TRule))));
     }
 
-    private static IFileRule CreateFileRule(RuleStore storedRule)
+    private IFileRule CreateFileRule(RuleStore storedRule)
     {
         IFileRule fileRule = null;
         if (storedRule.Kind is RuleStoreKind.Type)
@@ -45,6 +45,8 @@ public class FileRulesContainer : IFileRulesContainer
             fileRule = storedRule.Instance.Clone();
         if (storedRule.Kind is RuleStoreKind.Null)
             throw new NotSpecifiedStoredRuleException("Hmm.. Something went wrong");
+        if (Contains(fileRule.GetType()))
+            throw new RuleAlreadyExistsException($"{fileRule.GetType().Name} already exists in container");
         return fileRule;
     }
 
@@ -54,5 +56,45 @@ public class FileRulesContainer : IFileRulesContainer
             foreach (var rule in ProcessingRules)
                 if (rule.IsInRule(file))
                     file.RulesCollection.Add((IFileRule)rule.Clone());
+    }
+
+    public void DeleteRule<TRule>() 
+        where TRule : IFileRule
+    {
+        if (Contains<TRule>())
+        {
+            var containable = GetRule<TRule>();
+            fileRules.Remove(containable);
+        }
+    }
+
+    public bool Contains<TRule>() 
+        where TRule : IFileRule
+    {
+        return fileRules.Any(x => x.GetType() == typeof(TRule));
+    }
+
+    public bool Contains(Type ruleType)
+    {
+        return fileRules.Any(x => x.GetType() == ruleType);
+    }
+
+    public void Replace<TRule>(TRule @new) 
+        where TRule : IFileRule
+    {
+        var replacedFileRules = new List<IFileRule>();
+        foreach (var rule in fileRules)
+        {
+            if (rule.GetType() == typeof(TRule))
+                replacedFileRules.Add(@new);
+            else replacedFileRules.Add(rule);
+        }
+        fileRules = replacedFileRules;
+    }
+
+    public TRule GetRule<TRule>() 
+        where TRule : IFileRule
+    {
+        return (TRule)fileRules.Single(x => x.GetType() == typeof(TRule));
     }
 }

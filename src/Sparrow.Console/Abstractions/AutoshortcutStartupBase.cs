@@ -12,7 +12,7 @@ using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Services.Options;
 
-namespace Sparrow.Console;
+namespace Sparrow.Console.Abstractions;
 
 internal abstract class AutoshortcutStartupBase : Startup
 {

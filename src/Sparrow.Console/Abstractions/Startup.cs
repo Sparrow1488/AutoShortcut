@@ -6,7 +6,7 @@ using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 
-namespace Sparrow.Console;
+namespace Sparrow.Console.Abstractions;
 internal abstract class Startup
 {
     public StringPath FilesDirectoryPath { get; private set; }
@@ -34,7 +34,7 @@ internal abstract class Startup
     public virtual void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
 
     public abstract Task OnStart(CancellationToken cancellationToken = default);
-    
+
     private void OnConfigureStartup()
     {
         ServiceProvider = Host.CreateDefaultBuilder()
