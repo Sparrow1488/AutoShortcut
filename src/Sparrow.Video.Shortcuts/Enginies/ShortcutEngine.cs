@@ -72,12 +72,12 @@ public class ShortcutEngine : IShortcutEngine
         return pipeline;
     }
 
-    public async Task<IFile> ContinueRenderAsync(
-        string restoreDirectoryPath, CancellationToken cancellationToken = default)
-    {
-        var project = await _restoreService.RestoreAsync(restoreDirectoryPath, cancellationToken);
-        return await StartRenderAsync(project, cancellationToken);
-    }
+    //public async Task<IFile> ContinueRenderAsync(
+    //    string restoreDirectoryPath, CancellationToken cancellationToken = default)
+    //{
+    //    var project = await _restoreService.RestoreExistsAsync(restoreDirectoryPath, cancellationToken);
+    //    return await StartRenderAsync(project, cancellationToken);
+    //}
 
     public async Task<IFile> StartRenderAsync(
         IProject project, CancellationToken cancellationToken = default)

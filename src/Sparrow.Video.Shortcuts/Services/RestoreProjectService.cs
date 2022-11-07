@@ -48,9 +48,8 @@ public class RestoreProjectService : IRestoreProjectService
         var optionsAbsolutePath = _pathsProvider.GetPath("ProjectOptions");
         var optionsFullPath = Path.Combine(projectPath, optionsAbsolutePath);
 
-        var projectOptions = await _restoreOptionsService.RestoreOptionsAsync();
-        var files = await _restoreFilesService.RestoreFilesAsync(
-                        restoreDirectoryPath: projectOptions.Root.ProjectPaths.GetFilesDirectory());
+        var projectOptions = await _restoreOptionsService.RestoreOptionsAsync(optionsFullPath);
+        var files = await _restoreFilesService.RestoreFilesAsync(projectOptions.ProjectFilesPaths);
 
         var project = _creator.CreateProjectWithOptions(
                                     files: files.Select(x => x.RestoredProjectFile),

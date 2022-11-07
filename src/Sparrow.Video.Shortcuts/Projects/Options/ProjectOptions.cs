@@ -27,14 +27,16 @@ public class ProjectOptions : IProjectOptions
     [JsonConstructor]
     internal ProjectOptions(
         IFilesStructure structure, 
-        IFileRulesContainer rulesContainer, 
+        IFileRulesContainer rulesContainer,
         string projectName,
-        IProjectRoot root)
+        IProjectRoot root,
+        IEnumerable<string> projectFilesPaths)
     {
         Structure = structure;
         RulesContainer = rulesContainer;
         ProjectName = projectName;
         Root = root;
+        ProjectFilesPaths = projectFilesPaths;
     }
 
     [JsonProperty]
@@ -45,8 +47,12 @@ public class ProjectOptions : IProjectOptions
     public IFileRulesContainer RulesContainer { get; } = new FileRulesContainer();
     [JsonProperty]
     public IProjectRoot Root { get; private set; }
+    [JsonProperty]
+    public IEnumerable<string> ProjectFilesPaths { get; internal set; }
     [JsonIgnore]
     public IFilesStructure DefaultStructure { get; } = new NameStructure();
+
+    public static ProjectOptions Create() => new();
 
     public IProjectOptions Named(string name)
     {

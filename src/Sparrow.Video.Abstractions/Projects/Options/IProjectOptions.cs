@@ -11,6 +11,8 @@ public interface IProjectOptions
     IFileRulesContainer RulesContainer { get; }
     IProjectRoot Root { get; }
 
+    IEnumerable<string> ProjectFilesPaths { get; }
+
     IProjectOptions WithRules(Action<IFileRulesContainer> projectRules);
     IProjectOptions StructureBy(IFilesStructure structure);
     IProjectOptions Named(string name);

@@ -9,7 +9,7 @@ namespace Sparrow.Video.Shortcuts.Projects;
 
 public class ShortcutProjectCreator : IProjectCreator
 {
-    private readonly IProjectOptions _projectOptions;
+    private readonly ProjectOptions _projectOptions;
     private readonly IServiceProvider _services;
 
     public ShortcutProjectCreator(
@@ -17,7 +17,8 @@ public class ShortcutProjectCreator : IProjectCreator
         IServiceProvider services,
         ISharedProject sharedProject)
     {
-        _projectOptions = projectOptions;
+        //_projectOptions = (ProjectOptions)projectOptions;
+        _projectOptions = ProjectOptions.Create();
         _services = services;
         SharedProject = sharedProject;
     }
@@ -31,11 +32,14 @@ public class ShortcutProjectCreator : IProjectCreator
 
     public IProject CreateProject(IEnumerable<IProjectFile> files, Action<IProjectOptions> options)
     {
+        _projectOptions.ProjectFilesPaths = files.Select(x => x.File.Path).ToArray();
         options?.Invoke(_projectOptions);
         return CreateProjectWithOptions(files, _projectOptions);
     }
 
-    public IProject CreateProjectWithOptions(IEnumerable<IProjectFile> files, IProjectOptions options)
+    public IProject CreateProjectWithOptions(
+        IEnumerable<IProjectFile> files, 
+        IProjectOptions options)
     {
         var project = CreateEmptyProject(options);
         project.Files = project.Options.Structure.GetStructuredFiles(files).ToArray();
@@ -47,10 +51,13 @@ public class ShortcutProjectCreator : IProjectCreator
         return project;
     }
 
-    private ShortcutProject CreateEmptyProject(IProjectOptions options = default)
+    private ShortcutProject CreateEmptyProject(
+        IProjectOptions options = default,
+        IProjectFilesOptions filesOptions = default)
     {
         var project = ActivatorUtilities.CreateInstance<ShortcutProject>(_services);
         project.Options = options ?? project.Options;
+        //project.FilesOptions = filesOptions ?? project.FilesOptions;
         return project;
     }
 
