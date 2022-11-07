@@ -37,13 +37,7 @@ internal class AutoshortcutStartup : Startup
         {
             var restoreService = ServiceProvider.GetRequiredService<IRestoreProjectService>();
             var project = await restoreService.RestoreExistsAsync(projectRootDirectory, cancellationToken);
-            var compilatiob = await engine.StartRenderAsync(project, cancellationToken);
-
-            //var restoredCompilation = 
-            //    await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
-
-            // TODO: нужно закидывать не путь до директории с файлами, а до корня проекта
-            // (где лежать Options/options.json и все обработанные файлы)
+            var compilation = await engine.StartRenderAsync(project, cancellationToken);
 
             return;
         }
@@ -70,7 +64,7 @@ internal class AutoshortcutStartup : Startup
                     options.WithRules(rulesContainer =>
                     {
                         rulesContainer.AddRule(outputVideoResolutionScale);
-                        rulesContainer.AddRule<SnapshotsFileRule>();
+                        //rulesContainer.AddRule<SnapshotsFileRule>();
                         rulesContainer.AddRule<SilentFileRule>();
                         rulesContainer.AddRule<EncodingFileRule>();
                         rulesContainer.AddRule<LoopShortFileRule>();

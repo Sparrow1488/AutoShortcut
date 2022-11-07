@@ -27,24 +27,28 @@ public class RestoreProjectService : IRestoreProjectService
         _pathsProvider = pathsProvider;
     }
 
-    public async Task<IProject> RestoreAsync(string restoreFilesDirectoryPath, CancellationToken cancellationToken = default)
+    public async Task<IProject> RestoreAsync(
+        string filesDirectoryPath, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Starting restore project");
-        var restoredFiles = await _restoreFilesService.RestoreFilesAsync(restoreFilesDirectoryPath);
-        var restoredProjectOptions = await _restoreOptionsService.RestoreOptionsAsync();
+        throw new NotImplementedException();
+        //_logger.LogInformation("Starting restore project");
+        //var restoredFiles = await _restoreFilesService.RestoreFilesAsync(filesDirectoryPath);
+        //var restoredProjectOptions = await _restoreOptionsService.RestoreOptionsAsync();
 
-        var restoredProject = _creator.CreateProjectWithOptions(
-                                    files: restoredFiles.Select(x => x.RestoredProjectFile), 
-                                    options: restoredProjectOptions);
+        //var restoredProject = _creator.CreateProjectWithOptions(
+        //                            files: restoredFiles.Select(x => x.RestoredProjectFile), 
+        //                            options: restoredProjectOptions);
 
-        _logger.LogInformation("Project restored");
-        return restoredProject;
+        //_logger.LogInformation("Project restored");
+        //return restoredProject;
     }
 
     public async Task<IProject> RestoreExistsAsync(
         string projectPath, CancellationToken cancellationToken = default)
     {
         StringPath.CreateExists(projectPath);
+        _logger.LogInformation("Starting restore project");
+
         var optionsAbsolutePath = _pathsProvider.GetPath("ProjectOptions");
         var optionsFullPath = Path.Combine(projectPath, optionsAbsolutePath);
 
@@ -54,6 +58,8 @@ public class RestoreProjectService : IRestoreProjectService
         var project = _creator.CreateProjectWithOptions(
                                     files: files.Select(x => x.RestoredProjectFile),
                                     options: projectOptions);
+
+        _logger.LogInformation("Project restored");
         return project;
     }
 }

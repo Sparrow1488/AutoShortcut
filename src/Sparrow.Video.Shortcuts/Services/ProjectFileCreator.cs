@@ -19,7 +19,7 @@ public class ProjectFileCreator : IProjectFileCreator
     public async Task<IProjectFile> CreateAsync(IFile file, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var fileAnalyse = await _analyseProcess.GetAnalyseAsync(file); // TODO: сюда токен
+        var fileAnalyse = await _analyseProcess.GetAnalyseAsync(file, cancellationToken);
         var projectFile = new ProjectFile() {
             File = file,
             Analyse = fileAnalyse,

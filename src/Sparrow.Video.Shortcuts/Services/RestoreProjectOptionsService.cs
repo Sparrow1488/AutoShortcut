@@ -6,27 +6,15 @@ namespace Sparrow.Video.Shortcuts.Services;
 
 public class RestoreProjectOptionsService : IRestoreProjectOptionsService
 {
-    private readonly IPathsProvider _pathsProvider;
     private readonly IJsonSerializer _serializer;
     private readonly IReadFileTextService _readFileTextService;
-    private readonly IEnvironmentVariablesProvider _variablesProvider;
 
     public RestoreProjectOptionsService(
-        IPathsProvider pathsProvider,
         IJsonSerializer serializer,
-        IReadFileTextService readFileTextService,
-        IEnvironmentVariablesProvider variablesProvider)
+        IReadFileTextService readFileTextService)
     {
-        _pathsProvider = pathsProvider;
         _serializer = serializer;
         _readFileTextService = readFileTextService;
-        _variablesProvider = variablesProvider;
-    }
-
-    public async Task<IProjectOptions> RestoreOptionsAsync()
-    {
-        var projectOptionsPath = _pathsProvider.GetPathFromSharedProject("ProjectOptions");
-        return await RestoreOptionsAsync(projectOptionsPath);
     }
 
     public async Task<IProjectOptions> RestoreOptionsAsync(string optionsFilePath)

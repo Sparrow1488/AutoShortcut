@@ -13,11 +13,9 @@ public class ShortcutProjectCreator : IProjectCreator
     private readonly IServiceProvider _services;
 
     public ShortcutProjectCreator(
-        IProjectOptions projectOptions,
         IServiceProvider services,
         ISharedProject sharedProject)
     {
-        //_projectOptions = (ProjectOptions)projectOptions;
         _projectOptions = ProjectOptions.Create();
         _services = services;
         SharedProject = sharedProject;
@@ -52,12 +50,10 @@ public class ShortcutProjectCreator : IProjectCreator
     }
 
     private ShortcutProject CreateEmptyProject(
-        IProjectOptions options = default,
-        IProjectFilesOptions filesOptions = default)
+        IProjectOptions options = default)
     {
         var project = ActivatorUtilities.CreateInstance<ShortcutProject>(_services);
         project.Options = options ?? project.Options;
-        //project.FilesOptions = filesOptions ?? project.FilesOptions;
         return project;
     }
 
