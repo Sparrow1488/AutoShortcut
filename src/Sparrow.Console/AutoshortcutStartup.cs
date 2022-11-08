@@ -42,7 +42,7 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
             options.WithRules(container =>
             {
                 // Пока применяется только к новым файлам (можно сделать замену Runtime правил)
-                container.Replace<ScaleFileRule>(new(Resolution.Preview)); 
+                //container.Replace<ScaleFileRule>(new(Resolution.Preview)); 
             });
         });
         var project = loader.CreateProject();
@@ -71,6 +71,7 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
                 rulesContainer.AddRule<LoopMediumFileRule>();
             });
             options.SetRootDirectory(projectPath);
+            options.Serialize(Variables.IsSerialize());
         });
 
         return loader.CreateProject();

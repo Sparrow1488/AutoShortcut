@@ -6,7 +6,7 @@ namespace Sparrow.Console.Rules;
 
 public class SnapshotsFileRule : PermanentFileRule
 {
-    public static int Count => 3;
+    public int Count => 3;
     public override Func<IProjectFile, bool> Condition => file => true;
     public override RuleName RuleName => RuleName.Snapshot;
 }

@@ -12,20 +12,18 @@ public class ProjectSerializationService : IProjectSerializationService
     private readonly IJsonSerializer _serializer;
     private readonly IPathsProvider _pathsProvider;
     private readonly ISaveService _saveService;
-    private readonly IEnvironmentVariablesProvider _variablesProvider;
+    private readonly ISharedProject _sharedProject;
 
     public ProjectSerializationService(
         IJsonSerializer serializer,
         IPathsProvider pathsProvider,
         ISaveService saveService,
-        IEnvironmentVariablesProvider variablesProvider)
+        ISharedProject sharedProject)
     {
         _serializer = serializer;
         _pathsProvider = pathsProvider;
         _saveService = saveService;
-        _variablesProvider = variablesProvider;
-
-        IsEnabled = _variablesProvider.IsSerialize();
+        _sharedProject = sharedProject;
     }
 
     public bool IsEnabled { get; }
@@ -68,7 +66,7 @@ public class ProjectSerializationService : IProjectSerializationService
 
     private async Task OnEnableExecuteAsync(Func<Task> function)
     {
-        if (IsEnabled)
+        if (_sharedProject.Project.Options.IsSerialize)
         {
             await function?.Invoke();
         }

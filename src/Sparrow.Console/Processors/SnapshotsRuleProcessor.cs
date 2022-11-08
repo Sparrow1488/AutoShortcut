@@ -30,11 +30,14 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
         IFile lastSnapshotImage = null!;
         for (int i = 0; i < rule.Count; i++)
         {
-            var saveFileName = $"snapshot_{DateTime.Now.Ticks}.png";
+            var saveFileName = $"snapshot_{file.File.Name}_{i}.png";
             var fromFilePath = file.File.Path;
+
+            var durationPercentValue = file.Analyse.StreamAnalyses.Video().Duration / 100;
+            var durationPercentStep = 100 / rule.Count;
             var snapshotParameter = new SnapshotCommandParameters(saveFileName, fromFilePath)
             {
-                Time = TimeSpan.FromSeconds(file.Analyse.StreamAnalyses.Video().Duration / (i + 1))
+                Time = TimeSpan.FromSeconds(durationPercentValue * (i+1) * durationPercentStep)
             };
             var source = new SnapshotCommandSource(snapshotParameter);
             lastSnapshotImage = await _ffmpegProcess.StartAsync(source, cancellationToken);

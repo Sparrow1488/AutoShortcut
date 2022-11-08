@@ -6,6 +6,7 @@ namespace Sparrow.Video.Abstractions.Projects.Options;
 public interface IProjectOptions
 {
     string ProjectName { get; }
+    bool IsSerialize { get; }
     IFilesStructure Structure { get; }
     IFileRulesContainer RulesContainer { get; }
     IProjectRoot Root { get; }
@@ -14,5 +15,6 @@ public interface IProjectOptions
     IProjectOptions WithRules(Action<IFileRulesContainer> projectRules);
     IProjectOptions StructureBy(IFilesStructure structure);
     IProjectOptions Named(string name);
+    IProjectOptions Serialize(bool value);
     IProjectOptions SetRootDirectory(string path);
 }

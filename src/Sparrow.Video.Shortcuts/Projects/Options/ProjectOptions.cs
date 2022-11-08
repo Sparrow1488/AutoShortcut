@@ -30,13 +30,15 @@ public class ProjectOptions : IProjectOptions
         IFileRulesContainer rulesContainer,
         string projectName,
         IProjectRoot root,
-        IEnumerable<string> projectFilesPaths)
+        IEnumerable<string> projectFilesPaths,
+        bool isSerialize)
     {
         Structure = structure;
         RulesContainer = rulesContainer;
         ProjectName = projectName;
         Root = root;
         ProjectFilesPaths = projectFilesPaths;
+        IsSerialize = isSerialize;
     }
 
     [JsonProperty]
@@ -49,8 +51,11 @@ public class ProjectOptions : IProjectOptions
     public IProjectRoot Root { get; private set; }
     [JsonProperty]
     public IEnumerable<string> ProjectFilesPaths { get; internal set; }
+    [JsonProperty]
+    public bool IsSerialize { get; private set; } = true;
 
     public static IFilesStructure DefaultStructure => new NameStructure();
+
 
     public static ProjectOptions Create() => new();
 
@@ -76,6 +81,12 @@ public class ProjectOptions : IProjectOptions
     public IProjectOptions WithRules(Action<IFileRulesContainer> projectRules)
     {
         projectRules?.Invoke(RulesContainer);
+        return this;
+    }
+
+    public IProjectOptions Serialize(bool value)
+    {
+        IsSerialize = value;
         return this;
     }
 }

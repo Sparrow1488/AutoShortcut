@@ -1,4 +1,5 @@
-﻿using Sparrow.Video.Abstractions.Primitives;
+﻿using Microsoft.Extensions.Logging;
+using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Runtime;
@@ -12,6 +13,8 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
 {
     private readonly IProjectCreator _projectCreator;
     private readonly IProjectFileCreator _fileCreator;
+    private readonly ILogger<RuntimeProjectLoader> _logger;
+    private readonly ITextFormatter _textFormatter;
     private readonly IPathsProvider _pathsProvider;
     private readonly IRestoreFilesService _restoreFilesService;
     private readonly IRestoreProjectOptionsService _restoreOptionsService;
@@ -20,14 +23,18 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
     private ProjectOptions _projectOptions;
 
     public RuntimeProjectLoader(
+        ITextFormatter textFormatter,
         IPathsProvider pathsProvider,
         IProjectCreator projectCreator,
         IProjectFileCreator fileCreator,
+        ILogger<RuntimeProjectLoader> logger,
         IRestoreFilesService restoreFilesService,
         IRestoreProjectOptionsService restoreOptionsService)
     {
         _projectCreator = projectCreator;
         _fileCreator = fileCreator;
+        _logger = logger;
+        _textFormatter = textFormatter;
         _pathsProvider = pathsProvider;
         _restoreFilesService = restoreFilesService;
         _restoreOptionsService = restoreOptionsService;
@@ -72,6 +79,7 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
         {
             if (!_projectFiles.Any(x => x.File.Path == file.Path))
             {
+                _logger.LogInformation("Creating \"{file}\"", _textFormatter.GetPrintable(file.Name));
                 var projectFile = await _fileCreator.CreateAsync(file, cancellationToken);
                 _projectFiles.Add(projectFile);
             }

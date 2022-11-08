@@ -1,11 +1,8 @@
 ﻿using Serilog;
 using Sparrow.Console;
 using Sparrow.Console.Abstractions;
-using Sparrow.Console.Rules;
-using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
-using Sparrow.Video.Shortcuts.Rules;
 using System.Runtime.InteropServices;
 
 CancellationTokenSource tokenSource = new();
