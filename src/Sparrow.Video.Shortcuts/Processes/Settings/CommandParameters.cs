@@ -2,5 +2,6 @@
 
 public abstract class CommandParameters
 {
-    public abstract string SaveFileName { get; set; }
+    public string SaveFileName { get; set; }
+    public string FromFilePath { get; set; }
 }

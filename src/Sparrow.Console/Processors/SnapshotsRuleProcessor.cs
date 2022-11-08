@@ -16,19 +16,13 @@ namespace Sparrow.Console.Processors;
 public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
 {
     private readonly IFFmpegProcess _ffmpegProcess;
-    private readonly IProjectSaveSettingsCreator _projectSaveSettings;
-    private readonly ITakeSnapshotProcess _takeSnapshotProcess;
 
     public SnapshotsRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IFFmpegProcess ffmpegProcess,
-        IProjectSaveSettingsCreator projectSaveSettings,
-        ITakeSnapshotProcess takeSnapshotProcess) 
+        IFFmpegProcess ffmpegProcess) // process creator
     : base(uploadFilesService)
     {
         _ffmpegProcess = ffmpegProcess;
-        _projectSaveSettings = projectSaveSettings;
-        _takeSnapshotProcess = takeSnapshotProcess;
     }
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.Ignore;

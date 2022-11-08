@@ -34,7 +34,7 @@ public class ScaleFileRule : FileRuleBase
     {
         if(obj is ScaleFileRule scaleRule)
         {
-            return scaleRule.Scale.Width == Scale.Width && scaleRule.Scale.Heigth == Scale.Heigth;
+            return scaleRule.Scale.Width == Scale.Width && scaleRule.Scale.Height == Scale.Height;
         }
         return false;
     }

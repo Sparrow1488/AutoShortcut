@@ -13,13 +13,13 @@ public class ScaleSettings : IScaleSettings
     [JsonProperty]
     public int Width { get; set; } = -2;
     [JsonProperty]
-    public int Heigth { get; set; } = -2;
+    public int Height { get; set; } = -2;
 
     public static IScaleSettings Create(Resolution resolution)
     {
         return new ScaleSettings()
         {
-            Heigth = resolution.Height,
+            Height = resolution.Height,
             Width = resolution.Width
         };
     }

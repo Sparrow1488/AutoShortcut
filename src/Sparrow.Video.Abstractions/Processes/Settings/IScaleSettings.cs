@@ -3,6 +3,6 @@
     public interface IScaleSettings
     {
         int Width { get; }
-        int Heigth { get; }
+        int Height { get; }
     }
 }
