@@ -35,7 +35,7 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
             // TODO:
             // + 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
             // ~  2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
-            // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
+            // (а можно не использовать) 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
             // +  4. AutoshortcutStartupBase
             // 5. Совместимость файлов с разными проектами (тут нужно проработать .restore файлы, а точнее их имена)
 
@@ -50,9 +50,12 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
     }
 
     public override async Task<IProject> OnCreateProjectAsync(
-        IShortcutEngine engine, IEnumerable<IFile> files, string projectPath)
+        IRuntimeProjectLoader loader, IEnumerable<IFile> files, string projectPath)
     {
-        var project = await engine.CreateProjectAsync(options =>
+        loader.LoadEmpty();
+        await loader.AddFilesAsync(files, CancellationToken);
+
+        loader.ConfigureProjectOptions(options =>
         {
             options.Named(Variables.OutputFileName());
             options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
@@ -68,8 +71,8 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
                 rulesContainer.AddRule<LoopMediumFileRule>();
             });
             options.SetRootDirectory(projectPath);
-        }, files, CancellationToken);
+        });
 
-        return project;
+        return loader.CreateProject();
     }
 }

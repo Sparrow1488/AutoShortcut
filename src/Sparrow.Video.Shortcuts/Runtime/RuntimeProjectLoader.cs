@@ -34,38 +34,82 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
 
     public IEnumerable<IProjectFile> ProjectFiles => _projectFiles;
 
-    public async Task AddFileAsync(IFile file, CancellationToken cancellationToken = default)
-    {
-        if(!_projectFiles.Any(x => x.File.Path == file.Path))
-        {
-            var projectFile = await _fileCreator.CreateAsync(file, cancellationToken);
-            _projectFiles.Add(projectFile);
-        }
-    }
-
-    public void ConfigureProjectOptions(Action<IProjectOptions> options)
-    {
-        options?.Invoke(_projectOptions);
-    }
-
-    public IProject CreateProject()
-    {
-        if (_projectFiles is null || _projectFiles.Count == 0)
-            throw new Exception("Files not loaded");
-        if (_projectOptions is null)
-            throw new Exception("Options not loaded");
-
-        _projectOptions.ProjectFilesPaths = _projectFiles.Select(x => x.File.Path).ToArray();
-        return _projectCreator.CreateProjectWithOptions(_projectFiles, _projectOptions);
-    }
-
     public async Task LoadAsync(string projectPath)
     {
         var optionsAbsolutePath = _pathsProvider.GetPath("ProjectOptions");
         var optionsFullPath = Path.Combine(projectPath, optionsAbsolutePath);
 
-        _projectOptions = (ProjectOptions)await _restoreOptionsService.RestoreOptionsAsync(optionsFullPath);
+        var projectOptions = (ProjectOptions)await _restoreOptionsService.RestoreOptionsAsync(optionsFullPath);
         var files = await _restoreFilesService.RestoreFilesAsync(_projectOptions.ProjectFilesPaths);
-        _projectFiles = files.Select(x => x.RestoredProjectFile).ToList();
+        var projectFiles = files.Select(x => x.RestoredProjectFile).ToList();
+        InitProject(projectOptions, projectFiles);
+    }
+
+    public void LoadEmpty()
+    {
+        InitProject(options: new(), files: Array.Empty<IProjectFile>());
+    }
+
+    private void InitProject(ProjectOptions options, IEnumerable<IProjectFile> files)
+    {
+        _projectOptions = options;
+        _projectFiles = files.ToList();
+    }
+
+    public Task AddFilesAsync(IEnumerable<IFile> files, CancellationToken cancellationToken = default)
+    {
+        return OnAssertedLoadExecuteAsync(async () =>
+        {
+            foreach (var file in files)
+                await AddFileAsync(file, cancellationToken);
+        });
+    }
+
+    public Task AddFileAsync(IFile file, CancellationToken cancellationToken = default)
+    {
+        return OnAssertedLoadExecuteAsync(async () =>
+        {
+            if (!_projectFiles.Any(x => x.File.Path == file.Path))
+            {
+                var projectFile = await _fileCreator.CreateAsync(file, cancellationToken);
+                _projectFiles.Add(projectFile);
+            }
+        });
+    }
+
+    public void ConfigureProjectOptions(Action<IProjectOptions> options)
+    {
+        OnAssertedLoadExecute(() => options?.Invoke(_projectOptions));
+    }
+
+    public IProject CreateProject()
+    {
+        IProject project = default;
+        OnAssertedLoadExecute(() =>
+        {
+            _projectOptions.ProjectFilesPaths = _projectFiles.Select(x => x.File.Path).ToArray();
+            project = _projectCreator.CreateProjectWithOptions(_projectFiles, _projectOptions);
+        });
+        return project;
+    }
+
+    private void OnAssertedLoadExecute(Action action)
+    {
+        AssertLoaded();
+        action?.Invoke();
+    }
+
+    private Task OnAssertedLoadExecuteAsync(Func<Task> action)
+    {
+        AssertLoaded();
+        return action?.Invoke();
+    }
+
+    private void AssertLoaded()
+    {
+        if (_projectFiles is null)
+            throw new Exception("Files not loaded");
+        if (_projectOptions is null)
+            throw new Exception("Options not loaded");
     }
 }

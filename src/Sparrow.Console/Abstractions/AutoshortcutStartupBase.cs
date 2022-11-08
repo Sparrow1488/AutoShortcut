@@ -20,7 +20,7 @@ internal abstract class AutoshortcutStartupBase : Startup
 
     public abstract Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader);
     public abstract Task<IProject> OnCreateProjectAsync(
-        IShortcutEngine engine, IEnumerable<IFile> files, string projectPath);
+        IRuntimeProjectLoader loader, IEnumerable<IFile> files, string projectPath);
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
     {
@@ -37,9 +37,10 @@ internal abstract class AutoshortcutStartupBase : Startup
 
         const string projectRootDirectory = "./[AutoShortcuts]Projects/Compilation-1.ash";
 
+        var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
+
         if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
         {
-            var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
             await loader.LoadAsync(projectRootDirectory);
             initProject = await OnRestoreProjectAsync(loader);
         }
@@ -56,7 +57,7 @@ internal abstract class AutoshortcutStartupBase : Startup
                                 FilesDirectoryPath.Value,
                                 GetUploadOptions(),
                                 cancellationToken);
-            initProject = await OnCreateProjectAsync(engine, files, projectRootDirectory);
+            initProject = await OnCreateProjectAsync(loader, files, projectRootDirectory);
         }
 
         if (initProject is null)

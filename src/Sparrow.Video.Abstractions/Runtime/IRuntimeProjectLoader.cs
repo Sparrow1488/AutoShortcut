@@ -9,7 +9,9 @@ public interface IRuntimeProjectLoader
     IEnumerable<IProjectFile> ProjectFiles { get; }
 
     IProject CreateProject();
+    void LoadEmpty();
     Task LoadAsync(string projectPath);
     Task AddFileAsync(IFile file, CancellationToken cancellationToken = default);
+    Task AddFilesAsync(IEnumerable<IFile> files, CancellationToken cancellationToken = default);
     void ConfigureProjectOptions(Action<IProjectOptions> options);
 }
