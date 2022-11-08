@@ -1,12 +1,9 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
-using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Abstractions;
-using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processes.Sources;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 using Sparrow.Video.Shortcuts.Processors;
@@ -33,11 +30,11 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
         IFile lastSnapshotImage = null!;
         for (int i = 0; i < rule.Count; i++)
         {
-            var snapshotParameter = new SnapshotCommandParameters()
+            var saveFileName = $"snapshot_{DateTime.Now.Ticks}.png";
+            var fromFilePath = file.File.Path;
+            var snapshotParameter = new SnapshotCommandParameters(saveFileName, fromFilePath)
             {
-                Time = TimeSpan.FromSeconds(file.Analyse.StreamAnalyses.Video().Duration / (i + 1)),
-                FromFilePath = file.File.Path,
-                SaveFileName = $"snapshot_{DateTime.Now.Ticks}.png"
+                Time = TimeSpan.FromSeconds(file.Analyse.StreamAnalyses.Video().Duration / (i + 1))
             };
             var source = new SnapshotCommandSource(snapshotParameter);
             lastSnapshotImage = await _ffmpegProcess.StartAsync(source, cancellationToken);

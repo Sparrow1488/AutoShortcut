@@ -1,9 +1,7 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
-using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Sources;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
@@ -28,12 +26,12 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
     public override async Task<IFile> ProcessAsync(
         IProjectFile file, ScaleFileRule rule, CancellationToken cancellationToken = default)
     {
-        var parameter = new ScaleCommandParameters()
+        var fromFilePath = file.File.Path;
+        var saveFileName = file.File.Name + file.File.Extension;
+        var parameter = new ScaleCommandParameters(saveFileName, fromFilePath)
         {
             Height = rule.Scale.Height,
-            Width = rule.Scale.Width,
-            FromFilePath = file.File.Path,
-            SaveFileName = file.File.Name + file.File.Extension
+            Width = rule.Scale.Width
         };
         var source = new ScaleCommandSource(parameter);
         return await _ffmpegProcess.StartAsync(source, cancellationToken);

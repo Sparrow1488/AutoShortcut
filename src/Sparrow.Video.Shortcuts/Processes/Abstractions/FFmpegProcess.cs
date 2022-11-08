@@ -26,8 +26,6 @@ public abstract class FFmpegProcess : ExecutionProcessBase
         _environmentSettingsProvider = services.GetRequiredService<IEnvironmentSettingsProvider>();
     }
 
-    public virtual bool IsOverwriteOutputFile => false;
-
     protected async Task<IFile> StartFFmpegAsync(CancellationToken cancellationToken = default)
     {
         await StartAsync(cancellationToken);
@@ -61,8 +59,6 @@ public abstract class FFmpegProcess : ExecutionProcessBase
     {
         var settings = base.OnConfigureSettings();
         string overwriteOutputFileFlag = string.Empty;
-        if (IsOverwriteOutputFile)
-            overwriteOutputFileFlag += "-y ";
         settings.Argument = overwriteOutputFileFlag + OnConfigureFFmpegCommand();
         return settings;
     }

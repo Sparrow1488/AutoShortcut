@@ -8,8 +8,7 @@ namespace Sparrow.Console.Processors;
 
 public class LoopRuleProcessor : RuleProcessorBase<LoopFileRuleBase>
 {
-    public LoopRuleProcessor(
-        IUploadFilesService uploadFilesService) 
+    public LoopRuleProcessor(IUploadFilesService uploadFilesService) 
     : base(uploadFilesService)
     {
     }

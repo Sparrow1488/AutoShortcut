@@ -1,5 +1,4 @@
 ﻿using Sparrow.Video.Shortcuts.Enums;
-using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 
 namespace Sparrow.Video.Shortcuts.Processes.Sources;
@@ -14,8 +13,6 @@ public class ScaleCommandSource : FFmpegCommandSource<ScaleCommandParameters>
 
     public override string GetCommand()
     {
-        var h = Param.Height;
-        var w = Param.Width;
-        return $"-i \"{Param.FromFilePath}\" -vf \"[in] scale=iw* min({w}/iw\\,{h}/ih):ih* min({w}/iw\\,{h}/ih)[scaled]; [scaled] pad={w}:{h}:({w}-iw* min({h}/iw\\,{h}/ih))/2:({h}-ih* min({w}/iw\\,{h}/ih))/2[padded]; [padded] setsar=1:1[out]\" -c:v libx264 -c:a copy";
+        return $"-i \"{Param.FromFilePath}\" -vf \"[in] scale=iw* min({Param.Width}/iw\\,{Param.Height}/ih):ih* min({Param.Width}/iw\\,{Param.Height}/ih)[scaled]; [scaled] pad={Param.Width}:{Param.Height}:({Param.Width}-iw* min({Param.Width}/iw\\,{Param.Height}/ih))/2:({Param.Height}-ih* min({Param.Width}/iw\\,{Param.Height}/ih))/2[padded]; [padded] setsar=1:1[out]\" -c:v libx264 -c:a copy";
     }
 }

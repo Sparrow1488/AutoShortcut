@@ -1,26 +1,24 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
-using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enums;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
+using Sparrow.Video.Shortcuts.Processes.Sources;
+using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors;
 
 public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
 {
-    private readonly IProjectSaveSettingsCreator _projectSaveSettings;
-    private readonly IMakeSilentProcess _makeSilentProcess;
+    private readonly IFFmpegProcess _ffmpegProcess;
 
     public SilentAudioRuleProcessor(
-        IProjectSaveSettingsCreator projectSaveSettings,
         IUploadFilesService uploadFilesService,
-        IMakeSilentProcess makeSilentProcess)
+        IFFmpegProcess ffmpegProcess)
     : base(uploadFilesService)
     {
-        _projectSaveSettings = projectSaveSettings;
-        _makeSilentProcess = makeSilentProcess;
+        _ffmpegProcess = ffmpegProcess;
     }
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
@@ -29,9 +27,11 @@ public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
         IProjectFile file, SilentFileRule rule, CancellationToken cancellationToken = default)
     {
         var processFile = GetActualFile(file);
-        var saveSettings = _projectSaveSettings.Create(
-                                sectionName: ProjectConfigSections.SilentFiles,
-                                fileName: file.File.Name + file.File.Extension);
-        return await _makeSilentProcess.MakeSilentAsync(processFile, saveSettings, cancellationToken);
+
+        var saveFileName = file.File.Name + file.File.Extension;
+        var fromFilePath = processFile.Path;
+        var parameters = new SilentCommandParameters(saveFileName, fromFilePath);
+        var source = new SilentCommandSource(parameters);
+        return await _ffmpegProcess.StartAsync(source, cancellationToken);
     }
 }

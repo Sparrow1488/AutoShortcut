@@ -1,10 +1,12 @@
-﻿using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Shortcuts.Processes.Settings;
-
-namespace Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
+﻿namespace Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 
 public class ScaleCommandParameters : CommandParameters
 {
+    public ScaleCommandParameters(string saveFileName, string fromFilePath) 
+    : base(saveFileName, fromFilePath)
+    {
+    }
+
     public int Height { get; set; }
     public int Width { get; set; }
 }

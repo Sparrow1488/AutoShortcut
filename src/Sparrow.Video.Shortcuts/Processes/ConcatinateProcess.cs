@@ -27,7 +27,7 @@ public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
     protected override string OnConfigureFFmpegCommand()
     {
         var builder = new ScriptBuilder();
-        builder.Insert("-f concat -safe 0");
+        builder.Insert("-y -f concat -safe 0");
         _concatinateFilesPaths.ToList().ForEach(x => builder.Insert($"-i \"{x}\""));
         const string presetSpeed = "slower";
         builder.InsertLast($"-c:a copy -c:v copy -preset {presetSpeed} -qp 0 \"{_saveSettings.SaveFullPath}\"");

@@ -6,7 +6,7 @@ using Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 
-public class EncodingProcess : FFmpegProcess, IEncodingProcess // 1. МОЖЕТ ЭТО УБРАТЬ
+public class EncodingProcess : FFmpegProcess, IEncodingProcess // 1. МОЖЕТ ЭТО УБРАТЬ?
 {
     private StringPath _filePath;
     private IEncodingSettings _settings;

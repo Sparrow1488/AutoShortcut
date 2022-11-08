@@ -1,6 +1,6 @@
-﻿using Sparrow.Video.Shortcuts.Processes.Settings;
+﻿using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 
-namespace Sparrow.Video.Shortcuts.Processes.Abstractions;
+namespace Sparrow.Video.Shortcuts.Processes.Sources;
 
 public abstract class FFmpegCommandSource<TParam> : IFFmpegCommandSource
     where TParam : CommandParameters
