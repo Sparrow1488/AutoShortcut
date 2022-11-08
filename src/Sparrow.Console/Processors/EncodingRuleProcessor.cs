@@ -10,18 +10,18 @@ namespace Sparrow.Console.Processors;
 
 public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
 {
+    private readonly IProjectSaveSettingsCreator _projectSaveSettings;
+    private readonly IEncodingProcess _encodingProcess;
+
     public EncodingRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IPathsProvider pathsProvider,
+        IProjectSaveSettingsCreator saveSettingsCreator,
         IEncodingProcess encodingProcess)
     : base(uploadFilesService)
     {
-        _pathsProvider = pathsProvider;
+        _projectSaveSettings = saveSettingsCreator;
         _encodingProcess = encodingProcess;
     }
-
-    private readonly IPathsProvider _pathsProvider;
-    private readonly IEncodingProcess _encodingProcess;
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
@@ -29,10 +29,12 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
         IProjectFile file, EncodingFileRule rule, CancellationToken cancellationToken = default)
     {
         var encodeFile = GetActualFile(file);
-        var processedFileDirPath = _pathsProvider.GetPathFromSharedProject("EncodedFiles");
-        var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
-        var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };
-        var encodingSettings = new EncodingSettings() { EncodingType = rule.EncodingType };
-        return await _encodingProcess.StartEncodingAsync(encodeFile, encodingSettings, saveSettings, cancellationToken);
+        var saveSettings = _projectSaveSettings.Create(
+                                sectionName: "EncodedFiles", 
+                                fileName:    file.File.Name + ".ts");
+        var encodingSettings = EncodingSettings.Create(rule.EncodingType);
+
+        return await _encodingProcess.StartEncodingAsync(
+            encodeFile, encodingSettings, saveSettings, cancellationToken);
     }
 }

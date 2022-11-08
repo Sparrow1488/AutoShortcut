@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
@@ -29,8 +28,7 @@ internal abstract class AutoshortcutStartupBase : Startup
 
         Log.Information(">> Starting {library}", "Autoshortcut");
 
-        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-        var engine = factory.CreateEngine();
+        var renderUtility = ServiceProvider.GetRequiredService<IRenderUtility>();
 
         Log.Information("Project Mode '{mode}'", Variables.CurrentProjectOpenMode());
         Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
@@ -66,7 +64,7 @@ internal abstract class AutoshortcutStartupBase : Startup
 
         if (initProject is not null)
         {
-            var compilation = await engine.StartRenderAsync(initProject, cancellationToken);
+            var compilation = await renderUtility.StartRenderAsync(initProject, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);
         }
     }

@@ -1,17 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sparrow.Video.Abstractions.Enginies;
-using Sparrow.Video.Abstractions.Factories;
 using Sparrow.Video.Abstractions.Pipelines;
 using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
+using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enginies;
 using Sparrow.Video.Shortcuts.Enums;
-using Sparrow.Video.Shortcuts.Factories;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
@@ -49,6 +46,7 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
         services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
         services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
+        services.AddSingleton<IProjectSaveSettingsCreator, ProjectSaveSettingsCreator>();
         services.AddSingleton<ITextFormatter, TextFormatter>();
         services.AddSingleton<AssemblyInfoLoader>();
 
@@ -75,11 +73,8 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IScaleProcess, ScaleProcess>();
         services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
 
-        services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
-
         services.AddScoped<IPipelineOptions, PipelineOptions>();
         services.AddScoped<IProjectOptions, ProjectOptions>();
-        services.AddScoped<IShortcutEngine, ShortcutEngine>();
         services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
 
         services.AddScoped<IProjectSerializationService, ProjectSerializationService>();

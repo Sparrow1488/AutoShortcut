@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sparrow.Console.Abstractions;
 using Sparrow.Console.Rules;
-using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
@@ -15,6 +14,14 @@ namespace Sparrow.Console;
 
 internal class AutoshortcutStartup : AutoshortcutStartupBase
 {
+    // TODO:
+    // - Сделать выгрузку проектных файлов (очистить .restore файлы)
+    // - При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
+    // - Совместимость файлов с разными проектами (тут нужно проработать .restore файлы, а точнее их имена)
+
+    // TODO GLOBAL:
+    // - Пользовательская библиотека ассетов для правил обработки
+
     public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
     {
         base.OnConfigreDevelopmentVariables(variables);
@@ -32,17 +39,10 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
         {
             options.Named("Loaded Compilation");
             options.StructureBy(new DurationStructure().LongFirst());
-            // TODO:
-            // + 1. Сделать удобную настройку контейнера с правилами (не копировать все, а реплейсить конкретное)
-            // ~  2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
-            // (а можно не использовать) 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
-            // +  4. AutoshortcutStartupBase
-            // 5. Совместимость файлов с разными проектами (тут нужно проработать .restore файлы, а точнее их имена)
-
             options.WithRules(container =>
             {
-                container.Replace<ScaleFileRule>(new(Resolution.Preview)); // пока применяется только к новым файлам
-                container.Replace<ScaleFileRule>(new(Resolution.Preview));
+                // Пока применяется только к новым файлам (можно сделать замену Runtime правил)
+                container.Replace<ScaleFileRule>(new(Resolution.Preview)); 
             });
         });
         var project = loader.CreateProject();

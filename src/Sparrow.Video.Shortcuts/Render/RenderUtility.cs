@@ -2,9 +2,9 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
-using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Extensions;
@@ -17,6 +17,8 @@ public class RenderUtility : IRenderUtility
     private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
     private readonly ITextFormatter _textFormatter;
     private readonly IProjectSerializationService _projectSerialization;
+    private readonly IPathsProvider _pathsProvider;
+    private readonly IProjectSaveSettingsCreator _saveSettingsCreator;
     private readonly IConcatinateProcess _concatinateProcess;
 
     private IProjectFile? _loggedProcessingFile;
@@ -26,12 +28,16 @@ public class RenderUtility : IRenderUtility
         IRuleProcessorsProvider ruleProcessorsProvider,
         ITextFormatter textFormatter,
         IProjectSerializationService projectSerialization,
+        IPathsProvider pathsProvider,
+        IProjectSaveSettingsCreator saveSettingsCreator,
         IConcatinateProcess concatinateProcess)
     {
         _logger = logger;
         _ruleProcessorsProvider = ruleProcessorsProvider;
         _textFormatter = textFormatter;
         _projectSerialization = projectSerialization;
+        _pathsProvider = pathsProvider;
+        _saveSettingsCreator = saveSettingsCreator;
         _concatinateProcess = concatinateProcess;
     }
 
@@ -42,7 +48,7 @@ public class RenderUtility : IRenderUtility
     private string CurrentProcessingFileLog => $"({FilesStatistic.CurrentIndexProcessed + 1}/{FilesStatistic.TotalFiles}) ";
 
     public async Task<IFile> StartRenderAsync(
-        IProject project, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
+        IProject project, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting render project");
         await _projectSerialization.SaveProjectOptionsAsync(project);
@@ -70,7 +76,10 @@ public class RenderUtility : IRenderUtility
             }
         }
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
-       
+
+        var saveSettings = _saveSettingsCreator.Create(
+                                sectionName: "ResultFiles", 
+                                fileName:     project.Options.ProjectName + ".mp4");
         var result = await _concatinateProcess.ConcatinateFilesAsync(
                         concatinateFilesPaths, saveSettings, cancellationToken);
         return result;
