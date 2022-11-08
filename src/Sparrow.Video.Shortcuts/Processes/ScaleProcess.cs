@@ -1,6 +1,7 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 
@@ -24,17 +25,7 @@ public class ScaleProcess : FFmpegProcess, IScaleProcess
         _saveSettings = saveSettings;
         _scaleSettings = scaleSettings;
         _file = file;
-        ThrowIfScaleSettingsInvalid();
         return await StartFFmpegAsync(cancellationToken);
-    }
-
-    protected void ThrowIfScaleSettingsInvalid()
-    {
-        if (_scaleSettings.Heigth < 1 || _scaleSettings.Width < 1)
-        {
-            throw new InvalidOperationException("" +
-                $"Failed to process scale video with input parameters: Height:{_scaleSettings.Heigth}, Width:{_scaleSettings.Width}");
-        }
     }
 
     /// <summary>

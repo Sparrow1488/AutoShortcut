@@ -8,7 +8,7 @@ using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
-namespace Sparrow.Video.Shortcuts.Processes;
+namespace Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 public abstract class FFmpegProcess : ExecutionProcessBase
 {
@@ -26,7 +26,7 @@ public abstract class FFmpegProcess : ExecutionProcessBase
         _environmentSettingsProvider = services.GetRequiredService<IEnvironmentSettingsProvider>();
     }
 
-    public virtual bool IsOverwriteOutputFile => true;
+    public virtual bool IsOverwriteOutputFile => false;
 
     protected async Task<IFile> StartFFmpegAsync(CancellationToken cancellationToken = default)
     {

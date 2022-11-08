@@ -40,6 +40,7 @@ internal abstract class Startup
         ServiceProvider = Host.CreateDefaultBuilder()
             .UseSerilog((context, services, configuration) => configuration
                 .Enrich.FromLogContext()
+                .MinimumLevel.Debug()
                 .WriteTo.Console())
             .ConfigureServices(services =>
             {

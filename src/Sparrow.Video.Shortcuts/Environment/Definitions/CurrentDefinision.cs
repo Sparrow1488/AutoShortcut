@@ -12,6 +12,7 @@ using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Projects;
 using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
@@ -71,6 +72,8 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
         services.AddSingleton<IScaleProcess, ScaleProcess>();
         services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
+
+        services.AddScoped<IFFmpegProcess, DefaultFFmpegProjectProcess>();
 
         services.AddScoped<IPipelineOptions, PipelineOptions>();
         services.AddScoped<IProjectOptions, ProjectOptions>();

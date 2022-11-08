@@ -6,6 +6,7 @@ using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Builders;
 using Sparrow.Video.Shortcuts.Builders.Formats;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 

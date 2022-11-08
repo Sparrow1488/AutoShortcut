@@ -1,11 +1,13 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Primitives;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 
-public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
+public class TakeSnapshotProcess : FFmpegProjectProcess, ITakeSnapshotProcess
 {
     private ITakeSnapshotSettings _snapshotSettings;
     private ISaveSettings _saveSettings;
@@ -14,6 +16,8 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
     : base(services)
     {
     }
+
+    public string ProjectConfigSection => ProjectConfigSections.Snapshots;
 
     public async Task<ISnapshot> TakeSnapshotAsync(
         ITakeSnapshotSettings snapshotSettings, ISaveSettings saveSettings, CancellationToken token = default)

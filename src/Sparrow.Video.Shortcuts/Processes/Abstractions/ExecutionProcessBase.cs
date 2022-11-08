@@ -8,7 +8,7 @@ using Sparrow.Video.Shortcuts.Processes.Results;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using System.Diagnostics;
 
-namespace Sparrow.Video.Shortcuts.Processes;
+namespace Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 public abstract class ExecutionProcessBase : IExecutionProcess
 {

@@ -4,6 +4,7 @@ using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Exceptions;
+using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes;
