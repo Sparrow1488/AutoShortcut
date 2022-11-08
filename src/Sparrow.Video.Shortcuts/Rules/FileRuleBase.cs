@@ -10,9 +10,9 @@ namespace Sparrow.Video.Shortcuts.Rules;
 public abstract class FileRuleBase : IFileRule
 {
     [JsonProperty]
-    public abstract RuleName RuleName { get; }
-    [JsonProperty]
     public bool IsApplied { get; set; }
+    [JsonProperty]
+    public abstract RuleName RuleName { get; }
     [JsonIgnore]
     public abstract Func<IProjectFile, bool> Condition { get; }
     
@@ -20,11 +20,10 @@ public abstract class FileRuleBase : IFileRule
     ///     Default value is <see cref="RuleApply.Permanent"/>
     /// </summary>
     [JsonProperty]
-    public virtual RuleApply RuleApply => RuleApply.Permanent;
+    public abstract RuleApply RuleApply { get; }
 
     public void Applied() => IsApplied = true;
     public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
-
     object ICloneable.Clone() => Clone();
 
     public virtual IFileRule Clone()

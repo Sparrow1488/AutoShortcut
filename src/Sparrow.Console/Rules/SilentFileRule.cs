@@ -5,9 +5,8 @@ using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Console.Rules;
 
-public class SilentFileRule : FileRuleBase
+public class SilentFileRule : PermanentFileRule
 {
     public override Func<IProjectFile, bool> Condition => file => !file.Analyse.StreamAnalyses.WithAudio();
-
     public override RuleName RuleName => RuleName.Silent;
 }

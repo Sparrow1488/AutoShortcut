@@ -4,10 +4,9 @@ using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Console.Rules;
 
-public class SnapshotsFileRule : FileRuleBase
+public class SnapshotsFileRule : PermanentFileRule
 {
-    public int Count => 3;
-
-    public override RuleName RuleName => RuleName.Snapshot;
+    public static int Count => 3;
     public override Func<IProjectFile, bool> Condition => file => true;
+    public override RuleName RuleName => RuleName.Snapshot;
 }
