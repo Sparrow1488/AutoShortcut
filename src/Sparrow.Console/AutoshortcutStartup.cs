@@ -1,4 +1,5 @@
-﻿using Sparrow.Console.Abstractions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Sparrow.Console.Abstractions;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enginies;
 using Sparrow.Video.Abstractions.Enums;
@@ -21,8 +22,12 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
                              @"C:\Users\USER\Desktop\Test\Test2");
     }
 
-    public override Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
+    public override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
+        var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
+        var file = uploadService.GetFile(@"C:\Users\USER\Desktop\Main\Downloads\animech_3_downloads\2\GuraNew_H_Animtaion456251427.mp4");
+        await loader.AddFileAsync(file, CancellationToken);
+
         loader.ConfigureProjectOptions(options =>
         {
             options.Named("Loaded Compilation");
@@ -32,14 +37,16 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
             // ~  2. При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
             // 3. Рантайм лоадера можно использовать в engine.CreateProject, либо избавиться от этого метода и юзать отдельно рантаймера
             // +  4. AutoshortcutStartupBase
+            // 5. Совместимость файлов с разными проектами (тут нужно проработать .restore файлы, а точнее их имена)
 
             options.WithRules(container =>
             {
+                container.Replace<ScaleFileRule>(new(Resolution.Preview)); // пока применяется только к новым файлам
                 container.Replace<ScaleFileRule>(new(Resolution.Preview));
             });
         });
         var project = loader.CreateProject();
-        return Task.FromResult(project);
+        return project;
     }
 
     public override async Task<IProject> OnCreateProjectAsync(

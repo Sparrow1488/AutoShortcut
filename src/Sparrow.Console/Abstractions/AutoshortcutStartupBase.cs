@@ -70,7 +70,7 @@ internal abstract class AutoshortcutStartupBase : Startup
         }
     }
 
-    private static UploadFilesOptions GetUploadOptions()
+    protected static UploadFilesOptions GetUploadOptions()
     {
         UploadFilesOptions options = new()
         {

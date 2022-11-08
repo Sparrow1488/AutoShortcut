@@ -47,7 +47,6 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IStoreService, StoreService>();
         services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
         services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
-        services.AddSingleton<IRestoreProjectService, RestoreProjectService>();
         services.AddSingleton<IProjectFileCreator, ProjectFileCreator>();
         services.AddSingleton<IProjectCreator, ShortcutProjectCreator>();
         services.AddSingleton<ITextFormatter, TextFormatter>();
