@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
-using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Primitives;
 
 namespace Sparrow.Video.Shortcuts.Processes;
@@ -28,7 +25,7 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
     }
 
     protected override string OnConfigureFFmpegCommand()
-        => $"-y -ss {_snapshotSettings.Time.ToString(@"hh\:mm\:ss")} -i \"{_snapshotSettings.FromFile.Path}\" -frames:v 1 -q:v 2 \"{_saveSettings.SaveFullPath}\"";
+        => $"-ss {_snapshotSettings.Time.ToString(@"hh\:mm\:ss")} -i \"{_snapshotSettings.FromFile.Path}\" -frames:v 1 -q:v 2 \"{_saveSettings.SaveFullPath}\"";
 
     protected override ISaveSettings OnConfigureSaveSettings()
         => _saveSettings;

@@ -20,7 +20,7 @@ public class EncodingProcess : FFmpegProcess, IEncodingProcess
     }
 
     protected override string OnConfigureFFmpegCommand() =>
-        $"-y -i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -crf 17 -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
+        $"-i \"{_filePath.Value}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -crf 17 -f {_settings.EncodingType} \"{_saveSettings.SaveFullPath}\" ";
     protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
 
     public async Task<IFile> StartEncodingAsync(

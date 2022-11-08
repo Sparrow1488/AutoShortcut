@@ -15,7 +15,7 @@ public class MakeSilentProcess : FFmpegProcess, IMakeSilentProcess
     }
 
     protected override string OnConfigureFFmpegCommand() =>
-        $"-y -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{_toProcessFile.Path}\" -c:v copy -c:a aac -shortest \"{_saveSettings.SaveFullPath}\"";
+        $"-f lavfi -i anullsrc=channel_layout=stereo:sample_rate=44100 -i \"{_toProcessFile.Path}\" -c:v copy -c:a aac -shortest \"{_saveSettings.SaveFullPath}\"";
     protected override ISaveSettings OnConfigureSaveSettings() => _saveSettings;
 
     public async Task<IFile> MakeSilentAsync(IFile file, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
