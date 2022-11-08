@@ -1,4 +1,5 @@
-﻿using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
+﻿using Sparrow.Video.Abstractions.Processes.Sources;
+using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 
 namespace Sparrow.Video.Shortcuts.Processes.Sources;
 
@@ -16,11 +17,4 @@ public abstract class FFmpegCommandSource<TParam> : IFFmpegCommandSource
     public TParam Param { get; }
 
     public abstract string GetCommand();
-}
-
-public interface IFFmpegCommandSource
-{
-    string ProjectConfigSection { get; }
-    string SaveFileName { get; }
-    string GetCommand();
 }

@@ -8,33 +8,30 @@ using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Console.Rules;
 
+[Serializable]
 public class ScaleFileRule : FileRuleBase
 {
-    [JsonProperty]
-    protected Resolution resolution;
-
     [JsonConstructor]
-    public ScaleFileRule() { }
-
     public ScaleFileRule(Resolution resolution)
     {
-        this.resolution = resolution;
+        Resolution = resolution;
     }
 
-    public IScaleSettings Scale => ScaleSettings.Create(resolution);
+    public Resolution Resolution { get; }
     public override Func<IProjectFile, bool> Condition => file => true;
 
     public override RuleName RuleName => RuleName.New("Scale");
     public override IFileRule Clone()
     {
-        return new ScaleFileRule(resolution);
+        return new ScaleFileRule(Resolution);
     }
 
     public override bool Equals(object? obj)
     {
         if(obj is ScaleFileRule scaleRule)
         {
-            return scaleRule.Scale.Width == Scale.Width && scaleRule.Scale.Height == Scale.Height;
+            return scaleRule.Resolution.Width == Resolution.Width && 
+                   scaleRule.Resolution.Height == Resolution.Height;
         }
         return false;
     }

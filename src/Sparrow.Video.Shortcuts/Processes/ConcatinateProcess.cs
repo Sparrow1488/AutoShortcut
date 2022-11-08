@@ -10,7 +10,7 @@ using Sparrow.Video.Shortcuts.Processes.Abstractions;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 
-public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
+public class ConcatinateProcess : FFmpegProcessBase, IConcatinateProcess
 {
     private readonly IScriptFormatsProvider _scriptFormatsProvider;
     private IEnumerable<string> _concatinateFilesPaths;

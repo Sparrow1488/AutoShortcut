@@ -10,7 +10,7 @@ using Sparrow.Video.Shortcuts.Processes.Settings;
 
 namespace Sparrow.Video.Shortcuts.Processes.Abstractions;
 
-public abstract class FFmpegProcess : ExecutionProcessBase
+public abstract class FFmpegProcessBase : ExecutionProcessBase
 {
     private readonly IDefaultSaveService _saveService;
     private readonly IProjectSaveSettingsCreator _projectSaveSettings;
@@ -18,7 +18,7 @@ public abstract class FFmpegProcess : ExecutionProcessBase
     private readonly IEnvironmentSettingsProvider _environmentSettingsProvider;
     private ISaveSettings _saveSettings;
 
-    public FFmpegProcess(IServiceProvider services) : base(services)
+    public FFmpegProcessBase(IServiceProvider services) : base(services)
     {
         _saveService = services.GetRequiredService<IDefaultSaveService>();
         _projectSaveSettings = services.GetRequiredService<IProjectSaveSettingsCreator>();

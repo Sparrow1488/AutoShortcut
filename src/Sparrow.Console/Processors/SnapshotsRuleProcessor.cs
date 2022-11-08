@@ -1,9 +1,9 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Extensions;
-using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Sources;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 using Sparrow.Video.Shortcuts.Processors;
@@ -16,7 +16,7 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
 
     public SnapshotsRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IFFmpegProcess ffmpegProcess) // process creator
+        IFFmpegProcess ffmpegProcess)
     : base(uploadFilesService)
     {
         _ffmpegProcess = ffmpegProcess;

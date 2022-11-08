@@ -1,8 +1,8 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Sources;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 using Sparrow.Video.Shortcuts.Processors;
@@ -30,8 +30,8 @@ public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
         var saveFileName = file.File.Name + file.File.Extension;
         var parameter = new ScaleCommandParameters(saveFileName, fromFilePath)
         {
-            Height = rule.Scale.Height,
-            Width = rule.Scale.Width
+            Height = rule.Resolution.Height,
+            Width = rule.Resolution.Width
         };
         var source = new ScaleCommandSource(parameter);
         return await _ffmpegProcess.StartAsync(source, cancellationToken);

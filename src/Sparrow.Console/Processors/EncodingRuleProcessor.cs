@@ -1,8 +1,8 @@
 ﻿using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Processes.Sources;
 using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
 using Sparrow.Video.Shortcuts.Processors;

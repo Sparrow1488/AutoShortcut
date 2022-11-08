@@ -9,7 +9,7 @@ namespace Sparrow.Video.Abstractions.Pipelines
     /// </summary>
     public interface IShortcutPipeline : IPipeline
     {
-        ICollection<IProjectFile> ProjectFiles { get; }
-        IShortcutPipeline SetFiles(IEnumerable<IProjectFile> files);
+        //ICollection<IProjectFile> ProjectFiles { get; }
+        //IShortcutPipeline SetFiles(IEnumerable<IProjectFile> files);
     }
 }

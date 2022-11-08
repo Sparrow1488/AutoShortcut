@@ -8,9 +8,6 @@ public class SaveSettings : ISaveSettings
 
     public static ISaveSettings Create(string fullPath)
     {
-        return new SaveSettings()
-        {
-            SaveFullPath = fullPath
-        };
+        return new SaveSettings() { SaveFullPath = fullPath };
     }
 }

@@ -66,13 +66,8 @@ public class CurrentDefinision : ApplicationDefinition
             services.AddSingleton<IReadFileTextService, ReadFileTextService>();
         }
 
-        services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
-        services.AddSingleton<IEncodingProcess, EncodingProcess>();
-        services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
-        services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
-        services.AddSingleton<IScaleProcess, ScaleProcess>();
-        services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
-
+        services.AddScoped<IAnalyseProcess, AnalyseProcess>();
+        services.AddScoped<IConcatinateProcess, ConcatinateProcess>();
         services.AddScoped<IFFmpegProcess, DefaultFFmpegProjectProcess>();
 
         services.AddScoped<IPipelineOptions, PipelineOptions>();
