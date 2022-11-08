@@ -13,14 +13,8 @@ public class TakeSnapshotProcess : FFmpegProcess, ITakeSnapshotProcess
     private ITakeSnapshotSettings _snapshotSettings;
     private ISaveSettings _saveSettings;
 
-    public TakeSnapshotProcess(
-        IDefaultSaveService saveService, 
-        IPathsProvider pathsProvider, 
-        IConfiguration configuration, 
-        ILogger<TakeSnapshotProcess> logger, 
-        IUploadFilesService uploadFilesService, 
-        IEnvironmentSettingsProvider environmentSettingsProvider)
-    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
+    public TakeSnapshotProcess(IServiceProvider services)
+    : base(services)
     {
     }
 

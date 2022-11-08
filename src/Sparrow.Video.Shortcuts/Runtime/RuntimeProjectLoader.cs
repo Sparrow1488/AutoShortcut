@@ -3,6 +3,7 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Projects.Options;
 
 namespace Sparrow.Video.Shortcuts.Runtime;
@@ -36,11 +37,11 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
 
     public async Task LoadAsync(string projectPath)
     {
-        var optionsAbsolutePath = _pathsProvider.GetPath("ProjectOptions");
+        var optionsAbsolutePath = _pathsProvider.GetPath(ProjectConfigSections.ProjectOptions);
         var optionsFullPath = Path.Combine(projectPath, optionsAbsolutePath);
 
         var projectOptions = (ProjectOptions)await _restoreOptionsService.RestoreOptionsAsync(optionsFullPath);
-        var files = await _restoreFilesService.RestoreFilesAsync(_projectOptions.ProjectFilesPaths);
+        var files = await _restoreFilesService.RestoreFilesAsync(projectOptions.ProjectFilesPaths);
         var projectFiles = files.Select(x => x.RestoredProjectFile).ToList();
         InitProject(projectOptions, projectFiles);
     }

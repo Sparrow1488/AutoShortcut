@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
@@ -11,16 +10,15 @@ namespace Sparrow.Video.Shortcuts.Processes;
 
 public class AnalyseProcess : ExecutionProcessBase, IAnalyseProcess
 {
+    private StringPath _analyseFilePath;
+
     public AnalyseProcess(
-        IConfiguration configuration,
-        IJsonFileAnalyseService analyseService,
-        ILogger<AnalyseProcess> logger) 
-    : base(configuration, logger)
+        IServiceProvider services,
+        IJsonFileAnalyseService analyseService) 
+    : base(services)
     {
         AnalyseService = analyseService;
     }
-
-    private StringPath _analyseFilePath;
 
     public IJsonFileAnalyseService AnalyseService { get; }
 

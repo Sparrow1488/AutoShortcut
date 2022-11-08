@@ -14,14 +14,8 @@ public class EncodingProcess : FFmpegProcess, IEncodingProcess
     private IEncodingSettings _settings;
     private ISaveSettings _saveSettings;
 
-    public EncodingProcess(
-        IDefaultSaveService saveService, 
-        IPathsProvider pathsProvider, 
-        IConfiguration configuration, 
-        ILogger<EncodingProcess> logger, 
-        IUploadFilesService uploadFilesService, 
-        IEnvironmentSettingsProvider environmentSettingsProvider)
-    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
+    public EncodingProcess(IServiceProvider services)
+    : base(services)
     {
     }
 

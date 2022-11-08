@@ -1,6 +1,7 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
@@ -56,7 +57,7 @@ public class ProjectSerializationService : IProjectSerializationService
         await OnEnableExecuteAsync(async () =>
         {
             var serializedOptions = _serializer.Serialize(project.Options);
-            var saveProjectOptionsPath = _pathsProvider.GetPathFromSharedProject("ProjectOptions");
+            var saveProjectOptionsPath = _pathsProvider.GetPathFromSharedProject(ProjectConfigSections.ProjectOptions);
             var saveSettings = new SaveSettings()
             {
                 SaveFullPath = Path.Combine(saveProjectOptionsPath, "project-options.json")

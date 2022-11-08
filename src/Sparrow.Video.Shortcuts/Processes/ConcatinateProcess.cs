@@ -11,19 +11,14 @@ namespace Sparrow.Video.Shortcuts.Processes;
 
 public class ConcatinateProcess : FFmpegProcess, IConcatinateProcess
 {
-    private ISaveSettings _saveSettings;
     private readonly IScriptFormatsProvider _scriptFormatsProvider;
     private IEnumerable<string> _concatinateFilesPaths;
+    private ISaveSettings _saveSettings;
 
     public ConcatinateProcess(
-        IDefaultSaveService saveService,
-        IPathsProvider pathsProvider,
-        IConfiguration configuration,
-        IUploadFilesService uploadFilesService,
-        IScriptFormatsProvider scriptFormatsProvider,
-        IEnvironmentSettingsProvider environmentSettingsProvider,
-        ILogger<ConcatinateProcess> logger)
-     : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
+        IServiceProvider services,
+        IScriptFormatsProvider scriptFormatsProvider)
+    : base(services)
     {
         _scriptFormatsProvider = scriptFormatsProvider;
     }

@@ -1,22 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
-using Sparrow.Video.Abstractions.Services;
 
 namespace Sparrow.Video.Shortcuts.Processes;
 
 public class ScaleProcess : FFmpegProcess, IScaleProcess
 {
-    public ScaleProcess(
-        IDefaultSaveService saveService,
-        IPathsProvider pathsProvider,
-        IConfiguration configuration,
-        ILogger<ScaleProcess> logger,
-        IUploadFilesService uploadFilesService,
-        IEnvironmentSettingsProvider environmentSettingsProvider)
-    : base(saveService, pathsProvider, configuration, uploadFilesService, environmentSettingsProvider, logger)
+    public ScaleProcess(IServiceProvider services)
+    : base(services)
     {
     }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Primitives;
@@ -11,12 +12,10 @@ namespace Sparrow.Video.Shortcuts.Processes;
 
 public abstract class ExecutionProcessBase : IExecutionProcess
 {
-    public ExecutionProcessBase(
-        IConfiguration configuration,
-        ILogger<ExecutionProcessBase> logger)
+    public ExecutionProcessBase(IServiceProvider services)
     {
-        Configuration = configuration;
-        Logger = logger;
+        Configuration = services.GetRequiredService<IConfiguration>();
+        Logger = services.GetRequiredService<ILogger<ExecutionProcessBase>>();
     }
 
     protected ITextProcessResult TextProcessResult { get; private set; }

@@ -2,7 +2,9 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
+using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
@@ -12,14 +14,15 @@ namespace Sparrow.Console.Processors;
 public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
 {
     private readonly IPathsProvider _pathsProvider;
+    private readonly IProjectSaveSettingsCreator _projectSaveSettings;
     private readonly ITakeSnapshotProcess _takeSnapshotProcess;
 
     public SnapshotsRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IPathsProvider pathsProvider,
+        IProjectSaveSettingsCreator projectSaveSettings,
         ITakeSnapshotProcess takeSnapshotProcess) : base(uploadFilesService)
     {
-        _pathsProvider = pathsProvider;
+        _projectSaveSettings = projectSaveSettings;
         _takeSnapshotProcess = takeSnapshotProcess;
     }
 
@@ -36,8 +39,9 @@ public class SnapshotsRuleProcessor : RuleProcessorBase<SnapshotsFileRule>
                 Time = TimeSpan.FromSeconds(file.Analyse.StreamAnalyses.Video().Duration / (i + 1)),
                 FromFile = file.File
             };
-            var savePath = Path.Combine(_pathsProvider.GetPathFromSharedProject("Snapshots"), $"snapshot_{DateTime.Now.Ticks}.png");
-            var saveSettings = new SaveSettings() { SaveFullPath = savePath };
+            var saveSettings = _projectSaveSettings.Create(
+                                sectionName: ProjectConfigSections.Snapshots,
+                                fileName: $"snapshot_{DateTime.Now.Ticks}.png");
             var snapshot = await _takeSnapshotProcess.TakeSnapshotAsync(snapshotSettings, saveSettings, cancellationToken);
             lastSnapshotImage = snapshot.File;
         }

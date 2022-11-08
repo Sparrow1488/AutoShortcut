@@ -7,6 +7,7 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 
 namespace Sparrow.Video.Shortcuts.Render;
@@ -78,7 +79,7 @@ public class RenderUtility : IRenderUtility
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
 
         var saveSettings = _saveSettingsCreator.Create(
-                                sectionName: "ResultFiles", 
+                                sectionName:  ProjectConfigSections.ResultFiles, 
                                 fileName:     project.Options.ProjectName + ".mp4");
         var result = await _concatinateProcess.ConcatinateFilesAsync(
                         concatinateFilesPaths, saveSettings, cancellationToken);

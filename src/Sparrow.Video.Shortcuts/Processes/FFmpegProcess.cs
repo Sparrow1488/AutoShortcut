@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes.Settings;
@@ -11,26 +12,19 @@ namespace Sparrow.Video.Shortcuts.Processes;
 
 public abstract class FFmpegProcess : ExecutionProcessBase
 {
-    public FFmpegProcess(
-        IDefaultSaveService saveService,
-        IPathsProvider pathsProvider,
-        IConfiguration configuration,
-        IUploadFilesService uploadFilesService,
-        IEnvironmentSettingsProvider environmentSettingsProvider,
-        ILogger<FFmpegProcess> logger)
-    : base(configuration, logger)
-    {
-        _saveService = saveService;
-        _pathsProvider = pathsProvider;
-        _uploadFilesService = uploadFilesService;
-        _environmentSettingsProvider = environmentSettingsProvider;
-    }
-
     private readonly IDefaultSaveService _saveService;
-    private readonly IPathsProvider _pathsProvider;
+    private readonly IProjectSaveSettingsCreator _projectSaveSettings;
     private readonly IUploadFilesService _uploadFilesService;
     private readonly IEnvironmentSettingsProvider _environmentSettingsProvider;
     private ISaveSettings _saveSettings;
+
+    public FFmpegProcess(IServiceProvider services) : base(services)
+    {
+        _saveService = services.GetRequiredService<IDefaultSaveService>();
+        _projectSaveSettings = services.GetRequiredService<IProjectSaveSettingsCreator>();
+        _uploadFilesService = services.GetRequiredService<IUploadFilesService>();
+        _environmentSettingsProvider = services.GetRequiredService<IEnvironmentSettingsProvider>();
+    }
 
     protected async Task<IFile> StartFFmpegAsync(CancellationToken cancellationToken = default)
     {
@@ -51,11 +45,12 @@ public abstract class FFmpegProcess : ExecutionProcessBase
         if (_environmentSettingsProvider.IsFFmpegScriptsLoggingEnabled())
         {
             Logger.LogDebug("FFmpegScriptsLogging is {status}. Saving executable script", EnvironmentSettings.FFmpegLogging.Enable);
-            var saveScriptsPath = _pathsProvider.GetPathFromSharedProject("Scripts");
             var logFileName = GetType().Name + "_FFmpeg_" + DateTime.Now.ToString("hh.mm.ss-yyyy.MM.dd") + ".txt";
-            var saveScriptSettings = new SaveSettings() { SaveFullPath = Path.Combine(saveScriptsPath, logFileName) };
-            Logger.LogDebug($"Saving to \"{saveScriptSettings.SaveFullPath}\""); // TODO: сделать папку в папке со скриптами типа gen1, gen2 - чтобы понимать в каком поколении Restore проекта эти скрипты выполнялись
-            await _saveService.SaveAsync(processSettings.Argument, saveScriptSettings, cancellationToken);
+            var saveSettings = _projectSaveSettings.Create(
+                                    sectionName: ProjectConfigSections.Scripts,
+                                    fileName: logFileName);
+            Logger.LogDebug($"Saving to \"{saveSettings.SaveFullPath}\""); // TODO: сделать папку в папке со скриптами типа gen1, gen2 - чтобы понимать в каком поколении Restore проекта эти скрипты выполнялись
+            await _saveService.SaveAsync(processSettings.Argument, saveSettings, cancellationToken);
             Logger.LogDebug("Saved success");
         }
     }

@@ -3,6 +3,7 @@ using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
 
@@ -30,7 +31,7 @@ public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
     {
         var encodeFile = GetActualFile(file);
         var saveSettings = _projectSaveSettings.Create(
-                                sectionName: "EncodedFiles", 
+                                sectionName: ProjectConfigSections.EncodedFiles, 
                                 fileName:    file.File.Name + ".ts");
         var encodingSettings = EncodingSettings.Create(rule.EncodingType);
 

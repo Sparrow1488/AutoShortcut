@@ -68,7 +68,6 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
         services.AddSingleton<IEncodingProcess, EncodingProcess>();
         services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
-        services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
         services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
         services.AddSingleton<IScaleProcess, ScaleProcess>();
         services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
