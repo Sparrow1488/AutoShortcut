@@ -56,7 +56,6 @@ public class ProjectOptions : IProjectOptions
 
     public static IFilesStructure DefaultStructure => new NameStructure();
 
-
     public static ProjectOptions Create() => new();
 
     public IProjectOptions Named(string name)

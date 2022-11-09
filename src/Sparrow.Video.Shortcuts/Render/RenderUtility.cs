@@ -18,7 +18,6 @@ public class RenderUtility : IRenderUtility
     private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
     private readonly ITextFormatter _textFormatter;
     private readonly IProjectSerializationService _projectSerialization;
-    private readonly IPathsProvider _pathsProvider;
     private readonly IProjectSaveSettingsCreator _saveSettingsCreator;
     private readonly IConcatinateProcess _concatinateProcess;
 
@@ -29,7 +28,6 @@ public class RenderUtility : IRenderUtility
         IRuleProcessorsProvider ruleProcessorsProvider,
         ITextFormatter textFormatter,
         IProjectSerializationService projectSerialization,
-        IPathsProvider pathsProvider,
         IProjectSaveSettingsCreator saveSettingsCreator,
         IConcatinateProcess concatinateProcess)
     {
@@ -37,7 +35,6 @@ public class RenderUtility : IRenderUtility
         _ruleProcessorsProvider = ruleProcessorsProvider;
         _textFormatter = textFormatter;
         _projectSerialization = projectSerialization;
-        _pathsProvider = pathsProvider;
         _saveSettingsCreator = saveSettingsCreator;
         _concatinateProcess = concatinateProcess;
     }
