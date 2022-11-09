@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sparrow.Video.Abstractions.Pipelines;
-using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
@@ -9,10 +7,7 @@ using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
-using Sparrow.Video.Shortcuts.Pipelines;
-using Sparrow.Video.Shortcuts.Pipelines.Options;
 using Sparrow.Video.Shortcuts.Processes;
-using Sparrow.Video.Shortcuts.Processes.Abstractions;
 using Sparrow.Video.Shortcuts.Projects;
 using Sparrow.Video.Shortcuts.Projects.Options;
 using Sparrow.Video.Shortcuts.Render;
@@ -70,9 +65,7 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddScoped<IConcatinateProcess, ConcatinateProcess>();
         services.AddScoped<IFFmpegProcess, DefaultFFmpegProjectProcess>();
 
-        services.AddScoped<IPipelineOptions, PipelineOptions>();
         services.AddScoped<IProjectOptions, ProjectOptions>();
-        services.AddScoped<IShortcutPipeline, ShortcutPipeline>();
 
         services.AddScoped<IProjectSerializationService, ProjectSerializationService>();
         services.AddScoped<IRenderUtility, RenderUtility>();

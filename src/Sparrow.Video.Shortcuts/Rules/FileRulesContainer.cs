@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Sparrow.Video.Abstractions.Pipelines.Options;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Rules;
+using Sparrow.Video.Abstractions.Rules.Stores;
 using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Factories;
 using System.Collections;

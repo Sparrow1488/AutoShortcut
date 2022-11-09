@@ -1,6 +1,6 @@
 ﻿using Sparrow.Video.Abstractions.Rules;
 
-namespace Sparrow.Video.Abstractions.Pipelines.Options;
+namespace Sparrow.Video.Abstractions.Rules.Stores;
 
 public struct RuleStore
 {
