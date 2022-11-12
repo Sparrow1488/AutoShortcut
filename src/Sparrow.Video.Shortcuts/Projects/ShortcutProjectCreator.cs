@@ -1,53 +1,48 @@
-﻿using Sparrow.Video.Abstractions.Primitives;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
-using Sparrow.Video.Abstractions.Rules;
-using Sparrow.Video.Shortcuts.Projects.Options;
 
-namespace Sparrow.Video.Shortcuts.Projects;
-
-public class ShortcutProjectCreator : IProjectCreator
+namespace Sparrow.Video.Shortcuts.Projects
 {
-    private readonly ProjectOptions _projectOptions;
-
-    public ShortcutProjectCreator(ISharedProject sharedProject)
+    public class ShortcutProjectCreator : IProjectCreator
     {
-        SharedProject = sharedProject;
-        _projectOptions = ProjectOptions.Create();
-    }
+        public ShortcutProjectCreator(
+            IProjectOptions projectOptions,
+            IServiceProvider services)
+        {
+            _projectOptions = projectOptions;
+            _services = services;
+        }
 
-    public ISharedProject SharedProject { get; }
+        private readonly IProjectOptions _projectOptions; // TODO: Factory
+        private readonly IServiceProvider _services;
 
-    public IProject CreateProject(IEnumerable<IProjectFile> files)
-    {
-        return CreateProject(files, options => options.StructureBy(ProjectOptions.DefaultStructure));
-    }
+        public IProject CreateProjectWithOptions(IEnumerable<IProjectFile> files, IProjectOptions options)
+        {
+            var emptyProject = CreateEmptyProject(options);
+            emptyProject.Files = emptyProject.Options.Structure.GetStructuredFiles(files).ToArray();
+            return emptyProject;
+        }
 
-    public IProject CreateProject(IEnumerable<IProjectFile> files, Action<IProjectOptions> options)
-    {
-        _projectOptions.ProjectFilesPaths = files.Select(x => x.File.Path).ToArray();
-        options?.Invoke(_projectOptions);
-        return CreateProjectWithOptions(files, _projectOptions);
-    }
+        public IProject CreateProject(IEnumerable<IProjectFile> files, Action<IProjectOptions> options)
+        {
+            options.Invoke(_projectOptions);
+            return CreateProject(files);
+        }
 
-    public IProject CreateProjectWithOptions(
-        IEnumerable<IProjectFile> files, 
-        IProjectOptions options)
-    {
-        var structuredFiles = options.Structure.GetStructuredFiles(files);
-        var project = ShortcutProject.Create(options, structuredFiles);
+        public IProject CreateProject(IEnumerable<IProjectFile> files)
+        {
+            var project = CreateEmptyProject();
+            project.Files = files.ToArray();
+            return project;
+        }
 
-        SetRulesToNewFiles(project.Options.RulesContainer, files);
-
-        SharedProject.Project = project;
-
-        return project;
-    }
-
-    private static void SetRulesToNewFiles(
-        IFileRulesContainer rules, IEnumerable<IProjectFile> projectFiles)
-    {
-        var filesWithoutRules = projectFiles.Where(x => !x.RulesContainer.Any());
-        rules.ApplyRules(filesWithoutRules);
+        private ShortcutProject CreateEmptyProject(IProjectOptions options = default)
+        {
+            var project = ActivatorUtilities.CreateInstance<ShortcutProject>(_services);
+            project.Options = options ?? project.Options;
+            return project;
+        }
     }
 }

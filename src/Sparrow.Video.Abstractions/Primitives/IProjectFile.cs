@@ -1,11 +1,12 @@
 ﻿using Sparrow.Video.Abstractions.Rules;
 
-namespace Sparrow.Video.Abstractions.Primitives;
-
-public interface IProjectFile
+namespace Sparrow.Video.Abstractions.Primitives
 {
-    IFile File { get; }
-    IFileAnalyse Analyse { get; }
-    IFileRulesContainer RulesContainer { get; }
-    ICollection<IReference> References { get; }
+    public interface IProjectFile
+    {
+        IFile File { get; }
+        IFileAnalyse Analyse { get; }
+        ICollection<IFileRule> RulesCollection { get; }
+        ICollection<IReference> References { get; }
+    }
 }

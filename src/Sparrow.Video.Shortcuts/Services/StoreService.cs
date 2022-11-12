@@ -22,7 +22,7 @@ namespace Sparrow.Video.Shortcuts.Services
 
         public async Task<TObject> GetObjectAsync<TObject>(string name)
         {
-            var filesMetaDirectory = PathsProvider.GetPathFromSharedProject(PathName.FilesMeta);
+            var filesMetaDirectory = PathsProvider.GetPathFromCurrent(PathName.FilesMeta);
             var metaFiles = Directory.GetFiles(filesMetaDirectory);
             foreach (var metaFilePath in metaFiles)
             {

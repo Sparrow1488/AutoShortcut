@@ -3,50 +3,59 @@ using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Primitives;
+using System.Globalization;
 
-namespace Sparrow.Video.Shortcuts.Services;
-
-public class JsonAnalyseService : IJsonFileAnalyseService
+namespace Sparrow.Video.Shortcuts.Services
 {
-    public IFileAnalyse Analyse(string variables) =>
-        AnalyseByJson(variables);
-
-    public IFileAnalyse AnalyseByJson(string jsonAnalyse)
+    public class JsonAnalyseService : IJsonFileAnalyseService
     {
-        var fileAnalyse = new FileAnalyse();
-        var jObject = JObject.Parse(jsonAnalyse);
-        var streamObjects = jObject["streams"].AsEnumerable();
-        foreach (var streamObject in streamObjects)
+        public JsonAnalyseService(IFileTypesProvider typesProvider)
         {
-            var codecType = streamObject["codec_type"].Value<string>();
-            var lowerCodeType = codecType.ToLower();
-            if (lowerCodeType == "video")
-                fileAnalyse.StreamAnalyses.Add(streamObject.ToObject<VideosStreamAnalyse>());
-            if (lowerCodeType == "audio")
-                fileAnalyse.StreamAnalyses.Add(streamObject.ToObject<StreamAnalyse>());
+            _typesProvider = typesProvider;
         }
-        fileAnalyse.Format = GetFormatByJObject(jObject);
-        fileAnalyse.FileType = GetFileTypeByAnalyse(fileAnalyse);
-        return fileAnalyse;
-    }
 
-    private static IFileFormat GetFormatByJObject(JObject jsonObject)
-    {
-        var jFormat = jsonObject["format"];
-        var fileFormat = jFormat.ToObject<FileFormat>();
-        return fileFormat ?? FileFormat.Default;
-    }
+        private readonly IFileTypesProvider _typesProvider;
 
-    private string GetFileTypeByAnalyse(IFileAnalyse analyse)
-    {
-        if (analyse.StreamAnalyses.Any(x => x.CodecType.ToLower() == "video"))
+        public IFileAnalyse Analyse(string variables) =>
+            AnalyseByJson(variables);
+
+        public IFileAnalyse AnalyseByJson(string jsonAnalyse)
         {
-            return FileType.Video;
+            var fileAnalyse = new FileAnalyse();
+            var jObject = JObject.Parse(jsonAnalyse);
+            var streamObjects = jObject["streams"].AsEnumerable();
+            foreach (var streamObject in streamObjects)
+            {
+                var codecType = streamObject["codec_type"].Value<string>();
+                var lowerCodeType = codecType.ToLower();
+                if (lowerCodeType == "video")
+                    fileAnalyse.StreamAnalyses.Add(streamObject.ToObject<VideosStreamAnalyse>());
+                if (lowerCodeType == "audio")
+                    fileAnalyse.StreamAnalyses.Add(streamObject.ToObject<StreamAnalyse>());
+            }
+            fileAnalyse.Format = GetFormatByJObject(jObject);
+            fileAnalyse.FileType = GetFileTypeByAnalyse(fileAnalyse);
+            return fileAnalyse;
         }
-        if (analyse.StreamAnalyses.Any(x => x.CodecType.ToLower() == "audio"))
+
+        private IFileFormat GetFormatByJObject(JObject jsonObject)
         {
-            return FileType.Audio;
+            var jFormat = jsonObject["format"];
+            var fileFormat = jFormat.ToObject<FileFormat>();
+            return fileFormat ?? FileFormat.Default;
         }
-        return FileType.Undefined;
+
+        private string GetFileTypeByAnalyse(IFileAnalyse analyse)
+        {
+            if (analyse.StreamAnalyses.Any(x => x.CodecType.ToLower() == "video"))
+            {
+                return FileType.Video;
+            }
+            if (analyse.StreamAnalyses.Any(x => x.CodecType.ToLower() == "audio"))
+            {
+                return FileType.Audio;
+            }
+            return FileType.Undefined;
+        }
     }
 }

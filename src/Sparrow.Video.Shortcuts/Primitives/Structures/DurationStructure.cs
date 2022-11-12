@@ -1,23 +1,24 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 
-namespace Sparrow.Video.Shortcuts.Primitives.Structures;
-
-public class DurationStructure : IFilesStructure
+namespace Sparrow.Video.Shortcuts.Primitives.Structures
 {
-    private bool _descending = false;
-
-    public IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files)
+    public class DurationStructure : IFilesStructure
     {
-        if (_descending) {
-            return files.OrderByDescending(x => x.Analyse.StreamAnalyses.Video().Duration);
+        private bool _descending = false;
+
+        public IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files)
+        {
+            if (_descending) {
+                return files.OrderByDescending(x => x.Analyse.StreamAnalyses.Video().Duration);
+            }
+            return files.OrderBy(x => x.Analyse.StreamAnalyses.Video().Duration);
         }
-        return files.OrderBy(x => x.Analyse.StreamAnalyses.Video().Duration);
-    }
 
-    public DurationStructure LongFirst()
-    {
-        _descending = true;
-        return this;
+        public DurationStructure LongFirst()
+        {
+            _descending = true;
+            return this;
+        }
     }
 }

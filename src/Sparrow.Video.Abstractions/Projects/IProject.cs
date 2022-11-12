@@ -5,6 +5,7 @@ namespace Sparrow.Video.Abstractions.Projects;
 
 public interface IProject
 {
+    string Name { get; }
     IProjectOptions Options { get; }
     IEnumerable<IProjectFile> Files { get; }
     IProject ConfigureOptions(Action<IProjectOptions> configureOptions);

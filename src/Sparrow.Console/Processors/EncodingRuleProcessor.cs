@@ -3,38 +3,39 @@ using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Processes.Sources;
-using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
+using Sparrow.Video.Shortcuts.Extensions;
+using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors;
 
 public class EncodingRuleProcessor : RuleProcessorBase<EncodingFileRule>
 {
-    private readonly IFFmpegProcess _ffmpegProcess;
-
     public EncodingRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IFFmpegProcess ffmpegProcess)
-    : base(uploadFilesService)
+        IPathsProvider pathsProvider,
+        IEncodingProcess encodingProcess)
     {
-        _ffmpegProcess = ffmpegProcess;
+        _uploadFilesService = uploadFilesService;
+        _pathsProvider = pathsProvider;
+        _encodingProcess = encodingProcess;
     }
+
+    private readonly IUploadFilesService _uploadFilesService;
+    private readonly IPathsProvider _pathsProvider;
+    private readonly IEncodingProcess _encodingProcess;
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(
-        IProjectFile file, EncodingFileRule rule, CancellationToken cancellationToken = default)
+    public override async Task<IFile> ProcessAsync(IProjectFile file, EncodingFileRule rule)
     {
-        var encodeFile = GetActualFile(file);
+        var encodeActualFilePath = file.References.GetActual().FileFullPath;
+        var encodeFile = _uploadFilesService.GetFile(encodeActualFilePath); // TODO: вынести в абстрактный метод
 
-        var fromFilePath = encodeFile.Path;
-        var saveFileName = file.File.Name + ".ts"; // TODO: Нужно бы как-то определять
-        var parameters = new EncodingCommandParameters(saveFileName, fromFilePath)
-        {
-            EncodingType = rule.EncodingType
-        };
-        var source = new EncodingCommandSource(parameters);
-        return await _ffmpegProcess.StartAsync(source, cancellationToken);
+        var processedFileDirPath = _pathsProvider.GetPathFromCurrent("EncodedFiles");
+        var encodedFilePath = Path.Combine(processedFileDirPath, file.File.Name + ".ts"); // TODO: но я сохраняю для .ts
+        var saveSettings = new SaveSettings() { SaveFullPath = encodedFilePath };
+        var encodingSettings = new EncodingSettings() { EncodingType = rule.EncodingType };
+        return await _encodingProcess.StartEncodingAsync(encodeFile, encodingSettings, saveSettings);
     }
 }

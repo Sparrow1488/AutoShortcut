@@ -2,13 +2,13 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
+using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Projects;
-using Sparrow.Video.Abstractions.Render;
 using Sparrow.Video.Abstractions.Rules;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
+using System.Text;
 
 namespace Sparrow.Video.Shortcuts.Render;
 
@@ -18,7 +18,6 @@ public class RenderUtility : IRenderUtility
     private readonly IRuleProcessorsProvider _ruleProcessorsProvider;
     private readonly ITextFormatter _textFormatter;
     private readonly IProjectSerializationService _projectSerialization;
-    private readonly IProjectSaveSettingsCreator _saveSettingsCreator;
     private readonly IConcatinateProcess _concatinateProcess;
 
     private IProjectFile? _loggedProcessingFile;
@@ -28,14 +27,12 @@ public class RenderUtility : IRenderUtility
         IRuleProcessorsProvider ruleProcessorsProvider,
         ITextFormatter textFormatter,
         IProjectSerializationService projectSerialization,
-        IProjectSaveSettingsCreator saveSettingsCreator,
         IConcatinateProcess concatinateProcess)
     {
         _logger = logger;
         _ruleProcessorsProvider = ruleProcessorsProvider;
         _textFormatter = textFormatter;
         _projectSerialization = projectSerialization;
-        _saveSettingsCreator = saveSettingsCreator;
         _concatinateProcess = concatinateProcess;
     }
 
@@ -43,10 +40,8 @@ public class RenderUtility : IRenderUtility
     public IFileRule CurrentApplyingRule { get; private set; }
     private ProcessingFilesStatistic FilesStatistic { get; set; }
 
-    private string CurrentProcessingFileLog => $"({FilesStatistic.CurrentIndexProcessed + 1}/{FilesStatistic.TotalFiles}) ";
-
     public async Task<IFile> StartRenderAsync(
-        IProject project, CancellationToken cancellationToken = default)
+        IProject project, ISaveSettings saveSettings, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting render project");
         await _projectSerialization.SaveProjectOptionsAsync(project);
@@ -56,71 +51,60 @@ public class RenderUtility : IRenderUtility
 
         var filesArray = project.Files.ToArray();
         foreach (var file in filesArray)
-        {
-            if (!file.RulesContainer.Any())
-            {
-                _logger.LogWarning(
-                    "File {file} no contains any processing rule",
-                    _textFormatter.GetPrintable(file.File.Name));
-                continue;
-            }
-                
-            foreach (var rule in file.RulesContainer)
+            foreach (var rule in file.RulesCollection)
             {
                 CurrentProcessFile = file;
                 CurrentApplyingRule = rule;
                 FilesStatistic = new(filesArray.Length, Array.IndexOf(filesArray, file));
-                await ApplyFileRuleAsync(cancellationToken);
+                await ApplyFileRuleAsync();
             }
-        }
         var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
-
-        var saveSettings = _saveSettingsCreator.Create(
-                                sectionName:  ProjectConfigSections.ResultFiles, 
-                                fileName:     project.Options.ProjectName + ".mp4");
-        var result = await _concatinateProcess.ConcatinateFilesAsync(
-                        concatinateFilesPaths, saveSettings, cancellationToken);
+       
+        var result = await _concatinateProcess.ConcatinateFilesAsync(concatinateFilesPaths, saveSettings);
         return result;
     }
 
-    private async Task ApplyFileRuleAsync(CancellationToken cancellationToken = default)
+    private async Task ApplyFileRuleAsync()
     {
-        PrintCurrentApplyingRuleLog();
         if (IsCurrentFileRuleNotAppliedOrRuntimeProcessing())
         {
+            PrintCurrentApplyingRuleLog();
             var processor = (IRuleProcessor)_ruleProcessorsProvider.GetRuleProcessor(CurrentApplyingRule.GetType());
-            await processor.ProcessAsync(CurrentProcessFile, CurrentApplyingRule, cancellationToken);
+            await processor.ProcessAsync(CurrentProcessFile, CurrentApplyingRule);
             CurrentApplyingRule.Applied();
             await _projectSerialization.SaveProjectFileAsync(CurrentProcessFile);
         }
         else
         {
-            _logger.LogInformation(
-                CurrentProcessingFileLog.MakeEmpty() + 
-                "Rule '{rule}' is already applied for {shortFileName}",
-                CurrentApplyingRule.RuleName.Value,
-                _textFormatter.GetPrintable(CurrentProcessFile.File.Name));
+            _logger.LogInformation($"Rule named \"{CurrentApplyingRule.RuleName.Value}\" is already applied for {_textFormatter.GetPrintable(CurrentProcessFile.File.Name)}");
         }
     }
 
     private bool IsCurrentFileRuleNotAppliedOrRuntimeProcessing()
         => !CurrentApplyingRule.IsApplied || CurrentApplyingRule.RuleApply == RuleApply.Runtime;
 
+    #region Log Current Processing File Rules
     private void PrintCurrentApplyingRuleLog()
     {
         if (_loggedProcessingFile != CurrentProcessFile)
             _loggedProcessingFile = default;
 
-        string logPrefix = _loggedProcessingFile is null ? CurrentProcessingFileLog 
-                                : CurrentProcessingFileLog.MakeEmpty();
-        _logger.LogInformation(
-            logPrefix + "Applying {ruleType} rule '{rule}' for {fileShortName}",
-            CurrentApplyingRule.RuleApply.Type,
-            CurrentApplyingRule.RuleName.Value,
-            _textFormatter.GetPrintable(CurrentProcessFile.File.Name));
+        var processingFileNumeric = $"({FilesStatistic.CurrentIndexProcessed + 1}/{FilesStatistic.TotalFiles})";
+        string logText = $" Applying {CurrentApplyingRule.RuleApply.Type} rule \"{CurrentApplyingRule.RuleName.Value}\" for {_textFormatter.GetPrintable(CurrentProcessFile.File.Name)}";
+        if (_loggedProcessingFile is null) // numeric not printed
+        {
+            _logger.LogInformation(processingFileNumeric + logText);
+        }
+        else                               // numeric printed
+        {
+            var stringBuilder = new StringBuilder();
+            var buildedLog = stringBuilder.Append(' ', processingFileNumeric.Length).Append(logText).ToString();
+            _logger.LogInformation(buildedLog);
+        }
 
         _loggedProcessingFile ??= CurrentProcessFile;
     }
+    #endregion
 
     private IEnumerable<string> GetConcatinateFilesPaths(IEnumerable<IProjectFile> files)
     {

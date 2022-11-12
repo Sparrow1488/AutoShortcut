@@ -1,7 +1,6 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 
@@ -12,18 +11,20 @@ public class ProjectSerializationService : IProjectSerializationService
     private readonly IJsonSerializer _serializer;
     private readonly IPathsProvider _pathsProvider;
     private readonly ISaveService _saveService;
-    private readonly ISharedProject _sharedProject;
+    private readonly IEnvironmentVariablesProvider _variablesProvider;
 
     public ProjectSerializationService(
         IJsonSerializer serializer,
         IPathsProvider pathsProvider,
         ISaveService saveService,
-        ISharedProject sharedProject)
+        IEnvironmentVariablesProvider variablesProvider)
     {
         _serializer = serializer;
         _pathsProvider = pathsProvider;
         _saveService = saveService;
-        _sharedProject = sharedProject;
+        _variablesProvider = variablesProvider;
+
+        IsEnabled = _variablesProvider.IsSerialize();
     }
 
     public bool IsEnabled { get; }
@@ -55,7 +56,7 @@ public class ProjectSerializationService : IProjectSerializationService
         await OnEnableExecuteAsync(async () =>
         {
             var serializedOptions = _serializer.Serialize(project.Options);
-            var saveProjectOptionsPath = _pathsProvider.GetPathFromSharedProject(ProjectConfigSections.ProjectOptions);
+            var saveProjectOptionsPath = _pathsProvider.GetPathFromCurrent("ProjectOptions");
             var saveSettings = new SaveSettings()
             {
                 SaveFullPath = Path.Combine(saveProjectOptionsPath, "project-options.json")
@@ -66,7 +67,7 @@ public class ProjectSerializationService : IProjectSerializationService
 
     private async Task OnEnableExecuteAsync(Func<Task> function)
     {
-        if (_sharedProject.Project.Options.IsSerialize)
+        if (IsEnabled)
         {
             await function?.Invoke();
         }

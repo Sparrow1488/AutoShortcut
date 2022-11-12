@@ -3,37 +3,38 @@ using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Shortcuts.Processes.Sources;
-using Sparrow.Video.Shortcuts.Processes.Sources.Parameters;
+using Sparrow.Video.Shortcuts.Extensions;
+using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors;
 
 public class ScaleRuleProcessor : RuleProcessorBase<ScaleFileRule>
 {
-    private readonly IFFmpegProcess _ffmpegProcess;
-
     public ScaleRuleProcessor(
         IUploadFilesService uploadFilesService,
-        IFFmpegProcess ffmpegProcess)
-    : base(uploadFilesService)
+        IPathsProvider pathsProvider,
+        IScaleProcess scaleProcess)
     {
-        _ffmpegProcess = ffmpegProcess;
+        _uploadFilesService = uploadFilesService;
+        _pathsProvider = pathsProvider;
+        _scaleProcess = scaleProcess;
     }
+
+    private readonly IUploadFilesService _uploadFilesService;
+    private readonly IPathsProvider _pathsProvider;
+    private readonly IScaleProcess _scaleProcess;
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(
-        IProjectFile file, ScaleFileRule rule, CancellationToken cancellationToken = default)
+    public override async Task<IFile> ProcessAsync(IProjectFile file, ScaleFileRule rule)
     {
-        var fromFilePath = file.File.Path;
-        var saveFileName = file.File.Name + file.File.Extension;
-        var parameter = new ScaleCommandParameters(saveFileName, fromFilePath)
-        {
-            Height = rule.Resolution.Height,
-            Width = rule.Resolution.Width
+        var actualFileRef = file.References.GetActual();
+        var actualFile = _uploadFilesService.GetFile(actualFileRef.FileFullPath);
+        var saveDirPath = _pathsProvider.GetPathFromCurrent("ScaledFiles");
+        var saveSettings = new SaveSettings() {
+            SaveFullPath = Path.Combine(saveDirPath, file.File.Name + file.File.Extension)
         };
-        var source = new ScaleCommandSource(parameter);
-        return await _ffmpegProcess.StartAsync(source, cancellationToken);
+        return await _scaleProcess.ScaleVideoAsync(actualFile, rule.Scale, saveSettings);
     }
 }

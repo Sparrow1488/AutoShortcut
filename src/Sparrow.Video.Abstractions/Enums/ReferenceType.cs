@@ -13,6 +13,5 @@
         public static readonly ReferenceType RenderReady = new(nameof(RenderReady));
         public static readonly ReferenceType OriginalSource = new(nameof(OriginalSource));
         public static readonly ReferenceType InProcess = new(nameof(InProcess));
-        public static readonly ReferenceType Ignore = new(nameof(Ignore));
     }
 }

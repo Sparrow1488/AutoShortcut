@@ -1,8 +1,9 @@
-﻿namespace Sparrow.Video.Shortcuts.Processes.Settings;
-
-public class ProcessSettings
+﻿namespace Sparrow.Video.Shortcuts.Processes.Settings
 {
-    public bool IsShowConsole { get; set; }
-    public bool IsReadOutputs { get; set; }
-    public string Argument { get; set; }
+    public class ProcessSettings
+    {
+        public bool IsShowConsole { get; set; }
+        public bool IsReadOutputs { get; set; }
+        public string Argument { get; set; }
+    }
 }

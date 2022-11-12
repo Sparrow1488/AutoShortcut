@@ -1,13 +1,14 @@
 ﻿using Sparrow.Video.Shortcuts.Processes.Settings;
 
-namespace Sparrow.Video.Shortcuts.Processes.Results;
-
-public class ProcessResult : IProcessResult
+namespace Sparrow.Video.Shortcuts.Processes.Results
 {
-    public ProcessResult(ProcessSettings settings)
+    public class ProcessResult : IProcessResult
     {
-        Settings = settings;
-    }
+        public ProcessResult(ProcessSettings settings)
+        {
+            Settings = settings;
+        }
 
-    public ProcessSettings Settings { get; }
+        public ProcessSettings Settings { get; }
+    }
 }

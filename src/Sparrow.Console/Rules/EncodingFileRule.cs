@@ -4,9 +4,10 @@ using Sparrow.Video.Shortcuts.Rules;
 
 namespace Sparrow.Console.Rules;
 
-public class EncodingFileRule : PermanentFileRule
+public class EncodingFileRule : FileRuleBase
 {
     public override Func<IProjectFile, bool> Condition => file => true;
     public string EncodingType => Video.Abstractions.Enums.EncodingType.Mpegts;
-    public override RuleName RuleName => RuleName.Encoding;
+
+    public override RuleName RuleName => RuleName.New("Encoding");
 }

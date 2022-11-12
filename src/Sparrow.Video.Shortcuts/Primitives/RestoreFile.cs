@@ -6,6 +6,6 @@ namespace Sparrow.Video.Shortcuts.Primitives
     {
         public string RestoreFilePath { get; set; }
         public IProjectFile RestoredProjectFile { get; set; }
-        public bool RestoredSuccess { get; set; }
+        public bool IsSuccess { get; set; }
     }
 }

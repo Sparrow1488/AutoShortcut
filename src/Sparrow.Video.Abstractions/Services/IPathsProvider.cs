@@ -1,10 +1,8 @@
-﻿using Sparrow.Video.Abstractions.Projects;
-
-namespace Sparrow.Video.Abstractions.Services;
-
-public interface IPathsProvider
+﻿namespace Sparrow.Video.Abstractions.Services
 {
-    string GetPath(string name);
-    string GetPathFromProjectRoot(string name, IProjectRoot projectRoot);
-    string GetPathFromSharedProject(string name);
+    public interface IPathsProvider
+    {
+        string GetPath(string name);
+        string GetPathFromCurrent(string name);
+    }
 }
