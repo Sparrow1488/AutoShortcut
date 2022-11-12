@@ -30,7 +30,7 @@ internal class AutoShortcutStartup : AutoShortcutStartupBase
                               StringPath.CreateExists(@"C:\Users\USER\Desktop\Test\Test2").Value);
     }
 
-    public override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
+    protected override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
         var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
         var inputDirectory = Variables.GetInputDirectoryPath();
@@ -46,7 +46,7 @@ internal class AutoShortcutStartup : AutoShortcutStartupBase
         return project;
     }
 
-    public override async Task<IProject> OnCreateProjectAsync(
+    protected override async Task<IProject> OnCreateProjectAsync(
         IRuntimeProjectLoader loader, IEnumerable<IFile> files, string projectPath)
     {
         loader.LoadEmpty();
