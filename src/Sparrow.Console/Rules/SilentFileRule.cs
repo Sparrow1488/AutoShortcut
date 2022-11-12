@@ -3,11 +3,12 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Rules;
 
-namespace Sparrow.Console.Rules;
-
-public class SilentFileRule : FileRuleBase
+namespace Sparrow.Console.Rules
 {
-    public override Func<IProjectFile, bool> Condition => file => !file.Analyse.StreamAnalyses.WithAudio();
+    public class SilentFileRule : FileRuleBase
+    {
+        public override Func<IProjectFile, bool> Condition => file => !file.Analyse.StreamAnalyses.WithAudio();
 
-    public override RuleName RuleName => RuleName.Silent;
+        public override RuleName RuleName => RuleName.Silent;
+    }
 }

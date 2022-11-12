@@ -1,28 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Sparrow.Video.Abstractions.Services;
 
-namespace Sparrow.Video.Shortcuts.Services;
-
-public class PathsProvider : IPathsProvider
+namespace Sparrow.Video.Shortcuts.Services
 {
-    public PathsProvider(IConfiguration configration)
+    public class PathsProvider : IPathsProvider
     {
-        Configration = configration;
-    }
+        public PathsProvider(IConfiguration configration)
+        {
+            Configration = configration;
+        }
 
-    public IConfiguration Configration { get; }
+        public IConfiguration Configration { get; }
 
-    public string GetPath(string name)
-    {
-        var pathsSection = Configration.GetRequiredSection("Environment:Paths");
-        var pathValue = pathsSection.GetValue<string>(name);
-        return pathValue;
-    }
+        public string GetPath(string name)
+        {
+            var pathsSection = Configration.GetRequiredSection("Environment:Paths");
+            var pathValue = pathsSection.GetValue<string>(name);
+            return pathValue;
+        }
 
-    public string GetPathFromCurrent(string name)
-    {
-        var currentDirPath = Directory.GetCurrentDirectory();
-        var pathValue = GetPath(name);
-        return Path.Combine(currentDirPath, pathValue);
+        public string GetPathFromCurrent(string name)
+        {
+            var currentDirPath = Directory.GetCurrentDirectory();
+            var pathValue = GetPath(name);
+            return Path.Combine(currentDirPath, pathValue);
+        }
     }
 }

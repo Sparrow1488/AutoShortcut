@@ -25,6 +25,11 @@ public class RestoreProjectService : IRestoreProjectService
 
     public async Task<IProject> RestoreAsync(string restoreFilesDirectoryPath, CancellationToken cancellationToken = default)
     {
+        // 1. Восстановить файлы +
+        // 2. Получить инфу о проекте - ProjectOptions +
+        // 3. Соотнести востановленные файлы с Rules (Проверить сколько новых файлов и сколько есть .restore)
+        // 4. Сравнить, не были ли изменены итоговые характеристики
+
         _logger.LogInformation("Starting restore project");
         var restoredFiles = await _restoreFilesService.RestoreFilesAsync(restoreFilesDirectoryPath);
         var restoreProjectOptions = await _restoreOptionsService.RestoreOptionsAsync();

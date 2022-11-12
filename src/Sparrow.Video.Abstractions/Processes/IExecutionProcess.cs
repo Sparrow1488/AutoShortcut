@@ -2,6 +2,6 @@
 {
     public interface IExecutionProcess
     {
-        Task StartAsync(CancellationToken cancellationToken = default);
+        Task StartAsync();
     }
 }

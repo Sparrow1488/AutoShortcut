@@ -4,6 +4,7 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processes;
 using Sparrow.Video.Abstractions.Processes.Settings;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processes.Settings;
 using Sparrow.Video.Shortcuts.Processors;
 
@@ -15,7 +16,6 @@ public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
         IPathsProvider pathProvider,
         IUploadFilesService uploadFilesService,
         IMakeSilentProcess makeSilentProcess)
-    : base(uploadFilesService)
     {
         _pathProvider = pathProvider;
         _uploadFilesService = uploadFilesService;
@@ -28,14 +28,12 @@ public class SilentAudioRuleProcessor : RuleProcessorBase<SilentFileRule>
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.InProcess;
 
-    public override async Task<IFile> ProcessAsync(
-        IProjectFile file, SilentFileRule rule, CancellationToken cancellationToken = default)
+    public override async Task<IFile> ProcessAsync(IProjectFile file, SilentFileRule rule)
     {
-        var processFile = GetActualFile(file);
+        var makeSilentFilePath = file.References.GetActual().FileFullPath;
+        var processFile = _uploadFilesService.GetFile(makeSilentFilePath);
         return await _makeSilentProcess.MakeSilentAsync(
-                            processFile, 
-                            GetSaveSettings(file.File.Name + file.File.Extension), 
-                            cancellationToken);
+                            processFile, GetSaveSettings(file.File.Name + file.File.Extension));
     }
 
     private ISaveSettings GetSaveSettings(string fileNameWithExtenion)

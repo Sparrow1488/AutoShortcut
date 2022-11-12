@@ -2,24 +2,24 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Processors;
 
 namespace Sparrow.Console.Processors;
 
 public class LoopRuleProcessor : RuleProcessorBase<LoopFileRuleBase>
 {
-    public LoopRuleProcessor(
-        IUploadFilesService uploadFilesService) 
-    : base(uploadFilesService)
-    {
-    }
+    private readonly IUploadFilesService _uploadFilesService;
+
+    public LoopRuleProcessor(IUploadFilesService uploadFilesService)
+        => _uploadFilesService = uploadFilesService;
 
     public override ReferenceType ResultFileReferenceType => ReferenceType.RenderReady;
 
-    public override Task<IFile> ProcessAsync(
-        IProjectFile file, LoopFileRuleBase rule, CancellationToken cancellationToken = default)
+    public override Task<IFile> ProcessAsync(IProjectFile file, LoopFileRuleBase rule)
     {
-        var processFile = GetActualFile(file);
+        var processFileReference = file.References.GetActual();
+        var processFile = _uploadFilesService.GetFile(processFileReference.FileFullPath);
         #region NOTE
         // NOTE: тут небольшой архитектурный прикол, я цепляю на файл ссылки, которые в будущем будут
         //       обрабатываться ffmpeg как "зацикливание". rule.LoopCount - это число зацикливаний

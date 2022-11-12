@@ -1,8 +1,14 @@
-﻿namespace Sparrow.Video.Abstractions.Rules;
+﻿using Sparrow.Video.Abstractions.Enums;
+using Sparrow.Video.Abstractions.Primitives;
 
-public interface IFileRule : IProcessingRule
+namespace Sparrow.Video.Abstractions.Rules;
+
+public interface IFileRule
 {
     bool IsApplied { get; }
+    RuleName RuleName { get; }
+    RuleApply RuleApply { get; }
+    bool IsInRule(IProjectFile file);
     void Applied();
     IFileRule Clone();
 }

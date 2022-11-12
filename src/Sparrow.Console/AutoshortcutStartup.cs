@@ -16,8 +16,8 @@ internal class AutoshortcutStartup : Startup
     public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
     {
         base.OnConfigreDevelopmentVariables(variables);
-        Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Test\Test2");
+        Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath, 
+                             @"C:\Users\USER\Desktop\Test");
     }
 
     public override async Task OnStart(CancellationToken cancellationToken = default)
@@ -50,23 +50,21 @@ internal class AutoshortcutStartup : Startup
 
             ScaleFileRule outputVideoResolutionScale 
                 = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
+            
+            var project = pipeline.Configure(options =>
+            {
+                options.IsSerialize = Variables.IsSerialize();
+                options.AddRule(outputVideoResolutionScale);
+                options.AddRule<SilentFileRule>();
+                options.AddRule<EncodingFileRule>();
+                options.AddRule<LoopShortFileRule>();
+                options.AddRule<LoopMediumFileRule>();
 
-            var project = pipeline
-                .Configure(opt => opt.IsSerialize = Variables.IsSerialize())
-                .CreateProject(options =>
-                {
-                    options.Named(Variables.OutputFileName());
-                    options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
-                    options.WithRules(rulesContainer =>
-                    {
-                        rulesContainer.AddRule(outputVideoResolutionScale);
-                        rulesContainer.AddRule<SnapshotsFileRule>();
-                        rulesContainer.AddRule<SilentFileRule>();
-                        rulesContainer.AddRule<EncodingFileRule>();
-                        rulesContainer.AddRule<LoopShortFileRule>();
-                        rulesContainer.AddRule<LoopMediumFileRule>();
-                    });
-                });
+            }).CreateProject(options =>
+            {
+                options.StructureBy(new GroupStructure(logger).StructureFilesBy(new NameStructure()));
+                options.Named(Variables.OutputFileName());
+            });
 
             var compilation = await engine.StartRenderAsync(project, cancellationToken);
             Log.Information("Finally video: " + compilation.Path);

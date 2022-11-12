@@ -1,11 +1,12 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Shortcuts.Primitives.Structures;
-
-public class NameStructure : IFilesStructure
+namespace Sparrow.Video.Shortcuts.Primitives.Structures
 {
-    public IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files)
+    public class NameStructure : IFilesStructure
     {
-        return files.OrderBy(x => x.File.Name);
+        public IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files)
+        {
+            return files.OrderBy(x => x.File.Name);
+        }
     }
 }

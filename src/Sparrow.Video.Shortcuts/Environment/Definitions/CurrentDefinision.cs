@@ -9,7 +9,6 @@ using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enginies;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Factories;
 using Sparrow.Video.Shortcuts.Pipelines;
 using Sparrow.Video.Shortcuts.Pipelines.Options;
@@ -25,8 +24,7 @@ public class CurrentDefinision : ApplicationDefinition
 {
     public override IServiceCollection OnConfigureServices(IServiceCollection services)
     {
-        var projectConfiguration = new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build();
-        services.AddScoped<IConfiguration>(x => projectConfiguration);
+        services.AddScoped<IConfiguration>(x => new ConfigurationBuilder().AddJsonFile("appsettings.AutoShortcut.json").Build());
 
         services.AddSingleton<IFileTypesProvider, FileTypesProvider>();
         services.AddSingleton<IEnvironmentVariablesProvider, EnvironmentVariablesProvider>();
@@ -39,6 +37,8 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<IUploadFilesService, UploadFilesService>();
         services.AddSingleton<IJsonFileAnalyseService, JsonAnalyseService>();
         services.AddSingleton<IResourcesService, ResourcesService>();
+        services.AddSingleton<ISaveService, SaveService>();
+        services.AddSingleton<IReadFileTextService, ReadFileTextService>();
         services.AddSingleton<IStoreService, StoreService>();
         services.AddSingleton<IRestoreFilesService, RestoreFilesService>();
         services.AddSingleton<IRestoreProjectOptionsService, RestoreProjectOptionsService>();
@@ -48,28 +48,12 @@ public class CurrentDefinision : ApplicationDefinition
         services.AddSingleton<ITextFormatter, TextFormatter>();
         services.AddSingleton<AssemblyInfoLoader>();
 
-        services.AddSingleton<IDefaultSaveService, DefaultSaveService>();
-
-        var saveServiceSection = projectConfiguration.GetRequiredSection("Environment:Services:SaveService");
-        var protectData = saveServiceSection["ProtectData"];
-        if (protectData == ProtectDataTypes.Aes256)
-        {
-            services.AddSingleton<ISaveService, CryptoSaveService>();
-            services.AddSingleton<IReadFileTextService, ReadEncryptedTextFilesService>();
-        }
-        if (protectData == ProtectDataTypes.None)
-        {
-            services.AddSingleton<ISaveService, SaveService>();
-            services.AddSingleton<IReadFileTextService, ReadFileTextService>();
-        }
-
         services.AddSingleton<IAnalyseProcess, AnalyseProcess>();
         services.AddSingleton<IEncodingProcess, EncodingProcess>();
         services.AddSingleton<IMakeSilentProcess, MakeSilentProcess>();
         services.AddSingleton<IFormatorProcess, VideoFormatorProcess>();
         services.AddSingleton<IConcatinateProcess, ConcatinateProcess>();
         services.AddSingleton<IScaleProcess, ScaleProcess>();
-        services.AddSingleton<ITakeSnapshotProcess, TakeSnapshotProcess>();
 
         services.AddSingleton<IShortcutEngineFactory, ShortcutEngineFactory>();
 
@@ -80,8 +64,6 @@ public class CurrentDefinision : ApplicationDefinition
 
         services.AddScoped<IProjectSerializationService, ProjectSerializationService>();
         services.AddScoped<IRenderUtility, RenderUtility>();
-
-        services.AddScoped<ICryptoService, AesCryptoService>();
 
         return services;
     }

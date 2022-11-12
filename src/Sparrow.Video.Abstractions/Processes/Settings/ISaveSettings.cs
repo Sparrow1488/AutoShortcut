@@ -1,6 +1,7 @@
-﻿namespace Sparrow.Video.Abstractions.Processes.Settings;
-
-public interface ISaveSettings
+﻿namespace Sparrow.Video.Abstractions.Processes.Settings
 {
-    public string SaveFullPath { get; }
+    public interface ISaveSettings
+    {
+        public string SaveFullPath { get; }
+    }
 }

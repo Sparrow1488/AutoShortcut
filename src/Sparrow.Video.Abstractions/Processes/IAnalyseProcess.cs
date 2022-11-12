@@ -4,6 +4,6 @@ namespace Sparrow.Video.Abstractions.Processes
 {
     public interface IAnalyseProcess : IExecutionProcess
     {
-        Task<IFileAnalyse> GetAnalyseAsync(IFile file, CancellationToken cancellationToken = default);
+        Task<IFileAnalyse> GetAnalyseAsync(IFile file);
     }
 }

@@ -2,14 +2,15 @@
 using Sparrow.Console;
 using Sparrow.Video.Abstractions.Exceptions;
 using Sparrow.Video.Shortcuts.Exceptions;
-using System.Runtime.InteropServices;
 
-CancellationTokenSource tokenSource = new();
 Startup cli = new AutoshortcutStartup();
-CancellationToken token = tokenSource.Token;
+CancellationToken token = new();
 
-ChangeConsoleExitStatusCode();
-AppDomain.CurrentDomain.ProcessExit += (sender, e) => tokenSource.Cancel();
+/*
+ * TODO: + 1. Параметры запуска 
+ *       2. Сервис сохранения (включен/выключен)
+ *       3. Удаление .restore файлов
+ */
 
 try
 {
@@ -23,19 +24,3 @@ catch (InputResolutionNameNotRequiredException ex)
 {
     Log.Error(ex.Message);
 }
-catch (TaskCanceledException ex)
-{
-}
-
-void ChangeConsoleExitStatusCode()
-{
-    SetConsoleCtrlHandler(type =>
-    {
-        Environment.Exit(-1); // Needs to Invoke AppDomain.CurrentDomain.ProcessExit
-        return true;
-    }, add: true);
-}
-
-[DllImport("kernel32.dll", SetLastError = true)]
-static extern bool SetConsoleCtrlHandler(ConsoleEventDelegate callback, bool add);
-delegate bool ConsoleEventDelegate(int eventType);

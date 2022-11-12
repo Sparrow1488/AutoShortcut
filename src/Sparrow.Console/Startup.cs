@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Sparrow.Video.Abstractions.Services;
@@ -43,7 +44,7 @@ internal abstract class Startup
                 .WriteTo.Console())
             .ConfigureServices(services =>
             {
-                services.AddShortcutDefinision(services.BuildServiceProvider());
+                services.AddShortcutDefinision();
             })
             .Build().Services;
 

@@ -6,7 +6,6 @@ using Sparrow.Video.Shortcuts.Factories;
 
 namespace Sparrow.Video.Shortcuts.Rules;
 
-[Serializable]
 public abstract class FileRuleBase : IFileRule
 {
     [JsonProperty]
@@ -16,21 +15,18 @@ public abstract class FileRuleBase : IFileRule
     [JsonIgnore]
     public abstract Func<IProjectFile, bool> Condition { get; }
     
-    /// <summary>
-    ///     Default value is <see cref="RuleApply.Permanent"/>
-    /// </summary>
-    [JsonProperty]
-    public virtual RuleApply RuleApply => RuleApply.Permanent;
-
-    public void Applied() => IsApplied = true;
-    public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
-
-    object ICloneable.Clone() => Clone();
-
     public virtual IFileRule Clone()
     {
         var rule = (FileRuleBase)FileRuleFactory.CreateDefaultRule(GetType());
         rule.IsApplied = IsApplied;
         return rule;
     }
+
+    /// <summary>
+    ///     Default value is <see cref="RuleApply.Permanent"/>
+    /// </summary>
+    [JsonProperty]
+    public virtual RuleApply RuleApply => RuleApply.Permanent;
+    public void Applied() => IsApplied = true;
+    public bool IsInRule(IProjectFile file) => Condition.Invoke(file);
 }

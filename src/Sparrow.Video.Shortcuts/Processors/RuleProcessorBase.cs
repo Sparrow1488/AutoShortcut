@@ -2,9 +2,7 @@
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Processors;
 using Sparrow.Video.Abstractions.Rules;
-using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Exceptions;
-using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives;
 
 namespace Sparrow.Video.Shortcuts.Processors;
@@ -12,16 +10,9 @@ namespace Sparrow.Video.Shortcuts.Processors;
 public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
     where TRule : IFileRule
 {
-    public RuleProcessorBase(
-        IUploadFilesService uploadFilesService)
-    {
-        UploadFilesService = uploadFilesService;
-    }
-
     public abstract ReferenceType ResultFileReferenceType { get; }
-    public IUploadFilesService UploadFilesService { get; }
 
-    public abstract Task<IFile> ProcessAsync(IProjectFile file, TRule rule, CancellationToken cancellationToken = default);
+    public abstract Task<IFile> ProcessAsync(IProjectFile file, TRule rule);
 
     /// <summary>
     ///     Apply specific processing file rule to <paramref name="file"/>. 
@@ -30,12 +21,12 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
     /// <param name="file">File being processed</param>
     /// <param name="rule">Special rule handler</param>
     /// <returns>Processed file result</returns>
-    public async Task<IFile> ProcessAsync(IProjectFile file, IFileRule rule, CancellationToken cancellationToken = default)
+    public async Task<IFile> ProcessAsync(IProjectFile file, IFileRule rule)
     {
         if (!IsInputAndCurrentRulesAreTheSame(input: rule))
             throw new FailedProcessRuleException("Processor can't handle current rule type " + rule.RuleName.Value);
 
-        var processedResultFile = await ProcessAsync(file, (TRule)rule, cancellationToken);
+        var processedResultFile = await ProcessAsync(file, (TRule)rule);
         AddReference(
             toFile: file,
             appliedRule: rule,
@@ -56,11 +47,5 @@ public abstract class RuleProcessorBase<TRule> : IRuleProcessor<TRule>
             Type = ResultFileReferenceType,
             FileFullPath = resultFile.Path
         });
-    }
-
-    protected IFile GetActualFile(IProjectFile projectFile)
-    {
-        var actualFilePath = projectFile.References.GetActual().FileFullPath;
-        return UploadFilesService.GetFile(actualFilePath);
     }
 }

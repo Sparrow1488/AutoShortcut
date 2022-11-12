@@ -1,14 +1,13 @@
-﻿using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Abstractions.Primitives;
+﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Shortcuts.Extensions;
-
-public static class ReferenceExtensions
+namespace Sparrow.Video.Shortcuts.Extensions
 {
-    public static IReference GetActual(this IEnumerable<IReference> references)
+    public static class ReferenceExtensions
     {
-        var lastReference = references.Where(x => x.Type.Value != ReferenceType.Ignore.Value)
-                                      .OrderByDescending(x => x.CreatedAt).First();
-        return lastReference;
+        public static IReference GetActual(this IEnumerable<IReference> references)
+        {
+            var lastReference = references.OrderByDescending(x => x.CreatedAt).First();
+            return lastReference;
+        }
     }
 }

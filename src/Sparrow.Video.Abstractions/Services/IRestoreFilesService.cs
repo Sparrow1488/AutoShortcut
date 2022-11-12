@@ -1,8 +1,9 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Abstractions.Services;
-
-public interface IRestoreFilesService
+namespace Sparrow.Video.Abstractions.Services
 {
-    Task<ICollection<IRestoreFile>> RestoreFilesAsync(string restoreDirectoryPath);
+    public interface IRestoreFilesService
+    {
+        Task<ICollection<IRestoreFile>> RestoreFilesAsync(string restoreDirectoryPath);
+    }
 }
