@@ -51,6 +51,16 @@ var compilation = await renderUtility.StartRenderAsync(project);
 Log.Information("Finally video: " + compilation.Path);
 ```
 
+### CLI Usage
+
+Example:
+
+```powershell
+./Sparrow.Console.exe input="./Files" output="Compilation" quality=fhd mode=new project-name="Compilation-Project" project-path="./" serialize=true
+```
+
+
+
 ### Dependencies
 
 * Newtonsoft.Json → **13.0.1**
