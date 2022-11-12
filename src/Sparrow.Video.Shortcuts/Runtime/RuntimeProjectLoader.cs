@@ -77,7 +77,7 @@ public class RuntimeProjectLoader : IRuntimeProjectLoader
     {
         return OnAssertedLoadExecuteAsync(async () =>
         {
-            if (!_projectFiles.Any(x => x.File.Path == file.Path))
+            if (_projectFiles.All(x => x.File.Path != file.Path))
             {
                 _logger.LogInformation("Creating \"{file}\"", _textFormatter.GetPrintable(file.Name));
                 var projectFile = await _fileCreator.CreateAsync(file, cancellationToken);

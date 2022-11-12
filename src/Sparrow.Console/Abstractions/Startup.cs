@@ -31,7 +31,7 @@ internal abstract class Startup
         await OnStart(token);
     }
 
-    public virtual void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
+    public virtual void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
 
     public abstract Task OnStart(CancellationToken cancellationToken = default);
 
@@ -51,7 +51,7 @@ internal abstract class Startup
         Variables = ServiceProvider.GetRequiredService<IEnvironmentVariablesProvider>();
         if (Variables.IsDevelopment())
         {
-            OnConfigreDevelopmentVariables(Variables);
+            OnConfigureDevelopmentVariables(Variables);
         }
 
         var inputDirectoryPath = Variables.GetInputDirectoryPath()

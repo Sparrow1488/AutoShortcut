@@ -6,8 +6,8 @@ using Sparrow.Video.Shortcuts.Exceptions;
 using System.Runtime.InteropServices;
 
 CancellationTokenSource tokenSource = new();
-Startup cli = new AutoshortcutStartup();
-CancellationToken token = tokenSource.Token;
+Startup cli = new AutoShortcutStartup();
+var token = tokenSource.Token;
 
 ChangeConsoleExitStatusCode();
 AppDomain.CurrentDomain.ProcessExit += (sender, e) => tokenSource.Cancel();

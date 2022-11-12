@@ -6,13 +6,14 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console;
 
-internal class AutoshortcutStartup : AutoshortcutStartupBase
+internal class AutoShortcutStartup : AutoShortcutStartupBase
 {
     // TODO:
     // - Сделать выгрузку проектных файлов (очистить .restore файлы)
@@ -22,29 +23,25 @@ internal class AutoshortcutStartup : AutoshortcutStartupBase
     // TODO GLOBAL:
     // - Пользовательская библиотека ассетов для правил обработки
 
-    public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
+    public override void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables)
     {
-        base.OnConfigreDevelopmentVariables(variables);
+        base.OnConfigureDevelopmentVariables(variables);
         Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                             @"C:\Users\USER\Desktop\Test\Test2");
+                              StringPath.CreateExists(@"C:\Users\USER\Desktop\Test\Test2").Value);
     }
 
     public override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
         var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
-        var file = uploadService.GetFile(@"C:\Users\USER\Desktop\Main\Downloads\animech_3_downloads\2\GuraNew_H_Animtaion456251427.mp4");
-        await loader.AddFileAsync(file, CancellationToken);
-
-        loader.ConfigureProjectOptions(options =>
+        var inputDirectory = Variables.GetInputDirectoryPath();
+        if (!string.IsNullOrWhiteSpace(inputDirectory))
         {
-            options.Named("Loaded Compilation");
-            options.StructureBy(new DurationStructure().LongFirst());
-            options.WithRules(container =>
-            {
-                // Пока применяется только к новым файлам (можно сделать замену Runtime правил)
-                //container.Replace<ScaleFileRule>(new(Resolution.Preview)); 
-            });
-        });
+            var directoryFiles = await uploadService.GetFilesAsync(
+                                                inputDirectory, 
+                                                GetUploadOptions(),
+                                                CancellationToken);
+            await loader.AddFilesAsync(directoryFiles);
+        }
         var project = loader.CreateProject();
         return project;
     }

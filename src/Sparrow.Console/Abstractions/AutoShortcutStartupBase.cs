@@ -13,7 +13,7 @@ using Sparrow.Video.Shortcuts.Services.Options;
 
 namespace Sparrow.Console.Abstractions;
 
-internal abstract class AutoshortcutStartupBase : Startup
+internal abstract class AutoShortcutStartupBase : Startup
 {
     public CancellationToken CancellationToken { get; private set; }
 
