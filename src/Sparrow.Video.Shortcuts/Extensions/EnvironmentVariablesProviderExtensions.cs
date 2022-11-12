@@ -1,4 +1,5 @@
-﻿using Sparrow.Video.Abstractions.Services;
+﻿#nullable enable
+using Sparrow.Video.Abstractions.Services;
 using Sparrow.Video.Shortcuts.Enums;
 
 namespace Sparrow.Video.Shortcuts.Extensions;
@@ -11,7 +12,6 @@ public static class EnvironmentVariablesProviderExtensions
 
     public static bool IsSerialize(this IEnvironmentVariablesProvider environment, bool @default = false)
     {
-        var all = System.Environment.GetEnvironmentVariables(EnvironmentVariableTarget.User);
         var isSerialize = environment.GetVariable(EnvironmentVariableNames.Serialize);
         return bool.Parse(isSerialize ?? @default.ToString());
     }
@@ -33,4 +33,16 @@ public static class EnvironmentVariablesProviderExtensions
     public static string GetOutputVideoQuality(
         this IEnvironmentVariablesProvider environment, string @default = "HD")
             => environment.GetVariable(EnvironmentVariableNames.Quality) ?? @default;
+
+    public static string GetProjectName(
+        this IEnvironmentVariablesProvider environment,
+        string projectNameDefault = "AutoShortcut-Project")
+            => environment.GetVariable(EnvironmentVariableNames.ShortcutProjectName) 
+               ?? projectNameDefault + DateTime.Now.Millisecond;
+
+    public static string GetProjectPath(
+        this IEnvironmentVariablesProvider environment,
+        string projectPathDefault = "./")
+            => environment.GetVariable(EnvironmentVariableNames.ProjectPath)
+               ?? projectPathDefault;
 }

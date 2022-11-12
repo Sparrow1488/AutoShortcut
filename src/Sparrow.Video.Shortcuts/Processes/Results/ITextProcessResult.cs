@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Shortcuts.Processes.Results
+﻿namespace Sparrow.Video.Shortcuts.Processes.Results;
+
+public interface ITextProcessResult : IProcessResult
 {
-    public interface ITextProcessResult : IProcessResult
-    {
-        string Text { get; }
-    }
+    string Text { get; }
 }

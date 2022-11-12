@@ -1,26 +1,20 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Sparrow.Video.Shortcuts.Environment.Definitions;
 
-namespace Sparrow.Video.Shortcuts.Extensions
+namespace Sparrow.Video.Shortcuts.Extensions;
+
+public static class DefinisionExtensions
 {
-    public static class DefinisionExtensions
+    public static IServiceCollection AddShortcutDefinision(
+        this IServiceCollection services, IServiceProvider serviceProvider)
     {
-        static DefinisionExtensions()
-        {
-            DefaultDefinision = new CurrentDefinision();
-        }
+        var definision = ActivatorUtilities.CreateInstance<CurrentDefinision>(serviceProvider);
+        return definision.OnConfigureServices(services);
+    }
 
-        public static ApplicationDefinition DefaultDefinision { get; }
-
-        public static IServiceCollection AddShortcutDefinision(this IServiceCollection services)
-        {
-            return DefaultDefinision.OnConfigureServices(services);
-        }
-
-        public static IServiceCollection AddShortcutDefinision(
-            this IServiceCollection services, ApplicationDefinition customDefinition)
-        {
-            return customDefinition.OnConfigureServices(services);
-        }
+    public static IServiceCollection AddShortcutDefinision(
+        this IServiceCollection services, ApplicationDefinition customDefinition)
+    {
+        return customDefinition.OnConfigureServices(services);
     }
 }

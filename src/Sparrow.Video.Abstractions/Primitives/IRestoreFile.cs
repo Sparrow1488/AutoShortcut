@@ -3,5 +3,5 @@ public interface IRestoreFile
 {
     public string RestoreFilePath { get; }
     public IProjectFile RestoredProjectFile { get; }
-    public bool IsSuccess { get; }
+    public bool RestoredSuccess { get; }
 }

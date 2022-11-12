@@ -1,77 +1,69 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Serilog;
+using Sparrow.Console.Abstractions;
 using Sparrow.Console.Rules;
 using Sparrow.Video.Abstractions.Enums;
-using Sparrow.Video.Abstractions.Factories;
+using Sparrow.Video.Abstractions.Primitives;
+using Sparrow.Video.Abstractions.Projects;
+using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Primitives;
 using Sparrow.Video.Shortcuts.Enums;
-using Sparrow.Video.Shortcuts.Exceptions;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
 namespace Sparrow.Console;
 
-internal class AutoshortcutStartup : Startup
+internal class AutoShortcutStartup : AutoShortcutStartupBase
 {
-    public override void OnConfigreDevelopmentVariables(IEnvironmentVariablesProvider variables)
+    // TODO:
+    // - Сделать выгрузку проектных файлов (очистить .restore файлы)
+    // - При установке правил изменить проверку с rules.Any() => set, на проверку каждого правила
+    // - Совместимость файлов с разными проектами (тут нужно проработать .restore файлы, а точнее их имена)
+
+    // TODO GLOBAL:
+    // - Пользовательская библиотека ассетов для правил обработки
+
+    protected override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
-        base.OnConfigreDevelopmentVariables(variables);
-        Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath, 
-                             @"C:\Users\USER\Desktop\Test");
+        var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
+        var inputDirectory = Variables.GetInputDirectoryPath();
+        if (!string.IsNullOrWhiteSpace(inputDirectory))
+        {
+            var directoryFiles = await uploadService.GetFilesAsync(
+                                                inputDirectory, 
+                                                GetUploadOptions(),
+                                                CancellationToken);
+            await loader.AddFilesAsync(directoryFiles);
+        }
+        var project = loader.CreateProject();
+        return project;
     }
 
-    public override async Task OnStart(CancellationToken cancellationToken = default)
+    protected override async Task<IProject> OnCreateProjectAsync(
+        IRuntimeProjectLoader loader, IEnumerable<IFile> files, string projectPath)
     {
-        Log.Information(">> Starting {library}", "Autoshortcut");
+        loader.LoadEmpty();
+        await loader.AddFilesAsync(files, CancellationToken);
 
-        var logger = ServiceProvider.GetRequiredService<Microsoft.Extensions.Logging.ILogger<Startup>>();
-        var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-        var engine = factory.CreateEngine();
-
-        Log.Information("Project Mode '{mode}'", Variables.CurrentProjectOpenMode());
-        Log.Information("Get files from '{path}'", FilesDirectoryPath.Value);
-
-        if (Variables.CurrentProjectOpenMode() == ProjectModes.Restore)
+        loader.ConfigureProjectOptions(options =>
         {
-            var restoredCompilation = await engine.ContinueRenderAsync(FilesDirectoryPath.Value, cancellationToken);
-            return;
-        }
-
-        if (Variables.CurrentProjectOpenMode() == ProjectModes.New)
-        {
-            var pipeline = await engine.CreatePipelineAsync(
-                        FilesDirectoryPath.Value, cancellationToken);
-
-            Log.Information(
-                "Project serialize {isSerialize}; Named: {name}; Resolution: {resolution}", 
-                Variables.IsSerialize(),
-                Variables.OutputFileName(),
-                Variables.GetOutputVideoQuality());
-
-            ScaleFileRule outputVideoResolutionScale 
-                = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
-            
-            var project = pipeline.Configure(options =>
+            options.Named(Variables.OutputFileName());
+            options.StructureBy(new GroupStructure().StructureFilesBy(new NameStructure()));
+            options.WithRules(rulesContainer =>
             {
-                options.IsSerialize = Variables.IsSerialize();
-                options.AddRule(outputVideoResolutionScale);
-                options.AddRule<SilentFileRule>();
-                options.AddRule<EncodingFileRule>();
-                options.AddRule<LoopShortFileRule>();
-                options.AddRule<LoopMediumFileRule>();
+                ScaleFileRule outputVideoResolutionScale = new(Resolution.ParseRequiredResolution(Variables.GetOutputVideoQuality()));
 
-            }).CreateProject(options =>
-            {
-                options.StructureBy(new GroupStructure(logger).StructureFilesBy(new NameStructure()));
-                options.Named(Variables.OutputFileName());
+                rulesContainer.AddRule(outputVideoResolutionScale);
+                rulesContainer.AddRule<SnapshotsFileRule>();
+                rulesContainer.AddRule<SilentFileRule>();
+                rulesContainer.AddRule<EncodingFileRule>();
+                rulesContainer.AddRule<LoopShortFileRule>();
+                rulesContainer.AddRule<LoopMediumFileRule>();
             });
+            options.SetRootDirectory(projectPath);
+            options.Serialize(Variables.IsSerialize());
+        });
 
-            var compilation = await engine.StartRenderAsync(project, cancellationToken);
-            Log.Information("Finally video: " + compilation.Path);
-            return;
-        }
-
-        throw new InvalidEnvironmentVariableException(
-            $"Invalid input variable '{EnvironmentVariableNames.ProjectOpenMode}' is invalid");
+        return loader.CreateProject();
     }
 }

@@ -13,38 +13,42 @@ ServiceProvider = Host.CreateDefaultBuilder()
                 .Build().Services;
 ```
 
-Create `ShortcutEngine` using factory or get required service from host services
+Get from services `IRuntimeProjectLoader` and load new or exists project.
 
 ```C#
-var factory = ServiceProvider.GetRequiredService<IShortcutEngineFactory>();
-var engine = factory.CreateEngine();
-// or
-var engine = ServiceProvider.GetRequiredService<IShortcutEngine>();
-```
+var loader = ServiceProvider.GetRequiredService<IRuntimeProjectLoader>();
+loader.LoadEmpty();
+//
+const string savedProjectPath = "./test";
+loader.LoadAsync(savedProjectPath);
 
-Create process pipeline to configure specify shortcut rules (encoding, set format, resolution or anything)
-
-```C#
-var pipeline = await engine.CreatePipelineAsync(
-                            FilesDirectoryPath.Value, cancellationToken);
-
-var project = pipeline.Configure(options =>
+loader.ConfigureProjectOptions(options =>
 {
-    options.IsSerialize = false; // save files meta for fast restore that
-    options.Rules.Add(ApplicationFileRules.ScaleFileRule); // custom rules
-    options.Rules.Add(ApplicationFileRules.SilentFileRule);
-    options.Rules.Add(ApplicationFileRules.EncodingFileRule);
-    options.Rules.Add(ApplicationFileRules.LoopMediumFileRule);
-    options.Rules.Add(ApplicationFileRules.LoopShortFileRule);
-}).CreateProject(opt => opt.StructureBy(
-    new GroupStructure(logger).StructureFilesBy(new DurationStructure())));
+    options.Named(Variables.OutputFileName());
+    options.StructureBy(new GroupStructure()
+                            .StructureFilesBy(new NameStructure()));
+    options.WithRules(container =>
+    {
+        container.AddRule<ScaleFileRule>();
+        container.AddRule<SnapshotsFileRule>();
+        container.AddRule<SilentFileRule>();
+        container.AddRule<EncodingFileRule>();
+        container.AddRule<LoopShortFileRule>();
+        container.AddRule<LoopMediumFileRule>();
+    });
+    options.SetRootDirectory(saveProjectPath);
+    options.Serialize(true);
+});
+
+var project = loader.CreateProject();
 ```
 
 You can can choose not to use certain rules if you want VERY fast merge videos. Also apply files structure when finally project will created. This will allow you to structure your files logically in the finished video.
 
 ```C#
-var compilation = await engine.StartRenderAsync(project, cancellationToken);
-Console.WriteLine("Finally video: " + compilation.Path);
+var renderUtility = ServiceProvider.GetRequiredService<IRenderUtility>();
+var compilation = await renderUtility.StartRenderAsync(project);
+Log.Information("Finally video: " + compilation.Path);
 ```
 
 ### Dependencies

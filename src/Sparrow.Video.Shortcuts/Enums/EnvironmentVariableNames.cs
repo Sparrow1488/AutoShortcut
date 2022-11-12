@@ -1,7 +1,10 @@
 ﻿namespace Sparrow.Video.Shortcuts.Enums;
 
-public class EnvironmentVariableNames
+public static class EnvironmentVariableNames
 {
+    /// <summary>
+    ///     Specify the root files directory path
+    /// </summary>
     public const string InputDirectoryPath = "input";
     /// <summary>
     ///     Specifies that the files used in the project should be serialized for further restoration
@@ -23,4 +26,12 @@ public class EnvironmentVariableNames
     ///     Specify output video resolution
     /// </summary>
     public const string Quality = "quality";
+    /// <summary>
+    ///     Specify project name
+    /// </summary>
+    public const string ShortcutProjectName = "project-name";
+    /// <summary>
+    ///     Specify project path
+    /// </summary>
+    public const string ProjectPath = "project-path";
 }

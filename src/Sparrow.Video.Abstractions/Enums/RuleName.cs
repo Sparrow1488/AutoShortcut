@@ -1,28 +1,26 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace Sparrow.Video.Abstractions.Enums
+namespace Sparrow.Video.Abstractions.Enums;
+
+[Serializable]
+public class RuleName
 {
-    public class RuleName
+    [JsonConstructor]
+    private RuleName(string value)
     {
-        [JsonConstructor]
-        private RuleName(string name)
-        {
-            Value = name;
-        }
+        Value = value;
+    }
 
-        public string Value { get; }
+    public string Value { get; }
 
-        public static readonly RuleName Loop = new RuleName(nameof(Loop));
-        public static readonly RuleName Group = new RuleName(nameof(Group));
-        public static readonly RuleName Formating = new RuleName(nameof(Formating));
-        public static readonly RuleName Encoding = new RuleName(nameof(Encoding));
-        public static readonly RuleName Silent = new RuleName(nameof(Silent));
+    public static readonly RuleName Loop = new(nameof(Loop));
+    public static readonly RuleName Encoding = new(nameof(Encoding));
+    public static readonly RuleName Scale = new(nameof(Scale));
+    public static readonly RuleName Silent = new(nameof(Silent));
+    public static readonly RuleName Snapshot = new(nameof(Snapshot));
 
-        public static RuleName New(string name)
-        {
-            // TODO: проверка входа
-            return new RuleName(name);
-        }
+    public static RuleName New(string name)
+    {
+        return new RuleName(name);
     }
 }

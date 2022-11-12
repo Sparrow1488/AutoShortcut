@@ -8,14 +8,14 @@ namespace Sparrow.Video.Shortcuts.Builders.Formats
     {
         public FileConcatSourcesFormat(
             IPathsProvider pathsProvider,
-            ISaveService saveService)
+            IDefaultSaveService saveService)
         {
             _pathsProvider = pathsProvider;
             _saveService = saveService;
         }
 
         private readonly IPathsProvider _pathsProvider;
-        private readonly ISaveService _saveService;
+        private readonly IDefaultSaveService _saveService;
         private string _savedConcatedFilesPath;
 
         public IEnumerable<string> UseFormat(IEnumerable<string> inputBuilderCommand)
@@ -35,14 +35,14 @@ namespace Sparrow.Video.Shortcuts.Builders.Formats
 
         private async Task SaveConcatedSourcesFileAsync(IEnumerable<string> filesPaths)
         {
-            var storeFilePath = _pathsProvider.GetPathFromCurrent("Scripts");
+            var storeFilePath = _pathsProvider.GetPathFromSharedProject("Scripts");
             _savedConcatedFilesPath = Path.Combine(storeFilePath, "concated.txt");
             var saveSettings = new SaveSettings()
             {
                 SaveFullPath = _savedConcatedFilesPath
             };
             var saveText = string.Join("\n", filesPaths.Select(x => $"file '{x}'"));
-            await _saveService.SaveTextAsync(saveText, saveSettings);
+            await _saveService.SaveAsync(saveText, saveSettings);
         }
     }
 }

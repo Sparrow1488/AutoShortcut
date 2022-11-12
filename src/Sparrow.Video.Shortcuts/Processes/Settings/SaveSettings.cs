@@ -1,9 +1,13 @@
 ﻿using Sparrow.Video.Abstractions.Processes.Settings;
 
-namespace Sparrow.Video.Shortcuts.Processes.Settings
+namespace Sparrow.Video.Shortcuts.Processes.Settings;
+
+public class SaveSettings : ISaveSettings
 {
-    public class SaveSettings : ISaveSettings
+    public string SaveFullPath { get; set; }
+
+    public static ISaveSettings Create(string fullPath)
     {
-        public string SaveFullPath { get; set; }
+        return new SaveSettings() { SaveFullPath = fullPath };
     }
 }

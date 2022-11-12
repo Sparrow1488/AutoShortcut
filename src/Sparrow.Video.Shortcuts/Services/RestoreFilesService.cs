@@ -2,68 +2,137 @@
 using Sparrow.Video.Abstractions.Enums;
 using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Services;
+using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives;
 using Sparrow.Video.Shortcuts.Services.Options;
 
-namespace Sparrow.Video.Shortcuts.Services
+namespace Sparrow.Video.Shortcuts.Services;
+
+public class RestoreFilesService : IRestoreFilesService
 {
-    public class RestoreFilesService : IRestoreFilesService
+    private readonly ILogger<RestoreFilesService> _logger;
+    private readonly IReadFileTextService _fileTextService;
+    private readonly IJsonSerializer _serializer;
+    private readonly IUploadFilesService _uploadFilesService;
+    private readonly IProjectFileCreator _projectFileCreator;
+
+    public RestoreFilesService(
+        ILogger<RestoreFilesService> logger,
+        IReadFileTextService fileTextService,
+        IJsonSerializer serializer,
+        IUploadFilesService uploadFilesService,
+        IProjectFileCreator projectFileCreator)
     {
-        public RestoreFilesService(
-            ILogger<RestoreFilesService> logger,
-            IReadFileTextService fileTextService,
-            IJsonSerializer serializer,
-            IUploadFilesService uploadFilesService)
+        _logger = logger;
+        _fileTextService = fileTextService;
+        _serializer = serializer;
+        _uploadFilesService = uploadFilesService;
+        _projectFileCreator = projectFileCreator;
+    }
+
+    public async Task<ICollection<IRestoreFile>> RestoreFilesAsync(string restoreDirectoryPath)
+    {
+        var restoredFilesList = new List<IRestoreFile>();
+        _logger.LogInformation("Starting restore files from \"{path}\"", restoreDirectoryPath);
+        var options = new UploadFilesOptions() {
+            OnUploadedIgnoreFile = file => UploadFileAction.NoAction
+        };
+        var directoryFiles = await _uploadFilesService.GetFilesAsync(restoreDirectoryPath, options);
+        var restoreFiles = directoryFiles.Where(x => x.FileType == FileType.Restore);
+        _logger.LogInformation("Found restore files {count}", restoreFiles.Count());
+
+        foreach (var restoreFile in restoreFiles)
         {
-            _logger = logger;
-            _fileTextService = fileTextService;
-            _serializer = serializer;
-            _uploadFilesService = uploadFilesService;
+            var fileJson = await _fileTextService.ReadTextAsync(restoreFile.Path);
+            var restoredProjectFile = _serializer.Deserialize<ProjectFile>(fileJson);
+            RestoreFile restoredFile = new()
+            {
+                RestoredSuccess = true,
+                RestoredProjectFile = restoredProjectFile,
+                RestoreFilePath = restoreFile.Path
+            };
+            restoredFilesList.Add(restoredFile);
         }
 
-        private readonly ILogger<RestoreFilesService> _logger;
-        private readonly IReadFileTextService _fileTextService;
-        private readonly IJsonSerializer _serializer;
-        private readonly IUploadFilesService _uploadFilesService;
-
-        public async Task<ICollection<IRestoreFile>> RestoreFilesAsync(string restoreDirectoryPath)
+        var detectedOutsideProjectFiles = SelectNewFiles(directoryFiles, restoredFilesList);
+        if (detectedOutsideProjectFiles.Any())
         {
-            var restoredFilesList = new List<IRestoreFile>();
-            _logger.LogInformation($"Starting restore files from \"{restoreDirectoryPath}\"");
-            var options = new UploadFilesOptions() {
-                OnUploadedIgnoreFile = file => UploadFileAction.NoAction
-            };
-            var directoryFiles = _uploadFilesService.GetFiles(restoreDirectoryPath, options);
-            var restoreFiles = directoryFiles.Where(x => x.FileType == FileType.Restore);
-            _logger.LogInformation("Found restore files " + restoreFiles.Count());
-
-            foreach (var restoreFile in restoreFiles)
+            _logger.LogInformation("Found files outside the project {count}", detectedOutsideProjectFiles.Count());
+            foreach (var detectedNewFile in detectedOutsideProjectFiles)
             {
-                var fileJson = await _fileTextService.ReadTextAsync(restoreFile.Path);
-                var restoreFileObject = _serializer.Deserialize<ProjectFile>(fileJson);
-                CheckFullnessFileReferences(restoreFileObject);
+                var projectFile = await _projectFileCreator.CreateAsync(detectedNewFile);
                 RestoreFile restoredFile = new()
                 {
-                    IsSuccess = true,
-                    RestoredProjectFile = restoreFileObject,
-                    RestoreFilePath = restoreFile.Path
+                    RestoredSuccess = false,
+                    RestoredProjectFile = projectFile,
+                    RestoreFilePath = detectedNewFile.Path
                 };
                 restoredFilesList.Add(restoredFile);
             }
-            return restoredFilesList;
         }
 
-        private void CheckFullnessFileReferences(IProjectFile restoreProjectFile)
+        return restoredFilesList;
+    }
+
+    public async Task<ICollection<IRestoreFile>> RestoreFilesAsync(IEnumerable<string> filesPaths)
+    {
+        var restoredFilesList = new List<IRestoreFile>();
+        var files = new List<IFile>();
+
+        //_logger.LogInformation("Starting restore files from \"{path}\"", restoreDirectoryPath);
+        var options = new UploadFilesOptions()
         {
-            _logger.LogInformation("Check file reference fullness");
-            foreach (var reference in restoreProjectFile.References)
+            OnUploadedIgnoreFile = file => UploadFileAction.NoAction
+        };
+
+        foreach (var filePath in filesPaths)
+        {
+            files.Add(_uploadFilesService.GetFile(filePath));
+        }
+
+        foreach (var restoreFile in files)
+        {
+            // TODO: ссылка на .restore путь
+            var restorePath = restoreFile.Path.ChangeFileExtension(".restore");
+            var fileJson = await _fileTextService.ReadTextAsync(restorePath);
+            var restoredProjectFile = _serializer.Deserialize<ProjectFile>(fileJson);
+            RestoreFile restoredFile = new()
             {
-                if (!System.IO.File.Exists(reference.FileFullPath))
+                RestoredSuccess = true,
+                RestoredProjectFile = restoredProjectFile,
+                RestoreFilePath = restoreFile.Path
+            };
+            restoredFilesList.Add(restoredFile);
+        }
+
+        var detectedOutsideProjectFiles = SelectNewFiles(files, restoredFilesList);
+        if (detectedOutsideProjectFiles.Any())
+        {
+            _logger.LogInformation("Found files outside the project {count}", detectedOutsideProjectFiles.Count());
+            foreach (var detectedNewFile in detectedOutsideProjectFiles)
+            {
+                var projectFile = await _projectFileCreator.CreateAsync(detectedNewFile);
+                RestoreFile restoredFile = new()
                 {
-                    _logger.LogWarning("File with target '{target}' is specified, but not exists",
-                        reference.Target);
-                }
+                    RestoredSuccess = false,
+                    RestoredProjectFile = projectFile,
+                    RestoreFilePath = detectedNewFile.Path
+                };
+                restoredFilesList.Add(restoredFile);
             }
         }
+
+        return restoredFilesList;
+    }
+
+    private static IEnumerable<IFile> SelectNewFiles(
+        IEnumerable<IFile> totalFiles,
+        IEnumerable<IRestoreFile> projectRestoreFiles)
+    {
+        var restoredFilesPaths = projectRestoreFiles.Select(y => y.RestoredProjectFile.File.Path);
+        var newFiles = totalFiles.Where(
+                        file => !restoredFilesPaths.Contains(file.Path) &&
+                        file.FileType == FileType.Video);
+        return newFiles;
     }
 }

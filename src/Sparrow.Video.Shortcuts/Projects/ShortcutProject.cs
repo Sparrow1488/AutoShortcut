@@ -2,23 +2,38 @@
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Projects.Options;
 
-namespace Sparrow.Video.Shortcuts.Projects
+namespace Sparrow.Video.Shortcuts.Projects;
+
+public class ShortcutProject : IProject
 {
-    public class ShortcutProject : IProject
+    private ShortcutProject() { }
+
+    private ShortcutProject(IProjectOptions options) 
+        => Options = options;
+
+    private ShortcutProject(
+        IProjectOptions options,
+        IEnumerable<IProjectFile> files)
     {
-        public ShortcutProject(IProjectOptions options)
-        {
-            Options = options;
-        }
-
-        public string Name => Options.ProjectName;
-        public IEnumerable<IProjectFile> Files { get; set; }
-        public IProjectOptions Options { get; internal set; }
-
-        public IProject ConfigureOptions(Action<IProjectOptions> configureOptions)
-        {
-            configureOptions.Invoke(Options);
-            return this;
-        }
+        Options = options;
+        Files = files;
     }
+
+    public IEnumerable<IProjectFile> Files { get; internal set; }
+    public IProjectOptions Options { get; internal set; }
+
+    public IProject ConfigureOptions(Action<IProjectOptions> configureOptions)
+    {
+        configureOptions.Invoke(Options);
+        return this;
+    }
+
+    internal static ShortcutProject Create() => new();
+
+    public static ShortcutProject Create(IProjectOptions options) 
+        => new(options);
+
+    public static ShortcutProject Create(
+        IProjectOptions options, IEnumerable<IProjectFile> files) 
+            => new(options, files);
 }
