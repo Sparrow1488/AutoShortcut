@@ -6,8 +6,6 @@ using Sparrow.Video.Abstractions.Primitives;
 using Sparrow.Video.Abstractions.Projects;
 using Sparrow.Video.Abstractions.Runtime;
 using Sparrow.Video.Abstractions.Services;
-using Sparrow.Video.Primitives;
-using Sparrow.Video.Shortcuts.Enums;
 using Sparrow.Video.Shortcuts.Extensions;
 using Sparrow.Video.Shortcuts.Primitives.Structures;
 
@@ -22,6 +20,12 @@ internal class AutoShortcutStartup : AutoShortcutStartupBase
 
     // TODO GLOBAL:
     // - Пользовательская библиотека ассетов для правил обработки
+
+    protected override void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables)
+    {
+        base.OnConfigureDevelopmentVariables(variables);
+        variables.SetVariable("input", @"C:\Users\USER\Videos\AutoShortcut\(2)Album");
+    }
 
     protected override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
@@ -64,6 +68,8 @@ internal class AutoShortcutStartup : AutoShortcutStartupBase
             options.Serialize(Variables.IsSerialize());
         });
 
-        return loader.CreateProject();
+        var project = loader.CreateProject();
+        project.Files.First().RulesContainer.AddRuleAfter<FadeInFileRule>(afterRule: typeof(ScaleFileRule));
+        return project;
     }
 }

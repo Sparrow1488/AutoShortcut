@@ -8,5 +8,6 @@ public class ProjectConfigSections
     public const string SilentFiles = "SilentFiles";
     public const string EncodedFiles = "EncodedFiles";
     public const string ScaledFiles = "ScaledFiles";
+    public const string FadeIn = "FadeIn";
     public const string Scripts = "Scripts";
 }

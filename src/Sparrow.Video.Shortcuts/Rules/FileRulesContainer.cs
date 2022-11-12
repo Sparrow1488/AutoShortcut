@@ -28,13 +28,29 @@ public class FileRulesContainer : IFileRulesContainer
 
     public void AddRule(IFileRule rule)
     {
-        fileRules.Add(CreateFileRule(new(rule)));
+        fileRules.Add(CreateFileRule(new RuleStore(rule)));
     }
 
     public void AddRule<TRule>() 
         where TRule : IFileRule
     {
-        fileRules.Add(CreateFileRule(new(typeof(TRule))));
+        fileRules.Add(CreateFileRule(new RuleStore(typeof(TRule))));
+    }
+
+    public void AddRuleAfter<TRule>(Type afterRule) 
+        where TRule : IFileRule
+    {
+        var newFileRules = new List<IFileRule>();
+        var ruleIndex = fileRules.IndexOf(fileRules.Single(x => x.GetType() == afterRule));
+        var rulesBefore = fileRules.Take(ruleIndex + 1).ToArray();
+        var createdRule = CreateFileRule(new RuleStore(typeof(TRule)));
+        
+        newFileRules.AddRange(rulesBefore);
+        newFileRules.Add(createdRule);
+        
+        var rulesAfter = fileRules.Skip(rulesBefore.Length).ToList();
+        newFileRules.AddRange(rulesAfter);
+        fileRules = newFileRules;
     }
 
     private IFileRule CreateFileRule(RuleStore storedRule)

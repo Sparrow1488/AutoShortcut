@@ -6,6 +6,7 @@ public interface IFileRulesContainer : IEnumerable<IFileRule>
 {
     void AddRule(IFileRule rule);
     void AddRule<TRule>() where TRule : IFileRule;
+    void AddRuleAfter<TRule>(Type afterRule) where TRule : IFileRule;
     void DeleteRule<TRule>() where TRule : IFileRule;
     bool Contains<TRule>() where TRule : IFileRule;
     bool Contains(Type ruleType);
