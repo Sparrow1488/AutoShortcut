@@ -59,7 +59,14 @@ Example:
 ./Sparrow.Console.exe input="./Files" output="Compilation" quality=fhd mode=new project-name="Compilation-Project" project-path="./" serialize=true
 ```
 
+- *input* - path to your processing files directory
+- *output* - name of your final compilation
+- *quality* - compilation video quality (verylow, preview, small, HD, FHD, QHD, UHD)
+- *mode* - open project mode (you can restore project with cached files to continue rendering or attach new to final compilation)
+- *project-name* - name of project
+- *project-path* - path to project
 
+> Attention: project directory store cached files and restore options
 
 ### Dependencies
 
