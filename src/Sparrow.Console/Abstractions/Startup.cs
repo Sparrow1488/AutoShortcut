@@ -9,16 +9,17 @@ using Sparrow.Video.Shortcuts.Extensions;
 namespace Sparrow.Console.Abstractions;
 internal abstract class Startup
 {
-    public StringPath FilesDirectoryPath { get; private set; }
-    public IServiceProvider ServiceProvider { get; set; } = default!;
-    public IEnvironmentVariablesProvider Variables { get; set; } = default!;
+    protected StringPath FilesDirectoryPath { get; private set; }
+    protected IServiceProvider ServiceProvider { get; set; } = default!;
+    protected IEnvironmentVariablesProvider Variables { get; set; } = default!;
 
-    protected void FixNames()
+    private void FixNames()
     {
         var files = Directory.GetFiles(FilesDirectoryPath.Value);
         foreach (var filePath in files)
         {
-            var newName = Path.GetFileName(filePath).Replace("'", "");
+            var newName = Path.GetFileName(filePath).Replace("'", "")
+                                                         .Replace("%", "");
             var newPath = Path.Combine(Path.GetDirectoryName(filePath)!, newName);
             File.Move(filePath, newPath);
         }
@@ -31,9 +32,9 @@ internal abstract class Startup
         await OnStart(token);
     }
 
-    public virtual void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
+    protected virtual void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables) { }
 
-    public abstract Task OnStart(CancellationToken cancellationToken = default);
+    protected abstract Task OnStart(CancellationToken cancellationToken = default);
 
     private void OnConfigureStartup()
     {

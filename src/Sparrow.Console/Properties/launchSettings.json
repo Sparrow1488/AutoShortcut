@@ -2,7 +2,7 @@
   "profiles": {
     "Sparrow.Console": {
       "commandName": "Project",
-      "commandLineArgs": "env=dev mode=restore quality=verylow project-name=\"FullParty Compilation\" project-path=\"./\" serialize=true output=Compilation-2"
+      "commandLineArgs": "env=dev mode=new quality=verylow project-name=\"Compilation\" project-path=\"./\" serialize=true output=Compilation"
     }
   }
 }

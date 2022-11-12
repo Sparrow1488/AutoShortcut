@@ -24,7 +24,7 @@ catch (InputResolutionNameNotRequiredException ex)
 {
     Log.Error(ex.Message);
 }
-catch (TaskCanceledException ex)
+catch (TaskCanceledException)
 {
 }
 

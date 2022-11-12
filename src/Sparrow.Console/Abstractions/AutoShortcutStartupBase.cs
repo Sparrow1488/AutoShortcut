@@ -22,7 +22,7 @@ internal abstract class AutoShortcutStartupBase : Startup
     protected abstract Task<IProject> OnCreateProjectAsync(
         IRuntimeProjectLoader loader, IEnumerable<IFile> files, string projectPath);
 
-    public override async Task OnStart(CancellationToken cancellationToken = default)
+    protected override async Task OnStart(CancellationToken cancellationToken = default)
     {
         CancellationToken = cancellationToken;
         IProject? initProject = null;

@@ -23,13 +23,6 @@ internal class AutoShortcutStartup : AutoShortcutStartupBase
     // TODO GLOBAL:
     // - Пользовательская библиотека ассетов для правил обработки
 
-    public override void OnConfigureDevelopmentVariables(IEnvironmentVariablesProvider variables)
-    {
-        base.OnConfigureDevelopmentVariables(variables);
-        Variables.SetVariable(EnvironmentVariableNames.InputDirectoryPath,
-                              StringPath.CreateExists(@"C:\Users\USER\Desktop\Test\Test2").Value);
-    }
-
     protected override async Task<IProject> OnRestoreProjectAsync(IRuntimeProjectLoader loader)
     {
         var uploadService = ServiceProvider.GetRequiredService<IUploadFilesService>();
