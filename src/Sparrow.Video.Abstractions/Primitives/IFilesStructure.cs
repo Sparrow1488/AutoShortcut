@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Primitives
+﻿namespace Sparrow.Video.Abstractions.Primitives;
+
+public interface IFilesStructure
 {
-    public interface IFilesStructure
-    {
-        IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files);
-    }
+    IEnumerable<IProjectFile> GetStructuredFiles(IEnumerable<IProjectFile> files);
 }

@@ -15,7 +15,7 @@ public class ScaleFileRule : PermanentFileRule
     }
 
     public Resolution Resolution { get; set; }
-    public override Func<IProjectFile, bool> Condition => file => true;
+    public override Func<IProjectFile, bool> Condition => _ => true;
 
     public override RuleName RuleName => RuleName.Scale;
     public override IFileRule Clone()

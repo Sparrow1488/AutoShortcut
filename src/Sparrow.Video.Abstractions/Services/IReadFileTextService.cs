@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Services
+﻿namespace Sparrow.Video.Abstractions.Services;
+
+public interface IReadFileTextService
 {
-    public interface IReadFileTextService
-    {
-        Task<string> ReadTextAsync(string filePath);
-    }
+    Task<string> ReadTextAsync(string filePath);
 }

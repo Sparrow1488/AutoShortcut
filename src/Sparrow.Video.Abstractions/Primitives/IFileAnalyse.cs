@@ -1,9 +1,8 @@
-﻿namespace Sparrow.Video.Abstractions.Primitives
+﻿namespace Sparrow.Video.Abstractions.Primitives;
+
+public interface IFileAnalyse
 {
-    public interface IFileAnalyse
-    {
-        string FileType { get; }
-        ICollection<IStreamAnalyse> StreamAnalyses { get; }
-        IFileFormat Format { get; }
-    }
+    string FileType { get; }
+    ICollection<IStreamAnalyse> StreamAnalyses { get; }
+    IFileFormat Format { get; }
 }

@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Services
+﻿namespace Sparrow.Video.Abstractions.Services;
+
+public interface ITextFormatter
 {
-    public interface ITextFormatter
-    {
-        string GetPrintable(string veryLongTextIsNotGoodToPrint);
-    }
+    string GetPrintable(string veryLongTextIsNotGoodToPrint);
 }

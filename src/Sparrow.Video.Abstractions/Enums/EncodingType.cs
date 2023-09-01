@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Enums
+﻿namespace Sparrow.Video.Abstractions.Enums;
+
+public sealed class EncodingType
 {
-    public sealed class EncodingType
-    {
-        public const string Mpegts = "mpegts";
-    }
+    public const string Mpegts = "mpegts";
 }

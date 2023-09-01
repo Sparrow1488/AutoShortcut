@@ -75,7 +75,7 @@ internal abstract class AutoShortcutStartupBase : Startup
     {
         UploadFilesOptions options = new()
         {
-            OnUploadedIgnoreFile = (file) => UploadFileAction.Skip
+            OnUploadedIgnoreFile = _ => UploadFileAction.Skip
         };
         options.Ignore(FileType.Undefined)
                .Ignore(FileType.Restore)

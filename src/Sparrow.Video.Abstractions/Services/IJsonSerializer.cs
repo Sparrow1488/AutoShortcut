@@ -1,8 +1,7 @@
-﻿namespace Sparrow.Video.Abstractions.Services
+﻿namespace Sparrow.Video.Abstractions.Services;
+
+public interface IJsonSerializer
 {
-    public interface IJsonSerializer
-    {
-        string Serialize<TObj>(TObj obj);
-        TObj Deserialize<TObj>(string json);
-    }
+    string Serialize<TObj>(TObj obj);
+    TObj Deserialize<TObj>(string json);
 }

@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Services
+﻿namespace Sparrow.Video.Abstractions.Services;
+
+public interface IStoreService
 {
-    public interface IStoreService
-    {
-        Task<TObject> GetObjectAsync<TObject>(string name);
-    }
+    Task<TObject> GetObjectAsync<TObject>(string name);
 }

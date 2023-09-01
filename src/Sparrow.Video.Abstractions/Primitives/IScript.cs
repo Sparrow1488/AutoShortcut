@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Primitives
+﻿namespace Sparrow.Video.Abstractions.Primitives;
+
+public interface IScript
 {
-    public interface IScript
-    {
-        string GetCommand();
-    }
+    string GetCommand();
 }

@@ -1,8 +1,7 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Abstractions.Processors
+namespace Sparrow.Video.Abstractions.Processors;
+
+public interface IProcessor
 {
-    public interface IProcessor
-    {
-    }
 }

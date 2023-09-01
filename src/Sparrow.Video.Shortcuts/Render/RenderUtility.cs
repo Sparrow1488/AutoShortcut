@@ -19,7 +19,7 @@ public class RenderUtility : IRenderUtility
     private readonly ITextFormatter _textFormatter;
     private readonly IProjectSerializationService _projectSerialization;
     private readonly IProjectSaveSettingsCreator _saveSettingsCreator;
-    private readonly IConcatinateProcess _concatinateProcess;
+    private readonly IConcatinateProcess _concatProcess;
 
     private IProjectFile? _loggedProcessingFile;
 
@@ -29,18 +29,18 @@ public class RenderUtility : IRenderUtility
         ITextFormatter textFormatter,
         IProjectSerializationService projectSerialization,
         IProjectSaveSettingsCreator saveSettingsCreator,
-        IConcatinateProcess concatinateProcess)
+        IConcatinateProcess concatProcess)
     {
         _logger = logger;
         _ruleProcessorsProvider = ruleProcessorsProvider;
         _textFormatter = textFormatter;
         _projectSerialization = projectSerialization;
         _saveSettingsCreator = saveSettingsCreator;
-        _concatinateProcess = concatinateProcess;
+        _concatProcess = concatProcess;
     }
 
-    public IProjectFile CurrentProcessFile { get; private set; }
-    public IFileRule CurrentApplyingRule { get; private set; }
+    private IProjectFile CurrentProcessFile { get; set; }
+    private IFileRule CurrentApplyingRule { get; set; }
     private ProcessingFilesStatistic FilesStatistic { get; set; }
 
     private string CurrentProcessingFileLog => $"({FilesStatistic.CurrentIndexProcessed + 1}/{FilesStatistic.TotalFiles}) ";
@@ -69,17 +69,17 @@ public class RenderUtility : IRenderUtility
             {
                 CurrentProcessFile = file;
                 CurrentApplyingRule = rule;
-                FilesStatistic = new(filesArray.Length, Array.IndexOf(filesArray, file));
+                FilesStatistic = new ProcessingFilesStatistic(filesArray.Length, Array.IndexOf(filesArray, file));
                 await ApplyFileRuleAsync(cancellationToken);
             }
         }
-        var concatinateFilesPaths = GetConcatinateFilesPaths(project.Files);
+        var concatedFilesPaths = GetConcatinateFilesPaths(project.Files);
 
         var saveSettings = _saveSettingsCreator.Create(
                                 sectionName:  ProjectConfigSections.ResultFiles, 
                                 fileName:     project.Options.ProjectName + ".mp4");
-        var result = await _concatinateProcess.ConcatinateFilesAsync(
-                        concatinateFilesPaths, saveSettings, cancellationToken);
+        var result = await _concatProcess.ConcatinateFilesAsync(
+                        concatedFilesPaths, saveSettings, cancellationToken);
         return result;
     }
 

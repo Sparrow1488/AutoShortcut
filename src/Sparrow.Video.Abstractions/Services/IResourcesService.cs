@@ -1,9 +1,8 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Abstractions.Services
+namespace Sparrow.Video.Abstractions.Services;
+
+public interface IResourcesService
 {
-    public interface IResourcesService
-    {
-        IFile GetRequiredResource(string address);
-    }
+    IFile GetRequiredResource(string address);
 }

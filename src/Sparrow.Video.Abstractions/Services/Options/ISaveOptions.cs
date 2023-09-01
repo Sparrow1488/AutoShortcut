@@ -1,9 +1,8 @@
-﻿namespace Sparrow.Video.Abstractions.Services.Options
+﻿namespace Sparrow.Video.Abstractions.Services.Options;
+
+public interface ISaveOptions
 {
-    public interface ISaveOptions
-    {
-        Guid Id { get; }
-        string Name { get; }
-        string DirectoryPath { get; }
-    }
+    Guid Id { get; }
+    string Name { get; }
+    string DirectoryPath { get; }
 }

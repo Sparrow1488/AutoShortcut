@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Processes
+﻿namespace Sparrow.Video.Abstractions.Processes;
+
+public interface IExecutionProcess
 {
-    public interface IExecutionProcess
-    {
-        Task StartAsync(CancellationToken cancellationToken = default);
-    }
+    Task StartAsync(CancellationToken cancellationToken = default);
 }

@@ -4,5 +4,5 @@ public interface IFileRule : IProcessingRule
 {
     bool IsApplied { get; }
     void Applied();
-    IFileRule Clone();
+    new IFileRule Clone();
 }

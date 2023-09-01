@@ -1,13 +1,12 @@
-﻿namespace Sparrow.Video.Shortcuts.Exceptions
-{
-    public class AnalyseProcessException : Exception
-    {
-        public AnalyseProcessException()
-        {
-        }
+﻿namespace Sparrow.Video.Shortcuts.Exceptions;
 
-        public AnalyseProcessException(string message) : base(message)
-        {
-        }
+public class AnalyseProcessException : Exception
+{
+    public AnalyseProcessException()
+    {
+    }
+
+    public AnalyseProcessException(string message) : base(message)
+    {
     }
 }

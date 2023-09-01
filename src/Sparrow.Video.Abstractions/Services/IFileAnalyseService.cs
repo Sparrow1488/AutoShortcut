@@ -1,9 +1,8 @@
 ﻿using Sparrow.Video.Abstractions.Primitives;
 
-namespace Sparrow.Video.Abstractions.Services
+namespace Sparrow.Video.Abstractions.Services;
+
+public interface IFileAnalyseService
 {
-    public interface IFileAnalyseService
-    {
-        IFileAnalyse Analyse(string variables);
-    }
+    IFileAnalyse Analyse(string variables);
 }

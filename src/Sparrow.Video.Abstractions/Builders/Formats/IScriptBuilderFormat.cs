@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Builders.Formats
+﻿namespace Sparrow.Video.Abstractions.Builders.Formats;
+
+public interface IScriptBuilderFormat
 {
-    public interface IScriptBuilderFormat
-    {
-        IEnumerable<string> UseFormat(IEnumerable<string> inputBuilderCommand);
-    }
+    IEnumerable<string> UseFormat(IEnumerable<string> inputBuilderCommand);
 }

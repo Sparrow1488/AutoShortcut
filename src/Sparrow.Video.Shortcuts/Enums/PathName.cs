@@ -1,8 +1,7 @@
-﻿namespace Sparrow.Video.Shortcuts.Enums
+﻿namespace Sparrow.Video.Shortcuts.Enums;
+
+public class PathName
 {
-    public class PathName
-    {
-        public const string Files = nameof(Files);
-        public const string FilesMeta = nameof(FilesMeta);
-    }
+    public const string Files = nameof(Files);
+    public const string FilesMeta = nameof(FilesMeta);
 }

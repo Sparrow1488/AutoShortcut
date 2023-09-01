@@ -1,13 +1,12 @@
-﻿namespace Sparrow.Video.Shortcuts.Exceptions
-{
-    public class InvalidRegisteredPipelineException : Exception
-    {
-        public InvalidRegisteredPipelineException()
-        {
-        }
+﻿namespace Sparrow.Video.Shortcuts.Exceptions;
 
-        public InvalidRegisteredPipelineException(string message) : base(message)
-        {
-        }
+public class InvalidRegisteredPipelineException : Exception
+{
+    public InvalidRegisteredPipelineException()
+    {
+    }
+
+    public InvalidRegisteredPipelineException(string message) : base(message)
+    {
     }
 }

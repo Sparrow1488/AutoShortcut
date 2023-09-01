@@ -1,10 +1,9 @@
 ﻿using Sparrow.Video.Abstractions.Builders.Formats;
 
-namespace Sparrow.Video.Abstractions.Services
+namespace Sparrow.Video.Abstractions.Services;
+
+public interface IScriptFormatsProvider
 {
-    public interface IScriptFormatsProvider
-    {
-        TFormat CreateFormat<TFormat>()
-            where TFormat : IScriptBuilderFormat;
-    }
+    TFormat CreateFormat<TFormat>()
+        where TFormat : IScriptBuilderFormat;
 }

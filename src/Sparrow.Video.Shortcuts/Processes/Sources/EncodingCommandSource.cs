@@ -11,6 +11,6 @@ public class EncodingCommandSource : FFmpegCommandSource<EncodingCommandParamete
 
     public override string GetCommand()
     {
-        return $"-i \"{Param.FromFilePath}\" -acodec copy -vcodec copy -vbsf h264_mp4toannexb -crf 17 -f {Param.EncodingType}";
+        return $"-i \"{Param.FromFilePath}\" -a:c copy -v:c copy -vbsf h264_mp4toannexb -crf 17 -f {Param.EncodingType}";
     }
 }

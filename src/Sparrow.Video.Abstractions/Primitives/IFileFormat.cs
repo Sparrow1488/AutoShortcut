@@ -1,7 +1,6 @@
-﻿namespace Sparrow.Video.Abstractions.Primitives
+﻿namespace Sparrow.Video.Abstractions.Primitives;
+
+public interface IFileFormat
 {
-    public interface IFileFormat
-    {
-        string FormatName { get; }
-    }
+    string FormatName { get; }
 }

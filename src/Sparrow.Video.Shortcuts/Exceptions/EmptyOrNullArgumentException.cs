@@ -1,13 +1,12 @@
-﻿namespace Sparrow.Video.Shortcuts.Exceptions
-{
-    public class EmptyOrNullArgumentException : Exception
-    {
-        public EmptyOrNullArgumentException()
-        {
-        }
+﻿namespace Sparrow.Video.Shortcuts.Exceptions;
 
-        public EmptyOrNullArgumentException(string message) : base(message)
-        {
-        }
+public class EmptyOrNullArgumentException : Exception
+{
+    public EmptyOrNullArgumentException()
+    {
+    }
+
+    public EmptyOrNullArgumentException(string message) : base(message)
+    {
     }
 }

@@ -1,17 +1,16 @@
-﻿namespace Sparrow.Video.Shortcuts.Exceptions
+﻿namespace Sparrow.Video.Shortcuts.Exceptions;
+
+public class FileTypeIdentifyException : Exception
 {
-    public class FileTypeIdentifyException : Exception
+    public FileTypeIdentifyException()
     {
-        public FileTypeIdentifyException()
-        {
-        }
+    }
 
-        public FileTypeIdentifyException(string message) : base(message)
-        {
-        }
+    public FileTypeIdentifyException(string message) : base(message)
+    {
+    }
 
-        public FileTypeIdentifyException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
+    public FileTypeIdentifyException(string message, Exception innerException) : base(message, innerException)
+    {
     }
 }
