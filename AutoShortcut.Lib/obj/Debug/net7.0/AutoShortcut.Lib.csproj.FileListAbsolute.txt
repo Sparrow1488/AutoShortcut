@@ -1,0 +1,15 @@
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\bin\Debug\net7.0\AutoShortcut.Lib.deps.json
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\bin\Debug\net7.0\AutoShortcut.Lib.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\bin\Debug\net7.0\AutoShortcut.Lib.pdb
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\bin\Debug\net7.0\AutoShortcut.Dependencies.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\bin\Debug\net7.0\AutoShortcut.Dependencies.pdb
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.csproj.AssemblyReference.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.AssemblyInfoInputs.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.AssemblyInfo.cs
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.csproj.CoreCompileInputs.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.csproj.CopyComplete
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\refint\AutoShortcut.Lib.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\AutoShortcut.Lib.pdb
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Lib\obj\Debug\net7.0\ref\AutoShortcut.Lib.dll

@@ -1,0 +1,12 @@
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\bin\Debug\net7.0\AutoShortcut.Dependencies.deps.json
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\bin\Debug\net7.0\AutoShortcut.Dependencies.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\bin\Debug\net7.0\AutoShortcut.Dependencies.pdb
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.csproj.AssemblyReference.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.AssemblyInfoInputs.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.AssemblyInfo.cs
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.csproj.CoreCompileInputs.cache
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\refint\AutoShortcut.Dependencies.dll
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\AutoShortcut.Dependencies.pdb
+C:\Users\ilyao\OneDrive\Desktop\Development\Projects\Autoshortcut Rebuild\AutoShortcut\AutoShortcut.Dependencies\obj\Debug\net7.0\ref\AutoShortcut.Dependencies.dll

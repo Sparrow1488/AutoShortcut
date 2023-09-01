@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Sparrow.Console": {
-      "commandName": "Project",
-      "commandLineArgs": "env=dev mode=new quality=verylow project-name=\"Compilation\" project-path=\"./\" serialize=true output=Compilation"
-    }
-  }
-}

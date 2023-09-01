@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "Xip4rOaKThJbd9kK0GFnm8Yq0snk3VqbVCccZX9wHRFaScT2YBB1VO9FfbZ3Qi1PsoNyrpsMlNU+QeGDWqz5sw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ilyao\\OneDrive\\Desktop\\Development\\Projects\\AutoShortcut\\AutoShortcut\\AutoShortcut.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.configuration.binder\\7.0.4\\microsoft.extensions.configuration.binder.7.0.4.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

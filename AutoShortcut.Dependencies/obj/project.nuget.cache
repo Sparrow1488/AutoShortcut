@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "enYTT/AQDCwaM0c2KvEWTTxBcWdCW0/0btDMkaXJrd10uD/e9Uo340iF8bHUKU4LCIC2d8uqrRecE1jTi1HTvA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ilyao\\OneDrive\\Desktop\\Development\\Projects\\AutoShortcut\\AutoShortcut.Dependencies\\AutoShortcut.Dependencies.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
