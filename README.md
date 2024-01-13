@@ -1,43 +1,26 @@
-﻿using AutoShortcut.Lib.Configuration;
-using AutoShortcut.Lib.Contracts.Media;
-using AutoShortcut.Lib.Contracts.Services;
-using AutoShortcut.Lib.Extensions;
-using AutoShortcut.Lib.Media;
-using AutoShortcut.Lib.Montage;
-using AutoShortcut.Lib.Montage.Effects;
-using Microsoft.Extensions.DependencyInjection;
+# AutoShortcut
 
-#region Constants
+## Usage
 
-const string tempPath = "./temp";
-const string personalPath = "./personal";
-const string ffmpeg = @"C:\Users\ilyao\OneDrive\Documents\ffmpeg\bin\ffmpeg.exe";
-const string ffprobe = @"C:\Users\ilyao\OneDrive\Documents\ffmpeg\bin\ffprobe.exe";
-const string directory = @"C:\Users\ilyao\OneDrive\Desktop\Data";
+1. Зарегистрируйте внутренние серивисы:
 
-#endregion
-
+```C#
 var services = new ServiceCollection();
-
-#region Services
-
-Directory.CreateDirectory(tempPath);
-Directory.CreateDirectory(personalPath);
 
 services.AddAutoShortcut(config =>
 {
     config
         .AddFFmpegConfig(new FFmpegConfig(ffmpeg, ffprobe))
         .AddStorageConfig(new StorageConfig(tempPath, personalPath))
-        .AddProjectConfig(new ProjectConfig("AutoShortcut_Result.mp4"));
+        .AddProjectConfig(new ProjectConfig("Example.mp4"));
 });
 
-#endregion
-
 var di = services.BuildServiceProvider();
+```
 
-Console.WriteLine("Hello, World!");
+2. Загрузите медиа, используя `IMediaManager`:
 
+```c#
 var mediaManager = di.GetRequiredService<IMediaManager>();
 
 var mediaList = new List<IMediaFile>();
@@ -45,9 +28,17 @@ foreach (var pathFile in Directory.GetFiles(directory))
 {
     mediaList.Add(await mediaManager.LoadAnalysedAsync(pathFile));
 }
+```
 
+3. Создайте реализацию `ITrack` и вложите в него свои файлы:
+
+```C#
 var track = new MediaTrack(mediaList);
+```
 
+4. Наложите эффекты на медиа на ваше усмотрение. Пример:
+
+```C#
 foreach (var media in track.Media)
 {
     const int fadeSeconds = 1;
@@ -59,8 +50,12 @@ foreach (var media in track.Media)
              => new FadeOutEffect((int) previous!.MediaFormat!.Duration - fadeSeconds, fadeSeconds, di)
          );
 }
+```
 
+5. Запустите компиляцию:
+
+```C#
 var compiler = di.GetRequiredService<ITrackCompiler>();
 var result = await compiler.CompileAsync(track);
+```
 
-Console.WriteLine("Result video: " + result.Path);

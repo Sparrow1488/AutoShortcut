@@ -7,5 +7,5 @@ public class ProjectConfig
         OutputFileName = outputFileName;
     }
     
-    public string? OutputFileName { get; set; }
+    public string? OutputFileName { get; }
 }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "oI0d+SiXwx69XFBnqXytfprhLdIVNRC9E8/bE6Uw6WRNaTotyMS84zTHbZ4AC/l7Ni+pxKn6UNlToc5+oRRLqA==",
+  "dgSpecHash": "mZzxis4bgiawME8b6VoFH/zRtvVnlB9jegSLIaZCxaStAhh8SiB5EfqvHA1m9ftSehwVqKJXDvhOmRbW7WJVYQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\ilyao\\OneDrive\\Desktop\\Development\\Projects\\AutoShortcut\\AutoShortcut.Lib\\AutoShortcut.Lib.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,10 @@
     "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.extensions.primitives\\7.0.0\\microsoft.extensions.primitives.7.0.0.nupkg.sha512",
-    "C:\\Users\\ilyao\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+    "C:\\Users\\ilyao\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.14\\microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.14\\microsoft.windowsdesktop.app.ref.7.0.14.nupkg.sha512",
+    "C:\\Users\\ilyao\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.14\\microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512"
   ],
   "logs": []
 }
