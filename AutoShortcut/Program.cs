@@ -4,7 +4,6 @@ using AutoShortcut.Lib.Contracts.Services;
 using AutoShortcut.Lib.Extensions;
 using AutoShortcut.Lib.Media;
 using AutoShortcut.Lib.Montage;
-using AutoShortcut.Lib.Montage.Effects;
 using Microsoft.Extensions.DependencyInjection;
 
 #region Constants
@@ -51,13 +50,11 @@ var track = new MediaTrack(mediaList);
 foreach (var media in track.Media)
 {
     const int fadeSeconds = 1;
-    
-    media.AddEffect(new ScaleEffect(new Resolution360Px(), di))
-         .AddEffect(new LoopVideo(2, di))
-         .AddEffect(new FadeInEffect(0, fadeSeconds, di))
-         .AddEffect(previous 
-             => new FadeOutEffect((int) previous!.MediaFormat!.Duration - fadeSeconds, fadeSeconds, di)
-         );
+
+    media.Scale(new Resolution360Px(), di)
+         .Loop(2, di)
+         .FadeIn(fadeSeconds, di)
+         .FadeOut(fadeSeconds, di);
 }
 
 var compiler = di.GetRequiredService<ITrackCompiler>();
